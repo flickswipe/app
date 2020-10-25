@@ -29,7 +29,8 @@ export async function announceMovie({
   const utellyDocs = await Utelly.find({
     imdbId: tmdbMovieDoc.imdbId,
   });
-  if (!utellyDocs) {
+
+  if (!utellyDocs.length) {
     throw new Error("Couldn't fetch utelly data");
   }
 
@@ -87,8 +88,8 @@ export async function announceMovie({
   };
 
   // publish event
-  console.log(`Broadcasting media item...`, mediaItem);
-  new MediaItemUpdatedPublisher(natsWrapper.client).publish(mediaItem);
+  console.log(`Broadcasting media item...`);
+  await new MediaItemUpdatedPublisher(natsWrapper.client).publish(mediaItem);
 
   // mark movie as published
   await MovieId.findOneAndUpdate(
