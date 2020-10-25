@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingest-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingest
+  template:
+    metadata:
+      labels:
+        app: ingest
+    spec:
+      containers:
+        - name: ingest
+          image: flickswipe/ingest
+          env:
+            - name: RAPIDAPI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rapidapi-secret
+                  key: RAPIDAPI_KEY    
+            - name: TMDB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tmdb-secret
+                  key: TMDB_KEY     
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: flickswipe              
+            - name: MONGO_URI
+              value: "mongodb://ingest-mongo-srv:27017/ingest"                               
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingest-srv
+spec:
+  selector:
+    app: ingest
+  ports:
+    - name: ingest
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

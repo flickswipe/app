@@ -1,0 +1,49 @@
+{
+  "collection": {
+    "id": "5e28ebeae847f9277fa03d51",
+    "picture": "https://utellyassets9-1.imgix.net/api/Images/0c39502dd002217b58d6e6b8182511ab/Redirect",
+    "name": "Avengers: Endgame",
+    "locations": [
+      {
+        "icon": "https://utellyassets7.imgix.net/locations_icons/utelly/black_new/GooglePlayIVAGB.png?w=92&auto=compress&app_version=8bc263d1-dd7b-40c0-98cd-f677eb14d81e_e12122020-10-19",
+        "display_name": "Google Play",
+        "name": "GooglePlayIVAGB",
+        "id": "5d84d6dcd95dc7385f6a43e1",
+        "url": "https://play.google.com/store/movies/details/Marvel_Studios_Avengers_Endgame?gl=GB&hl=en&id=W8CXEjr0hWg"
+      },
+      {
+        "icon": "https://utellyassets7.imgix.net/locations_icons/utelly/black_new/iTunesIVAGB.png?w=92&auto=compress&app_version=8bc263d1-dd7b-40c0-98cd-f677eb14d81e_e12122020-10-19",
+        "display_name": "iTunes",
+        "name": "iTunesIVAGB",
+        "id": "5d8415b3ca549f00528a99f0",
+        "url": "https://itunes.apple.com/gb/movie/avengers-endgame/id1459467748"
+      },
+      {
+        "icon": "https://utellyassets7.imgix.net/locations_icons/utelly/black_new/DisneyPlusIVAGB.png?w=92&auto=compress&app_version=8bc263d1-dd7b-40c0-98cd-f677eb14d81e_e12122020-10-19",
+        "display_name": "Disney+",
+        "name": "DisneyPlusIVAGB",
+        "id": "5e573a41efcb7769c4908a9e",
+        "url": "https://www.disneyplus.com/movies/marvel-studios-avengers-endgame/aRbVJUb2h2Rf"
+      },
+      {
+        "icon": "https://utellyassets7.imgix.net/locations_icons/utelly/black_new/AmazonInstantVideoIVAGB.png?w=92&auto=compress&app_version=8bc263d1-dd7b-40c0-98cd-f677eb14d81e_e12122020-10-19",
+        "display_name": "Amazon Instant Video",
+        "name": "AmazonInstantVideoIVAGB",
+        "id": "5d8415b31e1521005490e1bc",
+        "url": "https://watch.amazon.co.uk/detail?asin=B07VZFRZC9&creativeASIN=B07VZFRZC9&ie=UTF8&linkCode=xm2&tag=utellycom00-21"
+      }
+    ],
+    "provider": "iva",
+    "weight": 0,
+    "source_ids": {
+      "imdb": {
+        "url": "https://www.imdb.com/title/tt4154796",
+        "id": "tt4154796"
+      }
+    }
+  },
+  "type": "imdb",
+  "id": "tt4154796",
+  "status_code": 200,
+  "variant": "ivafull"
+}
