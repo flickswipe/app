@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mail
+  template:
+    metadata:
+      labels:
+        app: mail
+    spec:
+      containers:
+        - name: mail
+          image: flickswipe/mail
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: flickswipe
+            - name: SMTP_PORT
+              value: "465"
+            - name: SMTP_HOST
+              value: "smtp.flickswipe.app"
+            - name: SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-user
+                  key: SMTP_USER
+            - name: SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-pass
+                  key: SMTP_PASS
+            - name: QUEUE_GROUP_NAME
+              value: "mail_queue_group"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail-srv
+spec:
+  selector:
+    app: mail
+  ports:
+    - name: mail
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
