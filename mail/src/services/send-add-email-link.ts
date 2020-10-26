@@ -2,11 +2,11 @@ import { EmailTokenCreatedEvent } from "@flickswipe/common";
 import { Email } from "./email";
 
 /**
- * Define email templates
+ * Initialize
  */
-class AddEmailLinkEmail extends Email {
-  subjectTemplate = `Add this email to your FlickSwipe account`;
-  bodyTemplate = `
+const addEmailLinkEmail = new Email(
+  `Add this email to your FlickSwipe account`,
+  `
   Hi!
 
   <p>It looks like you're trying to add this email address to your account on 
@@ -16,17 +16,13 @@ class AddEmailLinkEmail extends Email {
   <p>Or you can access this <a href="%%url%%">link</a> in the same browser that
   you made the request on.</p>
   <p>Happy swiping!</p>
+
   <p>The Flickswipe Team</p>
-  `;
-}
+  `
+);
 
 /**
- * Initialize
- */
-const addEmailLinkEmail = new AddEmailLinkEmail();
-
-/**
- * Create email from data and send it
+ * Create email from template and send it
  */
 export async function sendAddEmailLink(
   data: EmailTokenCreatedEvent["data"]

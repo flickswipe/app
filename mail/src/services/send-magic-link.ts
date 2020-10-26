@@ -2,11 +2,11 @@ import { EmailTokenCreatedEvent } from "@flickswipe/common";
 import { Email } from "./email";
 
 /**
- * Define email templates
+ * Initialize
  */
-class MagicLinkEmail extends Email {
-  subjectTemplate = `Sign into FlickSwipe with code %%token%%`;
-  bodyTemplate = `
+const magicLinkEmail = new Email(
+  `Sign into FlickSwipe with code %%token%%`,
+  `
   Hi!
 
   <p>It looks like you're trying to sign into flickswipe.app.</p>
@@ -16,16 +16,11 @@ class MagicLinkEmail extends Email {
   you made the request on.</p>
   <p>Happy swiping!</p>
   <p>The Flickswipe Team</p>
-  `;
-}
+  `
+);
 
 /**
- * Initialize
- */
-const magicLinkEmail = new MagicLinkEmail();
-
-/**
- * Create email from data and send it
+ * Create email from template and send it
  */
 export async function sendMagicLink(
   data: EmailTokenCreatedEvent["data"]

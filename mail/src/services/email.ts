@@ -4,14 +4,12 @@ import { transporterWrapper } from "../transporter-wrapper";
 /**
  * Abstract class for creating custom emails
  */
-export abstract class Email {
-  abstract subjectTemplate: string;
-  abstract bodyTemplate: string;
-
+export class Email {
   static readonly delimiters = ["%%", "%%"];
 
-  subject = "";
-  body = "";
+  subjectTemplate: string;
+  textTemplate: string;
+  htmlTemplate: string;
 
   static hydrate(content: string, data: Record<string, string>): string {
     const [leftDelimiter, rightDelimiter] = Email.delimiters;
@@ -57,14 +55,21 @@ export abstract class Email {
     return textContent;
   }
 
+  constructor(subjectTemplate: string, htmlTemplate: string) {
+    this.subjectTemplate = subjectTemplate;
+    this.textTemplate = Email.makePlainText(htmlTemplate);
+    this.htmlTemplate = htmlTemplate;
+  }
+
   send(targetEmail: string, data: Record<string, string>): Promise<any> {
     const subject = Email.hydrate(this.subjectTemplate, data);
-    const html = Email.hydrate(this.bodyTemplate, data);
+    const text = Email.hydrate(this.textTemplate, data);
+    const html = Email.hydrate(this.htmlTemplate, data);
 
     return transporterWrapper.sendMail({
       to: targetEmail,
       subject: subject,
-      text: Email.makePlainText(html),
+      text: text,
       html: html,
     });
   }
