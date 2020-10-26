@@ -25,9 +25,9 @@ spec:
             - name: NATS_CLUSTER_ID
               value: flickswipe
             - name: SMTP_PORT
-              value: "465"
+              value: 587
             - name: SMTP_HOST
-              value: "smtp.flickswipe.app"
+              value: "smtp.ethereal.email"
             - name: SMTP_USER
               valueFrom:
                 secretKeyRef:
@@ -40,6 +40,8 @@ spec:
                   key: SMTP_PASS
             - name: QUEUE_GROUP_NAME
               value: "mail_queue_group"
+            - name: SENDER_ADDRESS
+              value: "'Alvera Cormier' <alvera.cormier@ethereal.email>"
 ---
 apiVersion: v1
 kind: Service
