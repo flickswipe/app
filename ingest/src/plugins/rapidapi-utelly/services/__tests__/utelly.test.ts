@@ -4,16 +4,12 @@ import { fetchUtelly } from "../fetch-utelly";
 import { Utelly } from "../../models/utelly";
 import utellyApiResultSample from "./utelly.json";
 
-jest.mock("axios");
-
 describe("ingest data from rapidapi", () => {
   it("should ingest utelly api", async () => {
     // @ts-ignore
-    axios.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: utellyApiResultSample,
-      })
-    );
+    axios.mockResolvedValueOnce({
+      data: utellyApiResultSample,
+    });
 
     await fetchUtelly("tt4154796", "es");
 

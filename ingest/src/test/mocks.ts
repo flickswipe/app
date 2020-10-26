@@ -1,18 +1,10 @@
-import { natsWrapper } from "../nats-wrapper";
-
 /**
  * Mock modules
  */
-jest.mock("../nats-wrapper");
 
-beforeAll(() => {
-  // @ts-ignore
-  natsWrapper.client = {
-    publish: jest.fn().mockImplementation(async (sub, data, cb) => {
-      cb();
-    }),
-  };
-});
+// mocked in __mocks__
+jest.mock("axios");
+jest.mock("../nats-wrapper");
 
 beforeEach(async () => {
   jest.clearAllMocks();

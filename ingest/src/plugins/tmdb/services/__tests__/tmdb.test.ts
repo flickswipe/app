@@ -7,21 +7,12 @@ import { TmdbMovie } from "../../models/tmdb-movie";
 import tmdbGenresApiResultSample from "./tmdb-genres.json";
 import tmdbMovieApiResultSample from "./tmdb-movie.json";
 
-jest.mock("axios");
-
-beforeAll(() => {
-  process.env.TMDB_KEY =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNjJlY2NhYjlhNDk4YjBlMjVmNDcxODhlOTNmYTkzZCIsInN1YiI6IjVmOGUyMDA5MTEzODZjMDAzNjAxYzdjZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pKz8n_HxAscg40guc1KbO2-xvGBafHoRaN2Gfo-DNCQ";
-});
-
 describe("ingest data from tmdb", () => {
   it("should ingest tmdb movie data", async () => {
     // @ts-ignore
-    axios.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: tmdbMovieApiResultSample,
-      })
-    );
+    axios.mockResolvedValueOnce({
+      data: tmdbMovieApiResultSample,
+    });
 
     await fetchTmdbMovie(550);
     expect(axios).toHaveBeenCalled();
@@ -36,11 +27,9 @@ describe("ingest data from tmdb", () => {
 
   it("should ingest tmdb genres data", async () => {
     // @ts-ignore
-    axios.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: tmdbGenresApiResultSample,
-      })
-    );
+    axios.mockResolvedValueOnce({
+      data: tmdbGenresApiResultSample,
+    });
 
     await fetchTmdbGenres("en");
     expect(axios).toHaveBeenCalled();
