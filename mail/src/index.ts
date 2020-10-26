@@ -1,4 +1,7 @@
 import { natsWrapper } from "./nats-wrapper";
+import { transporterWrapper } from "./transporter-wrapper";
+
+import { EmailTokenCreatedListener } from "./events/listeners/email-token-created";
 
 /**
  * Get environment variables
@@ -12,6 +15,7 @@ const {
   SMTP_USER,
   SMTP_PASS,
   QUEUE_GROUP_NAME,
+  SENDER_ADDRESS,
 } = process.env;
 
 if (!NATS_CLIENT_ID) {
@@ -38,6 +42,9 @@ if (!SMTP_PASS) {
 if (!QUEUE_GROUP_NAME) {
   throw new Error("QUEUE_GROUP_NAME must be defined");
 }
+if (!SENDER_ADDRESS) {
+  throw new Error("SENDER_ADDRESS must be defined");
+}
 
 /**
  * Initialize
@@ -52,6 +59,21 @@ if (!QUEUE_GROUP_NAME) {
     });
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
+
+    // listen to events
+    new EmailTokenCreatedListener(natsWrapper.client).listen();
+
+    // connect to mail server
+    await transporterWrapper.connect(
+      parseInt(SMTP_PORT, 10),
+      SMTP_HOST,
+      SMTP_USER,
+      SMTP_PASS,
+      // mail option defaults
+      {
+        from: SENDER_ADDRESS,
+      }
+    );
   } catch (err) {
     console.error(err);
   }
