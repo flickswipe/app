@@ -1,8 +1,8 @@
 import { MediaItemUpdatedPublisher } from "../events/publishers/media-item-updated";
 import { natsWrapper } from "../nats-wrapper";
-import { Utelly, UtellyDoc } from "../plugins/rapidapi-utelly/models/utelly";
-import { TmdbMovie } from "../plugins/tmdb/models/tmdb-movie";
-import { MovieId } from "../plugins/tmdb-file-exports/models/movie-id";
+import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
+import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
+import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
 
 export async function announceMovie({
   imdbId,
