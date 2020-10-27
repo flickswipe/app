@@ -24,6 +24,7 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
     msg: Message
   ): Promise<void> {
     const { id, name, language } = data;
+
     try {
       // check if doc already exists
       const existingDoc = await Genre.findOne({ _id: id, language });

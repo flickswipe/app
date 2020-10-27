@@ -1,9 +1,10 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 /**
  * Properties used to create a MediaItem
  */
 interface MediaItemAttrs {
+  id: string;
   tmdbMovieId: number;
   imdbId: string;
   title: string;
@@ -11,7 +12,7 @@ interface MediaItemAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;
@@ -33,6 +34,7 @@ interface MediaItemAttrs {
  * Properties that a MediaItem document has
  */
 interface MediaItemDoc extends mongoose.Document {
+  id: string;
   tmdbMovieId: number;
   imdbId: string;
   title: string;
@@ -40,7 +42,7 @@ interface MediaItemDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[] | { id: string; name: string }[];
   rating: {
     average: number;
     count: number;
@@ -81,10 +83,7 @@ const mediaItem = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: {
-      type: Array,
-      required: true,
-    },
+    genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
     rating: {
       type: Object,
       required: true,
@@ -114,6 +113,8 @@ const mediaItem = new mongoose.Schema(
       transform(doc, ret) {
         delete ret._id;
         delete ret.__v;
+        delete ret.createdAt;
+        delete ret.updatedAt;
       },
     },
   }
@@ -127,8 +128,9 @@ interface MediaItemModel extends mongoose.Model<MediaItemDoc> {
 }
 
 mediaItem.statics.build = (attrs: MediaItemAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.imdbId}`.padStart(12, "0"));
-  return new MediaItem(Object.assign({ _id }, attrs));
+  return new MediaItem(
+    Object.assign({ _id: mongoose.Types.ObjectId(attrs.id) }, attrs)
+  );
 };
 
 /**

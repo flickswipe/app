@@ -44,6 +44,9 @@ const genreSchema = new mongoose.Schema(
       transform(doc, ret) {
         delete ret._id;
         delete ret.__v;
+        delete ret.language;
+        delete ret.createdAt;
+        delete ret.updatedAt;
       },
     },
   }
@@ -57,7 +60,9 @@ interface GenreModel extends mongoose.Model<GenreDoc> {
 }
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
-  return new Genre(Object.assign({ _id: attrs.id }, attrs));
+  return new Genre(
+    Object.assign({ _id: mongoose.Types.ObjectId(attrs.id) }, attrs)
+  );
 };
 
 /**

@@ -8,7 +8,10 @@
     "start": "ts-node-dev src/index.ts",
     "test": "jest --no-cache",
     "test:ci": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "apidoc": "apidoc -i src/ -o apidoc/",
+    "apidoc-open-win": "npm run apidoc && start ./apidoc/index.html",
+    "apidoc-open-mac": "npm run apidoc && open ./apidoc/index.html"
   },
   "jest": {
     "preset": "ts-jest",
@@ -48,8 +51,15 @@
     "rules": {
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-namespace": "off"
     }
+  },
+  "apidoc": {
+    "order": [
+      "MediaItem",
+      "Genres"
+    ]
   },
   "keywords": [
     "microservice"
@@ -57,10 +67,14 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.38",
+    "@flickswipe/common": "0.0.39",
+    "@types/cookie-session": "^2.0.41",
     "@types/express": "^4.17.8",
     "@types/mongoose": "^5.7.36",
+    "cookie-session": "^1.4.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.9",
     "node-nats-streaming": "^0.3.2",
     "ts-node-dev": "^1.0.0-pre.63",
@@ -68,11 +82,14 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
+    "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
+    "apidoc": "^0.25.0",
     "eslint": "^7.11.0",
     "jest": "^26.5.2",
     "mongodb-memory-server": "^6.9.2",
+    "supertest": "^5.0.0",
     "ts-jest": "^26.4.1"
   }
 }

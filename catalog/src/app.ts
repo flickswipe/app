@@ -6,8 +6,8 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
-import { genresRouter } from "./routes/genres";
-import { mediaItemRouter } from "./routes/media-item";
+import { getGenresRouter } from "./routes/get-genres";
+import { getMediaItemRouter } from "./routes/get-media-item";
 
 /**
  * Configure express app
@@ -31,8 +31,8 @@ app.use(
 /**
  * Configure routes
  */
-app.use(genresRouter);
-app.use(mediaItemRouter);
+app.use(getGenresRouter);
+app.use(getMediaItemRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();

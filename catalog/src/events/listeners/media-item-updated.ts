@@ -24,6 +24,7 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
     msg: Message
   ): Promise<void> {
     const {
+      id,
       tmdbMovieId,
       imdbId,
       title,
@@ -63,6 +64,7 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
         }
       } else {
         await MediaItem.build({
+          id,
           tmdbMovieId,
           imdbId,
           title,
