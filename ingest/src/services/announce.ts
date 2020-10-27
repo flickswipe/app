@@ -76,7 +76,11 @@ export async function announceMovie({
   );
 
   const mediaItem = {
+    id: tmdbMovieDoc.id,
+    tmdbMovieId: tmdbMovieDoc.tmdbMovieId,
+    imdbId: tmdbMovieDoc.imdbId,
     title: tmdbMovieDoc.title,
+    genres: tmdbMovieDoc.genres,
     images: tmdbMovieDoc.images,
     rating: tmdbMovieDoc.rating,
     language: tmdbMovieDoc.language,
