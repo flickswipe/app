@@ -21,6 +21,8 @@ helm install my-release ingress-nginx/ingress-nginx
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=test_key
 kubectl create secret generic rapidapi-secret --from-literal=RAPIDAPI_KEY=test_key
 kubectl create secret generic tmdb-secret --from-literal=TMDB_KEY=test_key
+kubectl create secret generic smtp-user --from-literal=SMTP_USER=alvera.cormier@ethereal.email
+kubectl create secret generic smtp-pass --from-literal=SMTP_PASS=pKTZeGPJG5mMuSJWEG
 ```
 
 3. Add a line to your HOSTS file:
