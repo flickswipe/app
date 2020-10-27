@@ -33,7 +33,7 @@ export async function fetchUtelly(
 
     await existingDoc.save();
 
-    console.log(`Updated utelly data for ${existingDoc.imdbId}!`);
+    console.log(`Updated utelly data for ${existingDoc.imdbId}`);
     return existingDoc;
   }
 

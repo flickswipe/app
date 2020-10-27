@@ -16,27 +16,73 @@ describe("fetch utelly", () => {
     expect(axios).toHaveBeenCalled();
   });
 
-  it.todo("should return null if no data provided");
+  it("should return null if no data provided", async () => {
+    // @ts-ignore
+    axios.mockResolvedValueOnce({});
 
-  it.todo("should overwrite and return existing docs");
+    const result = await fetchUtelly("tt4154796", "es");
 
-  it("should create and return utelly doc", async () => {
+    expect(result).toBeNull();
+  });
+
+  it("should overwrite existing doc and return", async () => {
+    const existingDocAttrs = {
+      imdbId: "tt4154796",
+      country: "uk",
+      locations: [
+        {
+          displayName: "Netflix",
+          name: "NETFLIXGB",
+          id: "aaaaaaa",
+          url: "http://example.com/",
+        },
+      ],
+    };
+
+    await Utelly.build(existingDocAttrs).save();
+
+    // @ts-ignore
+    axios.mockResolvedValueOnce({
+      data: utellyApiResultSample,
+    });
+
+    const result = await fetchUtelly("tt4154796", "uk");
+
+    const overwrittenDoc = await Utelly.findOne({
+      imdbId: "tt4154796",
+      country: "uk",
+    });
+
+    // has been overwritten
+    expect(overwrittenDoc.locations).toHaveLength(4);
+
+    // has been returned
+    expect(overwrittenDoc.id).toEqual(result && result.id);
+  });
+
+  it("should create utelly doc and return", async () => {
     // @ts-ignore
     axios.mockResolvedValueOnce({
       data: utellyApiResultSample,
     });
 
     const newDoc = (await fetchUtelly("tt4154796", "es")) as UtellyDoc;
-    expect(newDoc).toBeDefined();
-    expect(newDoc.imdbId).toBe("tt4154796");
-    expect(newDoc.country).toBe("es");
 
-    const count = await Utelly.countDocuments({});
-    expect(count).toBe(1);
+    // has been returned
+    expect(newDoc).toEqual(
+      expect.objectContaining({
+        imdbId: "tt4154796",
+        country: "es",
+      })
+    );
 
-    const doc = (await Utelly.findOne({})) as UtellyDoc;
-    expect(doc).toBeDefined();
-    expect(doc.imdbId).toBe("tt4154796");
-    expect(doc.country).toBe("es");
+    // has been created
+    const createdDoc = (await Utelly.findOne({})) as UtellyDoc;
+    expect(createdDoc).toEqual(
+      expect.objectContaining({
+        imdbId: "tt4154796",
+        country: "es",
+      })
+    );
   });
 });

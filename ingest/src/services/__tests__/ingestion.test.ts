@@ -396,7 +396,7 @@ describe("ingestion", () => {
     beforeAll(() => {
       runUtellyDataFetch = jest
         .spyOn(Ingestion, "runUtellyDataFetch")
-        .mockResolvedValue(null);
+        .mockResolvedValue(true);
     });
 
     beforeEach(() => {
@@ -431,7 +431,7 @@ describe("ingestion", () => {
 
     it("should announce new movie", async () => {
       // @ts-ignore
-      Queue.getNextUtelly.mockResolvedValueOnce("tt1234567");
+      Queue.getNextUtelly.mockResolvedValueOnce("tt4154796");
 
       // @ts-ignore
       announceMovie.mockImplementationOnce(async () => {
