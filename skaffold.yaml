@@ -16,6 +16,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: flickswipe/catalog
+      context: catalog
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: flickswipe/ingest
       context: ingest
       docker:
