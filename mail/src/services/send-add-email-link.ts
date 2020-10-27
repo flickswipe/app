@@ -1,6 +1,8 @@
 import { EmailTokenCreatedEvent } from "@flickswipe/common";
 import { Email } from "./email";
 
+const [L, R] = Email.delimiters;
+
 /**
  * Initialize
  */
@@ -12,8 +14,8 @@ const addEmailLinkEmail = new Email(
   <p>It looks like you're trying to add this email address to your account on 
   flickswipe.app.</p>
   <p>If that's the case, you can use the following code to confirm this email:<p>
-  <p>%%token%%</p>
-  <p>Or you can access this <a href="%%url%%">link</a> in the same browser that
+  <p>${L}token${R}</p>
+  <p>Or you can access this <a href="${L}url${R}">link</a> in the same browser that
   you made the request on.</p>
   <p>Happy swiping!</p>
 
