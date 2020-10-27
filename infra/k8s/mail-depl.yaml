@@ -16,6 +16,8 @@ spec:
         - name: mail
           image: flickswipe/mail
           env:
+            - name: NODE_ENV
+              value: "development"
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
@@ -25,7 +27,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: flickswipe
             - name: SMTP_PORT
-              value: 587
+              value: "587"
             - name: SMTP_HOST
               value: "smtp.ethereal.email"
             - name: SMTP_USER

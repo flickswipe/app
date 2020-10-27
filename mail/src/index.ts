@@ -2,6 +2,7 @@ import { natsWrapper } from "./nats-wrapper";
 import { transporterWrapper } from "./transporter-wrapper";
 
 import { EmailTokenCreatedListener } from "./events/listeners/email-token-created";
+import { sendTestEmail } from "./services/send-test";
 
 /**
  * Get environment variables
@@ -16,6 +17,7 @@ const {
   SMTP_PASS,
   QUEUE_GROUP_NAME,
   SENDER_ADDRESS,
+  NODE_ENV,
 } = process.env;
 
 if (!NATS_CLIENT_ID) {
@@ -76,5 +78,11 @@ if (!SENDER_ADDRESS) {
     );
   } catch (err) {
     console.error(err);
+  }
+
+  // send test email
+  if (NODE_ENV === "development") {
+    const result = await sendTestEmail();
+    console.log("sent test email", result);
   }
 })();
