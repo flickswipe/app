@@ -29,15 +29,15 @@ export class MediaItemDestroyedListener extends Listener<
     data: MediaItemDestroyedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const { tmdbMovieId } = data;
+    const { id } = data;
 
     try {
       await MediaItem.deleteMany({
-        tmdbMovieId,
+        _id: id,
       });
-      console.log(`Removed media item ${tmdbMovieId}`);
+      console.log(`Removed media item ${id}`);
     } catch (err) {
-      console.error(`Couldn't delete media item ${tmdbMovieId}`, err);
+      console.error(`Couldn't delete media item ${id}`, err);
       return;
     }
 

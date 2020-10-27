@@ -4,7 +4,7 @@ import mongoose from "mongoose";
  * Properties used to create a Genre
  */
 interface GenreAttrs {
-  tmdbGenreId: number;
+  id: string;
   name: string;
   language: string;
 }
@@ -13,7 +13,7 @@ interface GenreAttrs {
  * Properties that a MovieId document has
  */
 interface GenreDoc extends mongoose.Document {
-  tmdbGenreId: number;
+  id: string;
   name: string;
   language: string;
   createdAt: Date;
@@ -25,8 +25,8 @@ interface GenreDoc extends mongoose.Document {
  */
 const genreSchema = new mongoose.Schema(
   {
-    tmdbGenreId: {
-      type: Number,
+    id: {
+      type: String,
       required: true,
     },
     name: {
@@ -57,8 +57,7 @@ interface GenreModel extends mongoose.Model<GenreDoc> {
 }
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.tmdbGenreId}`.padStart(12, "0"));
-  return new Genre(Object.assign({ _id }, attrs));
+  return new Genre(Object.assign({ _id: attrs.id }, attrs));
 };
 
 /**

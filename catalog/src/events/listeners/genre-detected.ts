@@ -23,10 +23,10 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
     data: GenreDetectedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const { tmdbGenreId, name, language } = data;
+    const { id, name, language } = data;
     try {
       // check if doc already exists
-      const existingDoc = await Genre.findOne({ tmdbGenreId, language });
+      const existingDoc = await Genre.findOne({ _id: id, language });
       if (existingDoc) {
         // don't update if current data more recent
         if (existingDoc.updatedAt > data.detectedAt) {
@@ -38,19 +38,15 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
           existingDoc.name = name;
           await existingDoc.save();
 
-          console.log(
-            `Updated genre #${tmdbGenreId}'s name to ${existingDoc.name}`
-          );
+          console.log(`Updated genre #${id}'s name to ${existingDoc.name}`);
         }
       } else {
-        await Genre.build({ tmdbGenreId, name, language }).save();
+        await Genre.build({ id, name, language }).save();
 
-        console.log(
-          `Created genre #${tmdbGenreId} with name "${name}" (${language})`
-        );
+        console.log(`Created genre #${id} with name "${name}" (${language})`);
       }
     } catch (err) {
-      console.error(`Couldn't update genre ${tmdbGenreId}`, err);
+      console.error(`Couldn't update genre ${id}`, err);
       return;
     }
 
