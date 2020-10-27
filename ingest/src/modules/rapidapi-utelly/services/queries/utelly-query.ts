@@ -27,11 +27,12 @@ export async function utellyQuery(
       params: { source_id: imdbId, source: "imdb", country: country },
     });
   } catch (error) {
-    console.error("utellyQuery error", error);
+    console.error(`utellyQuery error`, error);
   }
 
   // handle missing data
   if (!response?.data?.collection?.locations) {
+    console.log(`utelly query invalid response`, response && response.data);
     return null;
   }
 

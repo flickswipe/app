@@ -88,7 +88,7 @@ export async function announceMovie({
   };
 
   // publish event
-  console.log(`Broadcasting media item...`);
+  console.log(`Broadcasting media item...`, mediaItem);
   await new MediaItemUpdatedPublisher(natsWrapper.client).publish(mediaItem);
 
   // mark movie as published
