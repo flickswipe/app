@@ -203,12 +203,14 @@ describe("make plain text", () => {
     );
   });
 
-  it.each([`aaaa\nbbbb`, `aaaa\rbbbb`])(
-    "should preserve spaces that fall across lines",
-    (text) => {
-      expect(makePlainText(text)).toBe(`aaaa bbbb`);
-    }
-  );
+  it.each([
+    `aaaa\nbbbb`,
+    `aaaa\rbbbb`,
+    `aaaa
+  bbbb`,
+  ])("should preserve spaces that fall across lines", (text) => {
+    expect(makePlainText(text)).toBe(`aaaa bbbb`);
+  });
 
   it.each([
     "address",

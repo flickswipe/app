@@ -114,7 +114,7 @@ export function makePlainText(html: string, permitAnchors = false): string {
   });
 
   // clean up extra whitespace
-  plainText = plainText.replace(/ {2,}/g, "");
+  plainText = plainText.replace(/ {2,}/g, " ");
   plainText = plainText
     .split("\n")
     .map((line) => line.trim())

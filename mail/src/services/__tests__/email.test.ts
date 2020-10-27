@@ -56,6 +56,11 @@ describe("email", () => {
       expect(email.subjectTemplate).toBe("subject");
     });
 
+    it("should strip links from subject template", () => {
+      const email = new Email("<a href='#'>subject</a>", "<b>html</b>");
+      expect(email.subjectTemplate).toBe("subject");
+    });
+
     it("should store text template in class", () => {
       const email = new Email("subject", "html");
       expect(email.textTemplate).toBe("html");
@@ -63,6 +68,11 @@ describe("email", () => {
 
     it("should strip html from text template", () => {
       const email = new Email("<b>subject</b>", "<b>html</b>");
+      expect(email.subjectTemplate).toBe("subject");
+    });
+
+    it("shouldn't strip links from text template", () => {
+      const email = new Email("subject", "<a href='#'>subject</a>");
       expect(email.subjectTemplate).toBe("subject");
     });
 
@@ -78,12 +88,12 @@ describe("email", () => {
   });
 
   describe("send", () => {
-    it("should call transporter.sendMail()", () => {
+    it("should call transporter.sendMail", () => {
       new Email("subject", "<b>html</b>").send("test@user.com", {});
       expect(transporterWrapper.sendMail).toHaveBeenCalled();
     });
 
-    it("should call transporter.sendMail() with correct arguments", () => {
+    it("should call transporter.sendMail with correct arguments", () => {
       new Email("subject", "<b>html</b>").send("test@user.com", {});
       expect(transporterWrapper.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({

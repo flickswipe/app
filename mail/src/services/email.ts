@@ -29,7 +29,7 @@ export class Email {
 
   constructor(subjectTemplate: string, htmlTemplate: string) {
     this.subjectTemplate = makePlainText(subjectTemplate);
-    this.textTemplate = makePlainText(htmlTemplate);
+    this.textTemplate = makePlainText(htmlTemplate, true);
     this.htmlTemplate = htmlTemplate;
   }
 
