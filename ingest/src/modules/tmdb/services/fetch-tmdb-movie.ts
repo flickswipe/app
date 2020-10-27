@@ -9,9 +9,6 @@ import {
 import { MediaItemDestroyedPublisher } from "../../../events/publishers/media-item-destroyed";
 import { natsWrapper } from "../../../nats-wrapper";
 
-const INCLUDE_ADULT_CONTENT = false;
-const EARLIEST_RELEASE_DATE = new Date("01-01-1970");
-
 /**
  * Fetch movie data from the TMDB RESTful API
  *
@@ -20,7 +17,11 @@ const EARLIEST_RELEASE_DATE = new Date("01-01-1970");
  * @returns {TmdbMovieDoc} api result
  */
 export async function fetchTmdbMovie(
-  tmdbMovieId: number
+  tmdbMovieId: number,
+  options: {
+    includeAdultContent?: boolean;
+    earliestReleaseDate?: Date;
+  } = {}
 ): Promise<TmdbMovieDoc | void> {
   console.log(`Fetching tmdb movie ${tmdbMovieId}...`);
 
@@ -34,7 +35,7 @@ export async function fetchTmdbMovie(
   const result = tmdbMovieParser(raw);
 
   // skip missing or irrelevant results
-  if (!result || shouldSkip(result)) {
+  if (!result || shouldSkip(result, options)) {
     return null;
   }
 
@@ -42,7 +43,7 @@ export async function fetchTmdbMovie(
   const existingDoc = await TmdbMovie.findOne({ tmdbMovieId });
 
   // mark as never used
-  if (shouldNeverUse(result)) {
+  if (shouldNeverUse(result, options)) {
     // update movie id doc
     const movieIdDoc = await MovieId.findOne({ tmdbMovieId });
     if (movieIdDoc) {
@@ -111,7 +112,12 @@ export async function fetchTmdbMovie(
  *
  * @returns {Boolean} true if result should be skipped
  */
-function shouldSkip(result: TmdbMovieApiResult): boolean {
+function shouldSkip(
+  result: TmdbMovieApiResult,
+  options: Record<string, unknown> = {}
+): boolean {
+  options;
+
   // filter condition: media must have been released already
   if (result.status !== "Released") {
     return true;
@@ -132,16 +138,19 @@ function shouldSkip(result: TmdbMovieApiResult): boolean {
  *
  * @returns {Boolean} true if result should be skipped
  */
-function shouldNeverUse(result: TmdbMovieApiResult): boolean {
+function shouldNeverUse(
+  result: TmdbMovieApiResult,
+  options: Record<string, unknown> = {}
+): boolean {
   // filter condition: no adult content
-  if (!INCLUDE_ADULT_CONTENT && result.adult) {
+  if (!options.includeAdultContent && result.adult) {
     return true;
   }
 
   // filter condition: must be recent
   if (
-    EARLIEST_RELEASE_DATE instanceof Date &&
-    result.releaseDate < EARLIEST_RELEASE_DATE
+    options.earliestReleaseDate instanceof Date &&
+    result.releaseDate < options.earliestReleaseDate
   ) {
     return true;
   }

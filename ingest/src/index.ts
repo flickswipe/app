@@ -4,46 +4,6 @@ import { Ingestion } from "./services/ingestion";
 import { natsWrapper } from "./nats-wrapper";
 
 /**
- * Configure target countries for streaming availability
- *
- * WARNING!
- * Uncommenting countries will result in higher API fees
- */
-const COUNTRIES = [
-  // "uk", // United Kingdom
-  // "us", // USA
-  // "ar", // Argentina
-  // "at", // Austria
-  // "be", // Belgium
-  // "br", // Brazil
-  // "ca", // Canada
-  // "de", // Germany
-  "es", // Spain
-  // "fr", // France
-  // "ie", // Ireland
-  // "id", // Indonesia
-  // "it", // Italy
-  // "in", // India
-  // "is", // Iceland
-  // "kr", // Korea
-  // "my", // Malaysia
-  // "mx", // Mexio
-  // "no", // Norway
-  // "nl", // Netherlands
-  // "pl", // Poland
-  // "pt", // Portugal
-  // "se", // Sweden
-  // "sg", // Singapore
-];
-
-/**
- * Configure target languages for api output
- */
-const LANGUAGES = [
-  "en", // English
-];
-
-/**
  * Get environment variables
  */
 const {
@@ -103,5 +63,43 @@ if (!TMDB_KEY) {
   }
 
   // start ingest
-  Ingestion.start(COUNTRIES, LANGUAGES);
+  Ingestion.start({
+    // Streaming Service Provider Countries
+    countries: [
+      // "uk", // United Kingdom
+      // "us", // USA
+      // "ar", // Argentina
+      // "at", // Austria
+      // "be", // Belgium
+      // "br", // Brazil
+      // "ca", // Canada
+      // "de", // Germany
+      "es", // Spain
+      // "fr", // France
+      // "ie", // Ireland
+      // "id", // Indonesia
+      // "it", // Italy
+      // "in", // India
+      // "is", // Iceland
+      // "kr", // Korea
+      // "my", // Malaysia
+      // "mx", // Mexio
+      // "no", // Norway
+      // "nl", // Netherlands
+      // "pl", // Poland
+      // "pt", // Portugal
+      // "se", // Sweden
+      // "sg", // Singapore
+    ],
+    // Languages to fetch data in
+    languages: [
+      "en-US", // English
+    ],
+    // Whether to include adult media
+    includeAdultContent: false,
+    // Earliest release date to include
+    earliestReleaseDate: new Date("01-01-1970"),
+    // Minimum TMDB popularity to include
+    minTmdbPopularity: 20,
+  });
 })();
