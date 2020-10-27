@@ -1,6 +1,6 @@
-import { MovieId } from "../../plugins/tmdb-file-exports/models/movie-id";
-import { TmdbMovie } from "../../plugins/tmdb/models/tmdb-movie";
-import { Utelly } from "../../plugins/rapidapi-utelly/models/utelly";
+import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
+import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
+import { Utelly } from "../../modules/rapidapi-utelly/models/utelly";
 
 import { natsWrapper } from "../../nats-wrapper";
 

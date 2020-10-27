@@ -3,7 +3,7 @@
  */
 
 // mocked in __mocks__
-jest.mock("axios");
+jest.mock("../transporter-wrapper");
 jest.mock("../nats-wrapper");
 
 beforeEach(async () => {

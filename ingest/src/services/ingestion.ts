@@ -1,9 +1,9 @@
 import { announceMovie } from "./announce";
 import { Queue } from "./queue";
-import { fetchUtelly } from "../plugins/rapidapi-utelly/services/fetch-utelly";
-import { fetchTmdbFileExport } from "../plugins/tmdb-file-exports/services/fetch-tmdb-file-export";
-import { fetchTmdbMovie } from "../plugins/tmdb/services/fetch-tmdb-movie";
-import { fetchTmdbGenres } from "../plugins/tmdb/services/fetch-tmdb-genres";
+import { fetchUtelly } from "../modules/rapidapi-utelly/services/fetch-utelly";
+import { fetchTmdbFileExport } from "../modules/tmdb-file-export/services/fetch-tmdb-file-export";
+import { fetchTmdbMovie } from "../modules/tmdb/services/fetch-tmdb-movie";
+import { fetchTmdbGenres } from "../modules/tmdb/services/fetch-tmdb-genres";
 
 export class Ingestion {
   /**

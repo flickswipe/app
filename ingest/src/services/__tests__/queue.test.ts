@@ -1,5 +1,5 @@
-import { MovieId } from "../../plugins/tmdb-file-exports/models/movie-id";
-import { TmdbMovie } from "../../plugins/tmdb/models/tmdb-movie";
+import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
+import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
 import { Queue } from "../queue";
 
 describe("Queue", () => {

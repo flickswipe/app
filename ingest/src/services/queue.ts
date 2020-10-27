@@ -1,5 +1,5 @@
-import { MovieId } from "../plugins/tmdb-file-exports/models/movie-id";
-import { TmdbMovie } from "../plugins/tmdb/models/tmdb-movie";
+import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
+import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
 
 /**
  * Queue handler
@@ -31,7 +31,9 @@ export class Queue {
       timesUsed: 1,
     });
 
-    if (!movieIdDoc?.tmdbMovieId){ return null;}
+    if (!movieIdDoc?.tmdbMovieId) {
+      return null;
+    }
 
     // increment times used
     movieIdDoc.timesUsed++;
@@ -55,7 +57,9 @@ export class Queue {
       timesUsed: 1,
     });
 
-    if (!tmdbMovieDoc?.imdbId){ return null;}
+    if (!tmdbMovieDoc?.imdbId) {
+      return null;
+    }
 
     // increment times used
     tmdbMovieDoc.timesUsed++;

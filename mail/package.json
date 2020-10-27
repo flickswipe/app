@@ -1,0 +1,78 @@
+{
+  "name": "@flickswipe/mail",
+  "version": "0.0.1",
+  "description": "Listens to events and sends mail accordingly",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "ts-node-dev src/index.ts",
+    "test": "jest --no-cache",
+    "test:ci": "jest",
+    "lint": "eslint . --ext .ts"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 10,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "project": "./tsconfig.json",
+      "projectFolderIgnoreList": [
+        "**/node_modules/**",
+        "**/__tests__/**"
+      ]
+    },
+    "env": {
+      "es6": true,
+      "node": true,
+      "jasmine": true,
+      "jest": true
+    },
+    "rules": {
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
+  "keywords": [
+    "microservice"
+  ],
+  "author": "Christopher Drifter <christopherdrifter@gmail.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@flickswipe/common": "0.0.24",
+    "@types/jsdom": "^16.2.4",
+    "@types/nodemailer": "^6.4.0",
+    "jsdom": "^16.4.0",
+    "node-nats-streaming": "^0.3.2",
+    "nodemailer": "^6.4.14",
+    "ts-node-dev": "^1.0.0-pre.63",
+    "typescript": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
+    "eslint": "^7.11.0",
+    "jest": "^26.5.2",
+    "ts-jest": "^26.4.1"
+  }
+}

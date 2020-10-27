@@ -2,29 +2,29 @@ import { Ingestion } from "../ingestion";
 
 // Mocked imports
 import { Queue } from "../queue";
-import { fetchTmdbFileExport } from "../../plugins/tmdb-file-exports/services/fetch-tmdb-file-export";
-import { fetchTmdbMovie } from "../../plugins/tmdb/services/fetch-tmdb-movie";
-import { fetchTmdbGenres } from "../../plugins/tmdb/services/fetch-tmdb-genres";
+import { fetchTmdbFileExport } from "../../modules/tmdb-file-export/services/fetch-tmdb-file-export";
+import { fetchTmdbMovie } from "../../modules/tmdb/services/fetch-tmdb-movie";
+import { fetchTmdbGenres } from "../../modules/tmdb/services/fetch-tmdb-genres";
 import { announceMovie } from "../announce";
-import { fetchUtelly } from "../../plugins/rapidapi-utelly/services/fetch-utelly";
+import { fetchUtelly } from "../../modules/rapidapi-utelly/services/fetch-utelly";
 
 // Mock Queue
 jest.mock("../queue");
 
 // Mock fetchTmdbFileExport
-jest.mock("../../plugins/tmdb-file-exports/services/fetch-tmdb-file-export");
+jest.mock("../../modules/tmdb-file-export/services/fetch-tmdb-file-export");
 
 // Mock fetchTmdbMovie
-jest.mock("../../plugins/tmdb/services/fetch-tmdb-movie");
+jest.mock("../../modules/tmdb/services/fetch-tmdb-movie");
 
 // Mock fetchTmdbGenres
-jest.mock("../../plugins/tmdb/services/fetch-tmdb-genres");
+jest.mock("../../modules/tmdb/services/fetch-tmdb-genres");
 
 // Mock announceMovie
 jest.mock("../announce");
 
 // Mock fetchUtelly
-jest.mock("../../plugins/rapidapi-utelly/services/fetch-utelly");
+jest.mock("../../modules/rapidapi-utelly/services/fetch-utelly");
 
 // Handle async functions inside setTimeout and setInterval
 function flushPromises() {
