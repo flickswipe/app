@@ -2,9 +2,9 @@ import { JSDOM } from "jsdom";
 
 export function makePlainText(html: string, permitAnchors = false): string {
   // remove existing whitespace
-  html = html.replace(/\n/g, "");
-  html = html.replace(/\r/g, "");
-  html = html.replace(/\t/g, "");
+  html = html.replace(/\n/g, " ");
+  html = html.replace(/\r/g, " ");
+  html = html.replace(/\t/g, " ");
 
   // parse html
   const { window } = new JSDOM(html);
