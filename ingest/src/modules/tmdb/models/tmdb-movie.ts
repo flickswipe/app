@@ -11,7 +11,7 @@ interface TmdbMovieAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;
@@ -36,7 +36,7 @@ interface TmdbMovieDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;

@@ -23,7 +23,9 @@ export interface TmdbGenresApiResult {
  *
  * @returns {TmdbGenresApiResult} parsed api result
  */
-const parser = (raw: TmdbGenresApiResultRaw): TmdbGenresApiResult => {
+const parser = async (
+  raw: TmdbGenresApiResultRaw
+): Promise<TmdbGenresApiResult> => {
   // No parsing!
   return raw as TmdbGenresApiResult;
 };

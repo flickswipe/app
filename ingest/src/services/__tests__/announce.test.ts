@@ -31,7 +31,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -75,7 +75,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -106,7 +106,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -150,7 +150,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,

@@ -27,7 +27,7 @@ export async function fetchTmdbGenres(
     return null;
   }
 
-  const result = tmdbGenresParser(raw);
+  const result = await tmdbGenresParser(raw);
 
   // skip missing or irrelevant results
   if (!result?.genres) {

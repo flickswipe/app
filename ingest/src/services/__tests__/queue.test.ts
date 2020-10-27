@@ -79,7 +79,7 @@ describe("Queue", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -106,7 +106,7 @@ describe("Queue", () => {
             poster: "/poster.jpg",
             backdrop: "/backdrop.jpg",
           },
-          genres: [1],
+          genres: ["xxx"],
           rating: {
             average: 10,
             count: 1,
@@ -126,7 +126,7 @@ describe("Queue", () => {
             poster: "/poster.jpg",
             backdrop: "/backdrop.jpg",
           },
-          genres: [2],
+          genres: ["yyy"],
           rating: {
             average: 20,
             count: 2,
@@ -153,7 +153,7 @@ describe("Queue", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,

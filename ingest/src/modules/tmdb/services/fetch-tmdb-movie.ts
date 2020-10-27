@@ -32,7 +32,7 @@ export async function fetchTmdbMovie(
     return null;
   }
 
-  const result = tmdbMovieParser(raw);
+  const result = await tmdbMovieParser(raw);
 
   // skip missing or irrelevant results
   if (!result || shouldSkip(result, options)) {
