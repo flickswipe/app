@@ -94,7 +94,7 @@ describe("fetch tmdb movie", () => {
     expect(doc.neverUse).toBe(true);
   });
 
-  it("should publish an event for movies that were previous emitted but are now irrelevant forever", async () => {
+  it("should publish an event for movies that were previously emitted but are now irrelevant forever", async () => {
     // @ts-ignore
     axios.mockResolvedValueOnce({
       data: Object.assign({}, tmdbMovieApiResultSample, { adult: false }),
