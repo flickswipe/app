@@ -13,8 +13,11 @@ import { natsWrapper } from "../../../nats-wrapper";
  * @returns {TmdbGenreDoc[]} array of api results
  */
 export async function fetchTmdbGenres(
-  language = "en-US"
+  language: string,
+  options: Record<string, unknown> = {}
 ): Promise<TmdbGenreDoc[]> {
+  options;
+
   console.log(`Fetching tmdb genres in ${language}...`);
 
   // get new data

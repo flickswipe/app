@@ -23,11 +23,12 @@ export async function tmdbMovieQuery(
       },
     });
   } catch (error) {
-    console.error("tmdbMovieQuery error", error);
+    console.error(`tmdbMovieQuery error`, error);
   }
 
   // handle missing data
   if (!response?.data?.id) {
+    console.log(`tmdb movie query invalid response`, response && response.data);
     return null;
   }
 

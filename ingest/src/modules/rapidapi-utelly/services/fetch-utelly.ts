@@ -4,8 +4,11 @@ import { utellyParser } from "./queries/utelly-parser";
 
 export async function fetchUtelly(
   imdbId: string,
-  country: string
+  country: string,
+  options: Record<string, unknown> = {}
 ): Promise<UtellyDoc | void> {
+  options;
+
   console.log(`Fetching utelly locations ${imdbId}...`);
 
   // get new data
@@ -30,7 +33,7 @@ export async function fetchUtelly(
 
     await existingDoc.save();
 
-    console.log(`Updated utelly data for ${existingDoc.imdbId}!`);
+    console.log(`Updated utelly data for ${existingDoc.imdbId}`);
     return existingDoc;
   }
 

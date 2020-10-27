@@ -3,19 +3,18 @@ import { Transform } from "stream";
 import { movieIdsParser } from "./movie-ids-parser";
 
 /**
- * Filter config
- */
-const INCLUDE_ADULT_CONTENT = false;
-const MIN_POPULARITY = 20;
-
-/**
  * Transform stream to filter chunks
  */
 export class MovieIdsFilterRows extends Transform {
   /**
    * Set read/write mode
    */
-  constructor() {
+  constructor(
+    public options: {
+      includeAdultContent?: boolean;
+      minTmdbPopularity?: number;
+    } = {}
+  ) {
     super({
       readableObjectMode: true,
       writableObjectMode: true,
@@ -44,13 +43,16 @@ export class MovieIdsFilterRows extends Transform {
     }
 
     // filter condition: reject adult content if not included
-    if (!INCLUDE_ADULT_CONTENT && data.adult) {
+    if (!this.options.includeAdultContent && data.adult) {
       next();
       return;
     }
 
     // filter condition: ignore unpopular content
-    if (data.popularity < MIN_POPULARITY) {
+    if (
+      this.options.minTmdbPopularity &&
+      data.popularity < this.options.minTmdbPopularity
+    ) {
       next();
       return;
     }

@@ -5,67 +5,69 @@ import { fetchTmdbFileExport } from "../modules/tmdb-file-export/services/fetch-
 import { fetchTmdbMovie } from "../modules/tmdb/services/fetch-tmdb-movie";
 import { fetchTmdbGenres } from "../modules/tmdb/services/fetch-tmdb-genres";
 
+export interface StartOptions {
+  [key: string]: unknown;
+  countries: string[];
+  languages: string[];
+  includeAdultContent?: boolean;
+  earliestReleaseDate?: Date;
+  minTmdbPopularity?: number;
+}
+
 export class Ingestion {
   /**
    * Initialize the ingestion process
    *
-   * @param countries countries to target
-   * @param languages languages to target
+   * @param options
    */
-  static async start(countries: string[], languages: string[]): Promise<void> {
+  static async start(options: StartOptions): Promise<void> {
     console.log(`Starting ingestion...`);
     (await Queue.isFirstImport())
-      ? Ingestion.runFirstImport(countries, languages)
-      : Ingestion.runRegularImport(countries, languages);
+      ? Ingestion.runFirstImport(options)
+      : Ingestion.runRegularImport(options);
   }
 
   /**
    * Fetch all pre-requisite data.
    *
-   * @param countries countries to target
-   * @param languages languages to target
+   * @param options
    */
-  static async runFirstImport(
-    countries: string[],
-    languages: string[]
-  ): Promise<void> {
+  static async runFirstImport(options: StartOptions): Promise<void> {
     console.log(`Running first import...`);
 
     // get the file export
     const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
 
     await Promise.all([
-      Ingestion.runTmdbFileExportFetch(yesterday),
-      Ingestion.runTmdbGenresFetch(languages),
+      Ingestion.runTmdbFileExportFetch(yesterday, options),
+      Ingestion.runTmdbGenresFetch(options),
     ]);
 
     // run the regular import
-    await Ingestion.runRegularImport(countries, languages);
+    await Ingestion.runRegularImport(options);
   }
 
   /**
    * Run regular data fetching processes
    *
-   * @param countries countries to target
-   * @param languages languages to target
+   * @param options
    */
-  static async runRegularImport(
-    countries: string[],
-    languages: string[]
-  ): Promise<void> {
+  static async runRegularImport(options: StartOptions): Promise<void> {
     console.log(`Scheduling regular import...`);
-    console.log(`Data will be fetched for ${countries.length} countries`);
+    console.log(
+      `Data will be fetched for ${options.countries.length} countries`
+    );
 
-    Ingestion.scheduleTmdbFileExportFetch();
-    Ingestion.scheduleTmdbMovieFetch();
-    Ingestion.scheduleTmdbGenresFetch(languages);
-    Ingestion.scheduleUtellyDataFetch(countries);
+    Ingestion.scheduleTmdbFileExportFetch(options);
+    Ingestion.scheduleTmdbMovieFetch(options);
+    Ingestion.scheduleTmdbGenresFetch(options);
+    Ingestion.scheduleUtellyDataFetch(options);
   }
 
   /**
    * Schedule regular TMDB file fetch
    */
-  static scheduleTmdbFileExportFetch(): void {
+  static scheduleTmdbFileExportFetch(options: StartOptions): void {
     console.log(`Scheduling tmdb file data fetch...`);
 
     const msUntil8am = new Date().getTime() - new Date().setHours(8, 0, 0, 0);
@@ -73,7 +75,7 @@ export class Ingestion {
 
     const runForCurrentDay = () => {
       const today = new Date();
-      Ingestion.runTmdbFileExportFetch(today);
+      Ingestion.runTmdbFileExportFetch(today, options);
     };
 
     setTimeout(() => {
@@ -87,14 +89,17 @@ export class Ingestion {
    *
    * @param date date of file to fetch
    */
-  static async runTmdbFileExportFetch(date: Date): Promise<void> {
-    await fetchTmdbFileExport(date);
+  static async runTmdbFileExportFetch(
+    date: Date,
+    options: StartOptions
+  ): Promise<void> {
+    await fetchTmdbFileExport(date, options);
   }
 
   /**
    * Schedule regular TMDB movie data fetch
    */
-  static scheduleTmdbMovieFetch(): void {
+  static scheduleTmdbMovieFetch(options: StartOptions): void {
     console.log(`Scheduling tmdb movie data fetch...`);
 
     const oncePerSecond = 1000;
@@ -107,7 +112,7 @@ export class Ingestion {
         return;
       }
 
-      await Ingestion.runTmdbMovieFetch(nextTmdbMovieId);
+      await Ingestion.runTmdbMovieFetch(nextTmdbMovieId, options);
     }, oncePerSecond);
   }
 
@@ -116,41 +121,48 @@ export class Ingestion {
    *
    * @param tmdbMovieId id of movie to fetch
    */
-  static async runTmdbMovieFetch(tmdbMovieId: number): Promise<void> {
-    await fetchTmdbMovie(tmdbMovieId);
+  static async runTmdbMovieFetch(
+    tmdbMovieId: number,
+    options: StartOptions
+  ): Promise<void> {
+    await fetchTmdbMovie(tmdbMovieId, options);
   }
 
   /**
    * Schedule regular TMDB genres data fetch
    *
-   * @param languages languages to target
+   * @param options
    */
-  static scheduleTmdbGenresFetch(languages: string[]): void {
+  static scheduleTmdbGenresFetch(options: StartOptions): void {
     console.log(`Scheduling tmdb genres data fetch...`);
 
     const oncePerDay = 24 * 60 * 60 * 1000;
 
     setInterval(async () => {
-      await Ingestion.runTmdbGenresFetch(languages);
+      await Ingestion.runTmdbGenresFetch(options);
     }, oncePerDay);
   }
 
   /**
    * Run regular TMDB genres data fetch
    *
-   * @param languages languages to target
+   * @param options
    */
-  static async runTmdbGenresFetch(languages: string[]): Promise<void> {
-    await Promise.all(languages.map((language) => fetchTmdbGenres(language)));
+  static async runTmdbGenresFetch(options: StartOptions): Promise<void> {
+    const { languages } = options;
+    await Promise.all(
+      languages.map((language) => fetchTmdbGenres(language, options))
+    );
   }
 
   /**
    * Schedule regular utelly data fetch
    *
-   * @param countries countries to target
+   * @param options
    */
-  static scheduleUtellyDataFetch(countries: string[]): void {
+  static scheduleUtellyDataFetch(options: StartOptions): void {
     console.log(`Scheduling utelly data fetch...`);
+    const { countries } = options;
 
     const thousandPerDay = ((24 * 60 * 60 * 1000) / 1000) * countries.length;
 
@@ -162,9 +174,9 @@ export class Ingestion {
         return;
       }
 
-      await Ingestion.runUtellyDataFetch(nextImdbId, countries);
+      const gotResult = await Ingestion.runUtellyDataFetch(nextImdbId, options);
 
-      await announceMovie({ imdbId: nextImdbId });
+      gotResult && (await announceMovie({ imdbId: nextImdbId }));
     }, thousandPerDay);
   }
 
@@ -176,12 +188,16 @@ export class Ingestion {
    */
   static async runUtellyDataFetch(
     imdbId: string,
-    countries: string[]
-  ): Promise<void> {
-    await Promise.all(
-      countries.map(async (country: string) => {
-        fetchUtelly(imdbId, country);
-      })
+    options: StartOptions
+  ): Promise<boolean> {
+    const { countries } = options;
+
+    // get utelly results concurrently
+    const results = await Promise.all(
+      countries.map((country: string) => fetchUtelly(imdbId, country, options))
     );
+
+    // so long as there is at least one result, return true
+    return results.filter((result) => result !== null).length > 0;
   }
 }

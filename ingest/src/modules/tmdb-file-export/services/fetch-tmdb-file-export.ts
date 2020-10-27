@@ -4,10 +4,13 @@ import { MovieId } from "../models/movie-id";
 import { movieIdsReadFileExport } from "./streams/movie-ids-read-file-export";
 import { movieIdsWriteMongodb } from "./streams/movie-ids-write-mongodb";
 
-export async function fetchTmdbFileExport(date: Date): Promise<Stream> {
+export async function fetchTmdbFileExport(
+  date: Date,
+  options: Record<string, unknown> = {}
+): Promise<Stream> {
   console.log(`Fetching tmdb file export...`);
 
-  const read = await movieIdsReadFileExport(date);
+  const read = await movieIdsReadFileExport(date, options);
   const write = read.pipe(movieIdsWriteMongodb());
 
   return new Promise((resolve, reject) =>
