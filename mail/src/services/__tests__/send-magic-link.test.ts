@@ -1,13 +1,13 @@
 import { EmailTokenType } from "@flickswipe/common";
 import { transporterWrapper } from "../../transporter-wrapper";
-import { sendAddEmailLink } from "../send-add-email-link";
+import { sendMagicLink } from "../send-magic-link";
 
-describe("send add email link", () => {
+describe("send magic link", () => {
   describe("send", () => {
     it("should call transporter.sendMail()", () => {
-      sendAddEmailLink({
+      sendMagicLink({
         id: "AAAAAA",
-        emailTokenType: EmailTokenType.AddEmail,
+        emailTokenType: EmailTokenType.SignIn,
         email: "test@user",
         url: "https://example.com/",
         token: "AAAAAA",
