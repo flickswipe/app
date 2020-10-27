@@ -2,7 +2,7 @@ import { transporterWrapper } from "../transporter-wrapper";
 import { makePlainText } from "./make-plain-text";
 
 /**
- * Abstract class for creating custom emails
+ * Create and send html emails from simple templates.
  */
 export class Email {
   static readonly delimiters = ["%%", "%%"];
@@ -18,7 +18,7 @@ export class Email {
       const value = data[key];
       const pattern = new RegExp(
         `${leftDelimiter}${key}${rightDelimiter}`,
-        "gm"
+        "gmi"
       );
 
       content = content.replace(pattern, value);
@@ -28,7 +28,7 @@ export class Email {
   }
 
   constructor(subjectTemplate: string, htmlTemplate: string) {
-    this.subjectTemplate = subjectTemplate;
+    this.subjectTemplate = makePlainText(subjectTemplate);
     this.textTemplate = makePlainText(htmlTemplate);
     this.htmlTemplate = htmlTemplate;
   }
