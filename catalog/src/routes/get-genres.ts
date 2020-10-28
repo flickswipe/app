@@ -2,7 +2,7 @@ import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
-import { Genre } from "../models/genre";
+import { Genre } from "../modules/track-ingest/models/genre";
 
 const router = express.Router();
 

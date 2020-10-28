@@ -54,6 +54,7 @@ interface MediaItemDoc extends mongoose.Document {
   plot: string | null;
   streamLocations: {
     [key: string]: {
+      id: string;
       name: string;
       url: string;
     }[];

@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
-import { Genre } from "../../models/genre";
-import { MediaItem } from "../../models/media-item";
+import { Genre } from "../../modules/track-ingest/models/genre";
+import { MediaItem } from "../../modules/track-ingest/models/media-item";
 
 describe("get media item", () => {
   it("returns a 401", async () => {

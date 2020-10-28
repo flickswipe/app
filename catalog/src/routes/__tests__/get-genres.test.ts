@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
-import { Genre } from "../../models/genre";
+import { Genre } from "../../modules/track-ingest/models/genre";
 
 describe("get genres", () => {
   it("returns a 401", async () => {
