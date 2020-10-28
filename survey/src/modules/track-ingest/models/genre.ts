@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 import { iso6391 } from "@flickswipe/common";
 
 /**
@@ -63,7 +63,7 @@ interface GenreModel extends mongoose.Model<GenreDoc> {
 genreSchema.statics.build = (attrs: GenreAttrs) => {
   return new Genre(
     Object.assign(
-      { _id: Types.ObjectId(attrs.id.padStart(24, "0").slice(-24)) },
+      { _id: mongoose.Types.ObjectId(attrs.id.padStart(24, "0").slice(-24)) },
       attrs
     )
   );

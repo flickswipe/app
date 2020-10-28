@@ -4,12 +4,12 @@ import { Genre } from "../../modules/track-ingest/models/genre";
 
 describe("get genres", () => {
   it("returns a 401", async () => {
-    await request(app).get("/api/en/catalog/genres").send().expect(401);
+    await request(app).get("/api/en/survey/genres").send().expect(401);
   });
 
   it("returns a 404", async () => {
     await request(app)
-      .get("/api/en/catalog/genres")
+      .get("/api/en/survey/genres")
       .set("Cookie", await global.signIn())
       .send()
       .expect(404);
@@ -23,7 +23,7 @@ describe("get genres", () => {
     }).save();
 
     await request(app)
-      .get("/api/en/catalog/genres")
+      .get("/api/en/survey/genres")
       .set("Cookie", await global.signIn())
       .send()
       .expect(200);
@@ -37,7 +37,7 @@ describe("get genres", () => {
     }).save();
 
     const response = await request(app)
-      .get("/api/en/catalog/genres")
+      .get("/api/en/survey/genres")
       .set("Cookie", await global.signIn())
       .send()
       .expect(200);

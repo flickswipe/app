@@ -12,7 +12,7 @@ import { Genre } from "../modules/track-ingest/models/genre";
 const router = express.Router();
 
 /**
- * @api {post} /api/en/catalog/media-item/:id
+ * @api {post} /api/en/survey/media-item/:id
  * @apiName Genres
  * @apiGroup Genres
  *
@@ -47,7 +47,7 @@ const router = express.Router();
  * ]
  */
 router.get(
-  "/api/:iso6391/catalog/genres",
+  "/api/:iso6391/survey/genres",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

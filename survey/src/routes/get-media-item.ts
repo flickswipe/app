@@ -7,7 +7,7 @@ import { MediaItem } from "../modules/track-ingest/models/media-item";
 const router = express.Router();
 
 /**
- * @api {get} /api/en/catalog/media-item/:id
+ * @api {get} /api/en/survey/media-item/:id
  * @apiName MediaItem
  * @apiGroup MediaItem
  *
@@ -52,7 +52,7 @@ const router = express.Router();
  * }
  */
 router.get(
-  "/api/en/catalog/media-item/:id",
+  "/api/en/survey/media-item/:id",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

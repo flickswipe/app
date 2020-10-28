@@ -16,8 +16,8 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/catalog
-      context: catalog
+    - image: flickswipe/survey
+      context: survey
       docker:
         dockerfile: Dockerfile
       sync:

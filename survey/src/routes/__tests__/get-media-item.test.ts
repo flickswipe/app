@@ -6,14 +6,14 @@ import { MediaItem } from "../../modules/track-ingest/models/media-item";
 describe("get media item", () => {
   it("returns a 401", async () => {
     await request(app)
-      .get("/api/en/catalog/media-item/bc1234567890ab1234567890")
+      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
       .send()
       .expect(401);
   });
 
   it("returns a 404", async () => {
     await request(app)
-      .get("/api/en/catalog/media-item/bc1234567890ab1234567890")
+      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
       .set("Cookie", await global.signIn())
       .send()
       .expect(404);
@@ -57,7 +57,7 @@ describe("get media item", () => {
     }).save();
 
     await request(app)
-      .get("/api/en/catalog/media-item/bc1234567890ab1234567890")
+      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
       .set("Cookie", await global.signIn())
       .send()
       .expect(200);
@@ -101,7 +101,7 @@ describe("get media item", () => {
     }).save();
 
     const response = await request(app)
-      .get("/api/en/catalog/media-item/bc1234567890ab1234567890")
+      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
       .set("Cookie", await global.signIn())
       .send()
       .expect(200);

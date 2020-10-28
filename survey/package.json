@@ -1,5 +1,5 @@
 {
-  "name": "@flickswipe/catalog",
+  "name": "@flickswipe/survey",
   "version": "0.0.1",
   "description": "Provides endpoints for aggregated media item data.",
   "main": "src/index.js",

@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog-mongo-depl
+  name: survey-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: catalog-mongo
+      app: survey-mongo
   template:
     metadata:
       labels:
-        app: catalog-mongo
+        app: survey-mongo
     spec:
       containers:
-        - name: catalog-mongo
+        - name: survey-mongo
           image: mongo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog-mongo-srv
+  name: survey-mongo-srv
 spec:
   selector:
-    app: catalog-mongo
+    app: survey-mongo
   ports:
     - name: db
       protocol: TCP

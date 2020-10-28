@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog-depl
+  name: survey-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: catalog
+      app: survey
   template:
     metadata:
       labels:
-        app: catalog
+        app: survey
     spec:
       containers:
-        - name: catalog
-          image: flickswipe/catalog
+        - name: survey
+          image: flickswipe/survey
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -25,7 +25,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: flickswipe
             - name: MONGO_URI
-              value: "mongodb://catalog-mongo-srv:27017/catalog"
+              value: "mongodb://survey-mongo-srv:27017/survey"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -34,17 +34,17 @@ spec:
             - name: PORT
               value: "3000"
             - name: QUEUE_GROUP_NAME
-              value: "catalog_queue_group"
+              value: "survey_queue_group"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog-srv
+  name: survey-srv
 spec:
   selector:
-    app: catalog
+    app: survey
   ports:
-    - name: catalog
+    - name: survey
       protocol: TCP
       port: 3000
       targetPort: 3000

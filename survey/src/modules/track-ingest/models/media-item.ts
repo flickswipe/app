@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import { iso6391 } from "@flickswipe/common";
 
 /**
@@ -86,7 +86,7 @@ const mediaItem = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
+    genres: [{ type: mongoose.Schema.Types.ObjectId, ref: "Genre" }],
     rating: {
       type: Object,
       required: true,

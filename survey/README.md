@@ -1,4 +1,4 @@
-# CATALOG
+# survey
 
 Provides endpoints for aggregated media item data.
 

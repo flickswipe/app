@@ -1,13 +1,13 @@
-name: tests-catalog
+name: tests-survey
 
 on:
   pull_request:
     paths:
-      - "catalog/**"
+      - "survey/**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd catalog && npm install && npm run test:ci
+      - run: cd survey && npm install && npm run test:ci
