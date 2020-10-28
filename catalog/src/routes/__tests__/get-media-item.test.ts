@@ -23,7 +23,7 @@ describe("get media item", () => {
     await Genre.build({
       id: "ab1234567890ab1234567890",
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     }).save();
 
     await MediaItem.build({
@@ -41,13 +41,14 @@ describe("get media item", () => {
         count: 101,
         popularity: 102,
       },
-      language: "english",
+      language: "en",
       releaseDate: new Date(),
       runtime: 103,
       plot: "My movie plit...",
       streamLocations: {
         us: [
           {
+            id: "0987654321234567890",
             name: "Netflix",
             url: "https://example.com/",
           },
@@ -66,7 +67,7 @@ describe("get media item", () => {
     await Genre.build({
       id: "ab1234567890ab1234567890",
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     }).save();
 
     await MediaItem.build({
@@ -84,13 +85,14 @@ describe("get media item", () => {
         count: 101,
         popularity: 102,
       },
-      language: "english",
+      language: "en",
       releaseDate: new Date(),
       runtime: 103,
       plot: "My movie plit...",
       streamLocations: {
         us: [
           {
+            id: "0987654321234567890",
             name: "Netflix",
             url: "https://example.com/",
           },

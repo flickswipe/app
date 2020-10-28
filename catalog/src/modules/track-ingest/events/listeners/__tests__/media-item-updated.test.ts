@@ -1,6 +1,6 @@
 import { Message } from "node-nats-streaming";
 import { MediaItem } from "../../../models/media-item";
-import { natsWrapper } from "../../../nats-wrapper";
+import { natsWrapper } from "../../../../../nats-wrapper";
 import { MediaItemUpdatedListener } from "../media-item-updated";
 
 const setup = async () => {
@@ -32,13 +32,14 @@ describe("media item updated listener", () => {
           count: 101,
           popularity: 102,
         },
-        language: "english",
+        language: "en",
         releaseDate: new Date(),
         runtime: 103,
         plot: "My movie plit...",
         streamLocations: {
           us: [
             {
+              id: "0987654321234567890",
               name: "Netflix",
               url: "https://example.com/",
             },
@@ -64,13 +65,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },
@@ -109,13 +111,14 @@ describe("media item updated listener", () => {
           count: 101,
           popularity: 102,
         },
-        language: "english",
+        language: "en",
         releaseDate: new Date(),
         runtime: 103,
         plot: "My movie plit...",
         streamLocations: {
           us: [
             {
+              id: "0987654321234567890",
               name: "Netflix",
               url: "https://example.com/",
             },
@@ -141,13 +144,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },
@@ -179,13 +183,14 @@ describe("media item updated listener", () => {
           count: 101,
           popularity: 102,
         },
-        language: "english",
+        language: "en",
         releaseDate: new Date(),
         runtime: 103,
         plot: "My movie plit...",
         streamLocations: {
           us: [
             {
+              id: "0987654321234567890",
               name: "Netflix",
               url: "https://example.com/",
             },
@@ -211,13 +216,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },
@@ -256,13 +262,14 @@ describe("media item updated listener", () => {
           count: 101,
           popularity: 102,
         },
-        language: "english",
+        language: "en",
         releaseDate: new Date(),
         runtime: 103,
         plot: "My movie plit...",
         streamLocations: {
           us: [
             {
+              id: "0987654321234567890",
               name: "Netflix",
               url: "https://example.com/",
             },
@@ -288,13 +295,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },
@@ -329,13 +337,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },
@@ -376,13 +385,14 @@ describe("media item updated listener", () => {
             count: 101,
             popularity: 102,
           },
-          language: "english",
+          language: "en",
           releaseDate: new Date(),
           runtime: 103,
           plot: "My movie plit...",
           streamLocations: {
             us: [
               {
+                id: "0987654321234567890",
                 name: "Netflix",
                 url: "https://example.com/",
               },

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Genre
@@ -6,7 +7,7 @@ import mongoose from "mongoose";
 interface GenreAttrs {
   id: string;
   name: string;
-  language: string;
+  language: iso6391;
 }
 
 /**
@@ -15,7 +16,7 @@ interface GenreAttrs {
 interface GenreDoc extends mongoose.Document {
   id: string;
   name: string;
-  language: string;
+  language: iso6391;
   createdAt: Date;
   updatedAt: Date;
 }

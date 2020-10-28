@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Language
  */
 interface LanguageAttrs {
   id: string;
-  language: string;
+  language: iso6391;
 }
 
 /**
@@ -13,7 +14,7 @@ interface LanguageAttrs {
  */
 interface LanguageDoc extends mongoose.Document {
   id: string;
-  language: string;
+  language: iso6391;
 }
 
 /**

@@ -29,7 +29,7 @@ jest.mock("../../modules/rapidapi-utelly/services/fetch-utelly");
 // options
 const OPTIONS = {
   countries: ["us"],
-  languages: ["en-US"],
+  languages: ["en"],
   includeAdultContent: false,
   earliestReleaseDate: new Date("1970-01-01"),
   minTmdbPopularity: 0,
@@ -113,7 +113,7 @@ describe("ingestion", () => {
     it("should run TMDB file export fetch", async () => {
       await Ingestion.runFirstImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(runTmdbFileExportFetch).toHaveBeenCalled();
@@ -122,7 +122,7 @@ describe("ingestion", () => {
     it("should run TMDB genres fetch", async () => {
       await Ingestion.runFirstImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(runTmdbGenresFetch).toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe("ingestion", () => {
     it("should run regular import", async () => {
       await Ingestion.runFirstImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(runRegularImport).toHaveBeenCalled();
@@ -183,7 +183,7 @@ describe("ingestion", () => {
     it("should schedule TMDB file export fetch", async () => {
       await Ingestion.runRegularImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(scheduleTmdbFileExportFetch).toHaveBeenCalled();
@@ -192,7 +192,7 @@ describe("ingestion", () => {
     it("should schedule TMDB movie fetch", async () => {
       await Ingestion.runRegularImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(scheduleTmdbMovieFetch).toHaveBeenCalled();
@@ -201,7 +201,7 @@ describe("ingestion", () => {
     it("should schedule TMDB genres fetch", async () => {
       await Ingestion.runRegularImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(scheduleTmdbGenresFetch).toHaveBeenCalled();
@@ -210,7 +210,7 @@ describe("ingestion", () => {
     it("should schedule utelly data fetch", async () => {
       await Ingestion.runRegularImport({
         countries: ["us"],
-        languages: ["en-US"],
+        languages: ["en"],
       });
 
       expect(scheduleUtellyDataFetch).toHaveBeenCalled();

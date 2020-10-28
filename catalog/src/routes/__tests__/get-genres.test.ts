@@ -19,7 +19,7 @@ describe("get genres", () => {
     await Genre.build({
       id: "ab1234567890ab1234567890",
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     }).save();
 
     await request(app)
@@ -33,7 +33,7 @@ describe("get genres", () => {
     await Genre.build({
       id: "ab1234567890ab1234567890",
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     }).save();
 
     const response = await request(app)

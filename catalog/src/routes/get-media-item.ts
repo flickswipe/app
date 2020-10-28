@@ -2,7 +2,7 @@ import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
-import { MediaItem } from "../models/media-item";
+import { MediaItem } from "../modules/track-ingest/models/media-item";
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ const router = express.Router();
  *  genres: [ { id: "...", name: "Comedy" } ],
  *  images: { poster: "...", backdrop: "..." },
  *  rating: { average: 100, count: 100, popularity: 100 },
- *  language: "english",
+ *  language: "en",
  *  releaseDate: "01-09-1990",
  *  runtime: 160,
  *  plot: "A description of the plot...",

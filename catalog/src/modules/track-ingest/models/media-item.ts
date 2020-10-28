@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a MediaItem
@@ -18,12 +19,13 @@ interface MediaItemAttrs {
     count: number;
     popularity: number;
   };
-  language: string;
+  language: iso6391;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
   streamLocations: {
     [key: string]: {
+      id: string;
       name: string;
       url: string;
     }[];
@@ -48,7 +50,7 @@ interface MediaItemDoc extends mongoose.Document {
     count: number;
     popularity: number;
   };
-  language: string;
+  language: iso6391;
   releaseDate: Date;
   runtime: number;
   plot: string | null;

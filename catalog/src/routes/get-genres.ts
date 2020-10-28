@@ -1,4 +1,9 @@
-import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
+import {
+  NotFoundError,
+  currentUser,
+  requireAuth,
+  iso6391,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
@@ -42,13 +47,14 @@ const router = express.Router();
  * ]
  */
 router.get(
-  "/api/en/catalog/genres",
+  "/api/:iso6391/catalog/genres",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
+    const { iso6391: language } = req.params;
     // get genres
     const genres = await Genre.find({
-      language: "en-US",
+      language: language as iso6391,
     });
 
     // throw error if not found

@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Genre
@@ -6,7 +7,7 @@ import mongoose from "mongoose";
 interface GenreAttrs {
   id: string;
   name: string;
-  language: string;
+  language: iso6391;
 }
 
 /**
@@ -15,7 +16,7 @@ interface GenreAttrs {
 interface GenreDoc extends mongoose.Document {
   id: string;
   name: string;
-  language: string;
+  language: iso6391;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -61,7 +62,10 @@ interface GenreModel extends mongoose.Model<GenreDoc> {
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
   return new Genre(
-    Object.assign({ _id: mongoose.Types.ObjectId(attrs.id) }, attrs)
+    Object.assign(
+      { _id: Types.ObjectId(attrs.id.padStart(24, "0").slice(-24)) },
+      attrs
+    )
   );
 };
 

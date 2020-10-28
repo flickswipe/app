@@ -1,6 +1,6 @@
 import { Message } from "node-nats-streaming";
 import { Genre } from "../../../models/genre";
-import { natsWrapper } from "../../../nats-wrapper";
+import { natsWrapper } from "../../../../../nats-wrapper";
 import { GenreDetectedListener } from "../genre-detected";
 
 const setup = async () => {
@@ -20,7 +20,7 @@ describe("genre detected listener", () => {
       await Genre.build({
         id: "ab1234567890ab1234567890",
         name: "My Genre",
-        language: "en-US",
+        language: "en",
       }).save();
 
       const { listener, msg } = await setup();
@@ -29,7 +29,7 @@ describe("genre detected listener", () => {
         {
           id: "ab1234567890ab1234567890",
           name: "My New Genre",
-          language: "en-US",
+          language: "en",
           detectedAt: new Date(new Date().getTime() - 86600),
         },
         msg
@@ -39,7 +39,7 @@ describe("genre detected listener", () => {
       expect(
         await Genre.findOne({
           _id: "ab1234567890ab1234567890",
-          language: "en-US",
+          language: "en",
         })
       ).toEqual(
         expect.objectContaining({
@@ -52,7 +52,7 @@ describe("genre detected listener", () => {
       await Genre.build({
         id: "ab1234567890ab1234567890",
         name: "My Genre",
-        language: "en-US",
+        language: "en",
       }).save();
 
       const { listener, msg } = await setup();
@@ -61,7 +61,7 @@ describe("genre detected listener", () => {
         {
           id: "ab1234567890ab1234567890",
           name: "My New Genre",
-          language: "en-US",
+          language: "en",
           detectedAt: new Date(new Date().getTime() - 86600),
         },
         msg
@@ -76,7 +76,7 @@ describe("genre detected listener", () => {
       await Genre.build({
         id: "ab1234567890ab1234567890",
         name: "My Genre",
-        language: "en-US",
+        language: "en",
       }).save();
 
       const { listener, msg } = await setup();
@@ -85,7 +85,7 @@ describe("genre detected listener", () => {
         {
           id: "ab1234567890ab1234567890",
           name: "My New Genre",
-          language: "en-US",
+          language: "en",
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
@@ -95,7 +95,7 @@ describe("genre detected listener", () => {
       expect(
         await Genre.findOne({
           _id: "ab1234567890ab1234567890",
-          language: "en-US",
+          language: "en",
         })
       ).toEqual(
         expect.objectContaining({
@@ -108,7 +108,7 @@ describe("genre detected listener", () => {
       await Genre.build({
         id: "ab1234567890ab1234567890",
         name: "My Genre",
-        language: "en-US",
+        language: "en",
       }).save();
 
       const { listener, msg } = await setup();
@@ -117,7 +117,7 @@ describe("genre detected listener", () => {
         {
           id: "ab1234567890ab1234567890",
           name: "My New Genre",
-          language: "en-US",
+          language: "en",
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
@@ -134,7 +134,7 @@ describe("genre detected listener", () => {
           {
             id: "ab1234567890ab1234567890",
             name: "My Genre",
-            language: "en-US",
+            language: "en",
             detectedAt: new Date(),
           },
           msg
@@ -144,7 +144,7 @@ describe("genre detected listener", () => {
         expect(
           await Genre.findOne({
             _id: "ab1234567890ab1234567890",
-            language: "en-US",
+            language: "en",
           })
         ).toEqual(
           expect.objectContaining({
@@ -161,7 +161,7 @@ describe("genre detected listener", () => {
         {
           id: "ab1234567890ab1234567890",
           name: "My Genre",
-          language: "en-US",
+          language: "en",
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
