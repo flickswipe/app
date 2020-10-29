@@ -25,31 +25,34 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
    * @param msg message handler
    */
   async onMessage(data: UserCreatedEvent["data"], msg: Message): Promise<void> {
-    const { id, email } = data;
+    // check if doc already exists
+    const existingDoc = await User.findOne({ _id: data.id });
 
-    try {
-      // check if doc already exists
-      const existingDoc = await User.findOne({ _id: id });
-      if (existingDoc) {
-        throw new BadRequestError(`Can't create the same user twice`);
-      } else {
-        await User.build({ id, email }).save();
-
-        console.log(`Created user #${id} with email "${email}"`);
-      }
-    } catch (err) {
-      // don't loop requests that can't be fulfilled
-      if (err instanceof BadRequestError) {
-        msg.ack();
-        throw err;
-      }
-
-      // handle database errors
-      console.error(`Couldn't create user ${id} with email ${email}`, err);
-      return;
+    // fail & ignore message if user already exists
+    if (existingDoc) {
+      msg.ack();
+      throw new BadRequestError(`Can't create the same user twice`);
     }
 
-    // mark message as processed
-    msg.ack();
+    // create
+    (await createUser(data)) && msg.ack();
   }
+}
+
+/**
+ * @param data data to update with
+ * @returns {boolean} true if message should be acked
+ */
+async function createUser(data: UserCreatedEvent["data"]): Promise<boolean> {
+  const { id, email } = data;
+
+  try {
+    await User.build({ id, email }).save();
+  } catch (err) {
+    console.error(`Couldn't create user ${id} with email ${email}`, err);
+    return false;
+  }
+
+  console.log(`Created user #${id} with email "${email}"`);
+  return true;
 }

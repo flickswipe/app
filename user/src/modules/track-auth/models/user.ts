@@ -54,7 +54,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 genreSchema.statics.build = (attrs: UserAttrs) => {
-  return new User(Object.assign(attrs));
+  return new User(Object.assign({ _id: attrs.id }, attrs));
 };
 
 /**
