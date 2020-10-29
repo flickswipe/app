@@ -45,17 +45,6 @@ and`GenreDetected` events.
 | name                   | `string` |
 | language               | `string` |
 
-| MediaItem (Follows INGEST) |                                  |
-| -------------------------- | -------------------------------- |
-| genres                     | `Array<Genre._id>`               |
-| rating                     | `{ average, count, popularity }` |
-| language                   | `string`                         |
-| releaseDate                | `Date`                           |
-| runtime                    | `number`                         |
-| streamLocations            | `Array<Locations._.id>`          |
-| createdAt                  | `Date`                           |
-| updatedAt                  | `Date`                           |
-
 | Location (Follows INGEST) |          |
 | ------------------------- | -------- |
 | name                      | `string` |
@@ -106,8 +95,8 @@ tab. They can also unblock users.
 | ---------------------- | ---------------------------------- |
 | \_id                   |                                    |
 | relationshipType       | `"pending", "accepted", "blocked"` |
-| sourceUserId           |                                    |
-| targetUserId           |                                    |
+| sourceUser             | `User._id`                         |
+| targetUser             | `User._id`                         |
 | createdAt              | `Date`                             |
 | updatedAt              | `Date`                             |
 
@@ -116,7 +105,7 @@ tab. They can also unblock users.
 1. When a user sends an invite to someone who has not blocked them, two
    documents are created:
 
-   | \_id | relationshipType | sourceUserId | targetUserId | …   |
+   | \_id | relationshipType | sourceUser   | targetUser   | …   |
    | ---- | ---------------- | ------------ | ------------ | --- |
    |      | accepted         | User(A).\_id | User(B).\_id |     |
    |      | pending          | User(B).\_id | User(A).\_id |     |
@@ -127,28 +116,42 @@ tab. They can also unblock users.
 3. When a user blocks someone, any previous accepted/pending documents between
    them are deleted and one document is created:
 
-   | \_id | relationshipType | sourceUserId | targetUserId | …   |
+   | \_id | relationshipType | sourceUser   | targetUser   | …   |
    | ---- | ---------------- | ------------ | ------------ | --- |
    |      | blocked          | User(A).\_id | User(B).\_id |     |
 
-Events
+## Events
 
-| Event                 | Payload                                              |
-| --------------------- | ---------------------------------------------------- |
-| relationshipCreated   | { id, relationshipType, sourceUserId, targetUserId } |
-| relationshipUpdated   | { id, relationshipType, sourceUserId, targetUserId } |
-| relationshipDestroyed | { id }                                               |
+| Event                 | Payload                                          |
+| --------------------- | ------------------------------------------------ |
+| relationshipCreated   | { id, relationshipType, sourceUser, targetUser } |
+| relationshipUpdated   | { id, relationshipType, sourceUser, targetUser } |
+| relationshipDestroyed | { id, sourceUser, targetUser }                   |
 
 # Settings
 
 Manages user settings, including:
 
-Filters:
-
 - Min/max rating
 - Min/max release date
 - Min/max runtime
 - Whitelist genres
-- Blacklist genres
-- Show/hide stream providers
 - Whitelist languages
+- Blacklist stream locations
+
+## MongoDB schema
+
+| Setting (Primary) |                                                                                  |
+| ----------------- | -------------------------------------------------------------------------------- |
+| \_id              |                                                                                  |
+| user              | `User._id`                                                                       |
+| settingType       | `"genres", "languages", "rating", "release-date", "runtime", "stream-locations"` |
+| setting           | `Object`                                                                         |
+| createdAt         | `Date`                                                                           |
+| updatedAt         | `Date`                                                                           |
+
+## Events
+
+| Event              | Payload                                           |
+| ------------------ | ------------------------------------------------- |
+| userSettingUpdated | { id, user, settingType, sourceUser, targetUser } |

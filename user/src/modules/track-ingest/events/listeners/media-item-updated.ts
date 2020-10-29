@@ -1,7 +1,11 @@
 import { Subjects, Listener, MediaItemUpdatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
-import { MediaItem } from "../../models/media-item";
+import {
+  StreamLocation,
+  StreamLocationAttrs,
+} from "../../models/stream-location";
+import { Language } from "../../models/language";
 
 const { QUEUE_GROUP_NAME } = process.env;
 
@@ -23,60 +27,121 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
     data: MediaItemUpdatedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const {
-      id,
-      rating,
-      releaseDate,
-      runtime,
-      genres,
-      language,
-      streamLocations,
-    } = data;
+    const promises = [];
 
-    try {
-      // check if doc already exists
-      const existingDoc = await MediaItem.findById({ _id: id });
-      if (existingDoc) {
-        // don't update if current data more recent
-        if (existingDoc.updatedAt > data.updatedAt) {
-          console.log(`Skipping genre update: current data is more recent`);
-          msg.ack();
-        } else {
-          // update
-          existingDoc.rating = rating;
-          existingDoc.releaseDate = releaseDate;
-          existingDoc.runtime = runtime;
-          existingDoc.genres = genres;
+    // track languages
+    promises.push(createLanguageIfNotExists(data));
 
-          // @todo process stream locations into db
-          existingDoc.streamLocations = [];
-
-          // @todo process language into db
-          existingDoc.language = language;
-
-          await existingDoc.save();
-
-          console.log(`Updated media item "${id}"`);
-        }
-      } else {
-        await MediaItem.build({
-          id,
-          rating,
-          releaseDate,
-          runtime,
-          genres,
-          language,
-          streamLocations: [],
-        }).save();
-
-        console.log(`Created media item "${id}"`);
-      }
-    } catch (err) {
-      console.error(`Couldn't update media item "${id}"`, err);
-      return;
-    }
+    // track stream locations
+    parseStreamLocations(data).forEach((location) => {
+      promises.push(saveStreamLocation(location, data));
+    });
 
     // mark message as processed
-    msg.ack();
+    const results = await Promise.all(promises);
+    !results.includes(false) && msg.ack();
   }
+}
+
+/**
+ * @param data
+ * @returns {boolean} true if message should be acked
+ */
+async function createLanguageIfNotExists(
+  data: MediaItemUpdatedEvent["data"]
+): Promise<boolean> {
+  const { language } = data;
+
+  // create doc if not exists
+  try {
+    let languageDoc = await Language.findOne({
+      language,
+    });
+
+    if (!languageDoc) {
+      languageDoc = await Language.build({ language }).save();
+    }
+  } catch (err) {
+    console.error(`Couldn't track language ${language}`, err);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * @param data
+ * @returns {array} array of stream location attrs
+ */
+function parseStreamLocations(
+  data: MediaItemUpdatedEvent["data"]
+): StreamLocationAttrs[] {
+  const { streamLocations } = data;
+
+  // convert stream locations into a flat array
+  // using country as a property instead of a key
+  let locations = Object.keys(streamLocations)
+    .map((country) =>
+      streamLocations[country].map((location) =>
+        Object.assign({ country }, location)
+      )
+    )
+    .flat() as StreamLocationAttrs[];
+
+  // guess the streaming service url from the video url
+  // (which we assume is just the origin, ie. host+protocol)
+  try {
+    locations = locations.map((location) =>
+      Object.assign(location, { url: new URL(location.url).origin })
+    );
+  } catch (err) {
+    console.error(
+      "Couldn't parse all urls, stream locations ignored",
+      locations,
+      err
+    );
+    return [];
+  }
+
+  return locations;
+}
+
+async function saveStreamLocation(
+  { id, name, url, country }: StreamLocationAttrs,
+  data: MediaItemUpdatedEvent["data"]
+): Promise<boolean> {
+  // check for existing doc
+  const existingDoc = await StreamLocation.findById({
+    _id: StreamLocation.id(id),
+  });
+
+  // create if none exists
+  if (!existingDoc) {
+    try {
+      await StreamLocation.build({ id, name, url, country }).save();
+    } catch (err) {
+      console.error(`Couldn't create location ${name}`, err);
+      return false;
+    }
+    return true;
+  }
+
+  // don't overwrite more recent data
+  if (existingDoc.updatedAt > data.updatedAt) {
+    return true;
+  }
+
+  // update
+  existingDoc.name = name;
+  existingDoc.url = url;
+  existingDoc.country = country;
+
+  try {
+    await existingDoc.save();
+  } catch (err) {
+    console.error(`Couldn't update location ${name}`, err);
+    return false;
+  }
+
+  return true;
 }

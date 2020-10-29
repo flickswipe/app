@@ -5,7 +5,6 @@ import { iso6391 } from "@flickswipe/common";
  * Properties used to create a Language
  */
 interface LanguageAttrs {
-  id: string;
   language: iso6391;
 }
 
@@ -20,7 +19,7 @@ interface LanguageDoc extends mongoose.Document {
 /**
  * Language mongoose schema
  */
-const language = new mongoose.Schema(
+const languageSchema = new mongoose.Schema(
   {
     id: {
       type: String,
@@ -50,10 +49,8 @@ interface LanguageModel extends mongoose.Model<LanguageDoc> {
   build(attrs: LanguageAttrs): LanguageDoc;
 }
 
-language.statics.build = (attrs: LanguageAttrs) => {
-  return new Language(
-    Object.assign({ _id: mongoose.Types.ObjectId(attrs.language) }, attrs)
-  );
+languageSchema.statics.build = (attrs: LanguageAttrs) => {
+  return new Language(attrs);
 };
 
 /**
@@ -61,7 +58,7 @@ language.statics.build = (attrs: LanguageAttrs) => {
  */
 const Language = mongoose.model<LanguageDoc, LanguageModel>(
   "Language",
-  language
+  languageSchema
 );
 
 /**

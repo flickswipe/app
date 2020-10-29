@@ -58,12 +58,19 @@ const genreSchema = new mongoose.Schema(
  */
 interface GenreModel extends mongoose.Model<GenreDoc> {
   build(attrs: GenreAttrs): GenreDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
   return new Genre(
-    Object.assign({ _id: mongoose.Types.ObjectId(attrs.id) }, attrs)
+    Object.assign({ _id: genreSchema.statics.id(attrs.id) }, attrs)
   );
+};
+
+genreSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
+    : mongoose.Types.ObjectId();
 };
 
 /**

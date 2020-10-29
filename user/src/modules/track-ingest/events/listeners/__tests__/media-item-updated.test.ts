@@ -20,9 +20,9 @@ describe("media item updated listener", () => {
   });
 
   describe("update existing doc", () => {
-    it.todo("should overwrite existing doc");
     it.todo("should update stream location collection");
     it.todo("should update language collection");
+    it.todo("should overwrite existing doc");
     it.todo("should acknowledge the message");
   });
 

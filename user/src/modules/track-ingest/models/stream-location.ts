@@ -4,7 +4,7 @@ import mongoose from "mongoose";
  * Properties used to create a StreamLocation
  */
 interface StreamLocationAttrs {
-  ingestId: string;
+  id: string;
   name: string;
   url: string;
   country: string;
@@ -14,18 +14,20 @@ interface StreamLocationAttrs {
  * Properties that a StreamLocation document has
  */
 interface StreamLocationDoc extends mongoose.Document {
-  ingestId: string;
+  id: string;
   name: string;
   url: string;
   country: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
  * StreamLocation mongoose schema
  */
-const streamLocation = new mongoose.Schema(
+const streamLocationSchema = new mongoose.Schema(
   {
-    ingestId: {
+    id: {
       type: String,
       required: true,
     },
@@ -43,8 +45,7 @@ const streamLocation = new mongoose.Schema(
     },
   },
   {
-    versionKey: false,
-    timestamps: false,
+    timestamps: true,
     toJSON: {
       transform(doc, ret) {
         delete ret._id;
@@ -59,12 +60,19 @@ const streamLocation = new mongoose.Schema(
  */
 interface StreamLocationModel extends mongoose.Model<StreamLocationDoc> {
   build(attrs: StreamLocationAttrs): StreamLocationDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
-streamLocation.statics.build = (attrs: StreamLocationAttrs) => {
+streamLocationSchema.statics.build = (attrs: StreamLocationAttrs) => {
   return new StreamLocation(
-    Object.assign({ _id: mongoose.Types.ObjectId(attrs.ingestId) }, attrs)
+    Object.assign({ _id: streamLocationSchema.statics.id(attrs.id) }, attrs)
   );
+};
+
+streamLocationSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
+    : mongoose.Types.ObjectId();
 };
 
 /**
@@ -72,7 +80,7 @@ streamLocation.statics.build = (attrs: StreamLocationAttrs) => {
  */
 const StreamLocation = mongoose.model<StreamLocationDoc, StreamLocationModel>(
   "StreamLocation",
-  streamLocation
+  streamLocationSchema
 );
 
 /**
