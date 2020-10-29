@@ -47,7 +47,7 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
  * @param data
  * @returns {boolean} true if message should be acked
  */
-async function createLanguageIfNotExists(
+export async function createLanguageIfNotExists(
   data: MediaItemUpdatedEvent["data"]
 ): Promise<boolean> {
   const { language } = data;
@@ -73,7 +73,7 @@ async function createLanguageIfNotExists(
  * @param data
  * @returns {array} array of stream location attrs
  */
-function parseStreamLocations(
+export function parseStreamLocations(
   data: MediaItemUpdatedEvent["data"]
 ): StreamLocationAttrs[] {
   const { streamLocations } = data;
@@ -90,23 +90,27 @@ function parseStreamLocations(
 
   // guess the streaming service url from the video url
   // (which we assume is just the origin, ie. host+protocol)
-  try {
-    locations = locations.map((location) =>
-      Object.assign(location, { url: new URL(location.url).origin })
-    );
-  } catch (err) {
-    console.error(
-      "Couldn't parse all urls, stream locations ignored",
-      locations,
-      err
-    );
-    return [];
-  }
+  locations = locations.map((location) => {
+    let url;
+    try {
+      url = new URL(location.url).origin;
+    } catch (err) {
+      console.error(`Ignore ${location.name}: invalid url`, location, err);
+      return null;
+    }
 
-  return locations;
+    return Object.assign(location, { url });
+  });
+
+  return locations.filter((location) => location);
 }
 
-async function saveStreamLocation(
+/**
+ * @param location stream location to save
+ * @param data
+ * @returns {boolean} true if message should be acked
+ */
+export async function saveStreamLocation(
   { id, name, url, country }: StreamLocationAttrs,
   data: MediaItemUpdatedEvent["data"]
 ): Promise<boolean> {

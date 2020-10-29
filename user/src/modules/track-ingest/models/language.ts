@@ -12,7 +12,6 @@ interface LanguageAttrs {
  * Properties that a Language document has
  */
 interface LanguageDoc extends mongoose.Document {
-  id: string;
   language: iso6391;
 }
 
@@ -21,10 +20,6 @@ interface LanguageDoc extends mongoose.Document {
  */
 const languageSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     language: {
       type: String,
       required: true,

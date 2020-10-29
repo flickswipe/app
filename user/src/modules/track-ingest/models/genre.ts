@@ -26,10 +26,6 @@ interface GenreDoc extends mongoose.Document {
  */
 const genreSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
