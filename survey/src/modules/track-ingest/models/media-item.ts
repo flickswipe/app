@@ -128,12 +128,19 @@ const mediaItem = new mongoose.Schema(
  */
 interface MediaItemModel extends mongoose.Model<MediaItemDoc> {
   build(attrs: MediaItemAttrs): MediaItemDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 mediaItem.statics.build = (attrs: MediaItemAttrs) => {
   return new MediaItem(
-    Object.assign({ _id: mongoose.Types.ObjectId(attrs.id) }, attrs)
+    Object.assign({ _id: mediaItem.statics.id(attrs.id) }, attrs)
   );
+};
+
+mediaItem.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
+    : mongoose.Types.ObjectId();
 };
 
 /**

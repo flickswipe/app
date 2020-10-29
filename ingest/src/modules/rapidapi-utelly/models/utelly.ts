@@ -64,13 +64,20 @@ const utellySchema = new mongoose.Schema(
  */
 interface UtellyModel extends mongoose.Model<UtellyDoc> {
   build(attrs: UtellyAttrs): UtellyDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 utellySchema.statics.build = (attrs: UtellyAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.imdbId}`.padStart(12, "0"));
-  return new Utelly(Object.assign({ _id }, attrs));
+  return new Utelly(
+    Object.assign({ _id: utellySchema.statics.id(attrs.imdbId) }, attrs)
+  );
 };
 
+utellySchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
+    : mongoose.Types.ObjectId();
+};
 /**
  * Initialize model
  */

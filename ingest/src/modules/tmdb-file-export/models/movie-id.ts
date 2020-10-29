@@ -57,11 +57,22 @@ const movieIdSchema = new mongoose.Schema(
  */
 interface MovieIdModel extends mongoose.Model<MovieIdDoc> {
   build(attrs: MovieIdAttrs): MovieIdDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 movieIdSchema.statics.build = (attrs: MovieIdAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.tmdbMovieId}`.padStart(12, "0"));
-  return new MovieId(Object.assign({ _id }, attrs));
+  return new MovieId(
+    Object.assign(
+      { _id: movieIdSchema.statics.id(`${attrs.tmdbMovieId}`) },
+      attrs
+    )
+  );
+};
+
+movieIdSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
+    : mongoose.Types.ObjectId();
 };
 
 /**

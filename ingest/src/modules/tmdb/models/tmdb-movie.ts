@@ -121,11 +121,19 @@ const tmdbMovieSchema = new mongoose.Schema(
  */
 interface TmdbMovieModel extends mongoose.Model<TmdbMovieDoc> {
   build(attrs: TmdbMovieAttrs): TmdbMovieDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 tmdbMovieSchema.statics.build = (attrs: TmdbMovieAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.imdbId}`.padStart(12, "0"));
-  return new TmdbMovie(Object.assign({ _id }, attrs));
+  return new TmdbMovie(
+    Object.assign({ _id: tmdbMovieSchema.statics.id(attrs.imdbId) }, attrs)
+  );
+};
+
+tmdbMovieSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
+    : mongoose.Types.ObjectId();
 };
 
 /**
