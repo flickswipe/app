@@ -9,7 +9,7 @@ interface UserAttrs {
 }
 
 /**
- * Properties that a MovieId document has
+ * Properties that a User document has
  */
 interface UserDoc extends mongoose.Document {
   id: string;
@@ -21,7 +21,7 @@ interface UserDoc extends mongoose.Document {
 /**
  * User mongoose schema
  */
-const genreSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     id: {
       type: String,
@@ -53,14 +53,14 @@ interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc;
 }
 
-genreSchema.statics.build = (attrs: UserAttrs) => {
+userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(Object.assign({ _id: attrs.id }, attrs));
 };
 
 /**
  * Initialize model
  */
-const User = mongoose.model<UserDoc, UserModel>("User", genreSchema);
+const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
 
 /**
  * Exports

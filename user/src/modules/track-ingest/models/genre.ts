@@ -11,7 +11,7 @@ interface GenreAttrs {
 }
 
 /**
- * Properties that a MovieId document has
+ * Properties that a Genre document has
  */
 interface GenreDoc extends mongoose.Document {
   id: string;
