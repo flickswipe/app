@@ -5,7 +5,7 @@ import { User, UserDoc } from "../../modules/track-auth/models/user";
 
 jest.mock("../../modules/relationships/relationships");
 
-describe("accept invite", () => {
+describe("accept relationship", () => {
   describe("invalid target user", () => {
     it("returns a 400", async () => {
       await request(app)

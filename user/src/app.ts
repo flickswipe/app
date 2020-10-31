@@ -5,12 +5,12 @@ import "express-async-errors";
 
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-import { blockRouter } from "./routes/block";
-import { unblockRouter } from "./routes/unblock";
-import { inviteAcceptRouter } from "./routes/invite-accept";
-import { inviteCancelRouter } from "./routes/invite-cancel";
-import { inviteCreateRouter } from "./routes/invite-create";
-import { inviteRejectRouter } from "./routes/invite-reject";
+import { blockRouter } from "./routes/relationship-block";
+import { unblockRouter } from "./routes/relationship-unblock";
+import { relationshipAcceptRouter } from "./routes/relationship-accept";
+import { relationshipCancelRouter } from "./routes/relationship-cancel";
+import { relationshipCreateRouter } from "./routes/relationship-create";
+import { relationshipRejectRouter } from "./routes/relationship-reject";
 
 /**
  * Configure express app
@@ -37,10 +37,10 @@ app.use(
 
 app.use(blockRouter);
 app.use(unblockRouter);
-app.use(inviteAcceptRouter);
-app.use(inviteCancelRouter);
-app.use(inviteCreateRouter);
-app.use(inviteRejectRouter);
+app.use(relationshipAcceptRouter);
+app.use(relationshipCancelRouter);
+app.use(relationshipCreateRouter);
+app.use(relationshipRejectRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();

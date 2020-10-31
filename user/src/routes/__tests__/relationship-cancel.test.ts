@@ -1,15 +1,15 @@
 import request from "supertest";
 import { app } from "../../app";
-import { requestRelationship } from "../../modules/relationships/relationships";
+import { cancelRelationship } from "../../modules/relationships/relationships";
 import { User, UserDoc } from "../../modules/track-auth/models/user";
 
 jest.mock("../../modules/relationships/relationships");
 
-describe("create invite", () => {
+describe("cancel relationship", () => {
   describe("invalid target user", () => {
     it("returns a 400", async () => {
       await request(app)
-        .post("/api/en/user/relationships/invalid-id/request")
+        .post("/api/en/user/relationships/invalid-id/cancel")
         .set("Cookie", await global.signIn())
         .send()
         .expect(400);
@@ -19,7 +19,7 @@ describe("create invite", () => {
   describe("non-existant target user", () => {
     it("returns a 404", async () => {
       await request(app)
-        .post("/api/en/user/relationships/targettarget/request")
+        .post("/api/en/user/relationships/targettarget/cancel")
         .set("Cookie", await global.signIn())
         .send()
         .expect(404);
@@ -44,14 +44,14 @@ describe("create invite", () => {
 
     it("returns a 401 if not signed in", async () => {
       await request(app)
-        .post(`/api/en/user/relationships/${targetUserDoc.id}/request`)
+        .post(`/api/en/user/relationships/${targetUserDoc.id}/cancel`)
         .send()
         .expect(401);
     });
 
     it("should return a 200", async () => {
       await request(app)
-        .post(`/api/en/user/relationships/${targetUserDoc.id}/request`)
+        .post(`/api/en/user/relationships/${targetUserDoc.id}/cancel`)
         .set(
           "Cookie",
           await global.signIn(sourceUserDoc.id, sourceUserDoc.email)
@@ -60,16 +60,16 @@ describe("create invite", () => {
         .expect(200);
     });
 
-    it("should call requestRelationship correctly", async () => {
+    it("should call cancelRelationship correctly", async () => {
       await request(app)
-        .post(`/api/en/user/relationships/${targetUserDoc.id}/request`)
+        .post(`/api/en/user/relationships/${targetUserDoc.id}/cancel`)
         .set(
           "Cookie",
           await global.signIn(sourceUserDoc.id, sourceUserDoc.email)
         )
         .send();
 
-      expect(requestRelationship).toHaveBeenCalledWith(
+      expect(cancelRelationship).toHaveBeenCalledWith(
         sourceUserDoc.id,
         targetUserDoc.id
       );

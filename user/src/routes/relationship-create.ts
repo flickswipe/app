@@ -1,20 +1,20 @@
 import { currentUser, NotFoundError, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
-import { rejectRelationship } from "../modules/relationships/relationships";
+import { requestRelationship } from "../modules/relationships/relationships";
 import { User } from "../modules/track-auth/models/user";
 
 const router = express.Router();
 
 /**
- * @api {post} /api/en/user/relationships/:id/reject
- * @apiName RejectInvite
- * @apiGroup RejectInvite
+ * @api {post} /api/en/user/relationships/:id/request
+ * @apiName RelationshipCreate
+ * @apiGroup RelationshipCreate
  *
  * @apiDescription
  * Unblocks a user.
  *
- * @apiParam {string} id the user whose invitation to reject
+ * @apiParam {string} id the user with whom to request relationship
  *
  * @apiErrorExample {json}  401 Not authorized
  * {
@@ -32,11 +32,11 @@ const router = express.Router();
  *
  * @apiSuccessExample {json} 200 OK
  * {
- *   "message": "User rejected"
+ *   "message": "Relationship request created"
  * }
  */
 router.post(
-  "/api/en/user/relationships/:id/reject",
+  "/api/en/user/relationships/:id/request",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
@@ -50,13 +50,13 @@ router.post(
       throw new NotFoundError();
     }
 
-    // reject relationship
-    await rejectRelationship(currentUser.id, targetUserId);
+    // request relationship
+    await requestRelationship(currentUser.id, targetUserId);
 
     res.status(200).send({
-      message: `User rejected`,
+      message: `Relationship request created`,
     });
   }
 );
 
-export { router as inviteRejectRouter };
+export { router as relationshipCreateRouter };

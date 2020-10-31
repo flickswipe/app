@@ -8,13 +8,13 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/cancel
- * @apiName CancelInvite
- * @apiGroup CancelInvite
+ * @apiName RelationshipCancel
+ * @apiGroup RelationshipCancel
  *
  * @apiDescription
  * Unblocks a user.
  *
- * @apiParam {string} id the user whose invitation to cancel
+ * @apiParam {string} id the user whose relationship request to cancel
  *
  * @apiErrorExample {json}  401 Not authorized
  * {
@@ -32,7 +32,7 @@ const router = express.Router();
  *
  * @apiSuccessExample {json} 200 OK
  * {
- *   "message": "User canceled"
+ *   "message": "Relationship request cancelled"
  * }
  */
 router.post(
@@ -54,9 +54,9 @@ router.post(
     await cancelRelationship(currentUser.id, targetUserId);
 
     res.status(200).send({
-      message: `User canceled`,
+      message: `Relationship request cancelled`,
     });
   }
 );
 
-export { router as inviteCancelRouter };
+export { router as relationshipCancelRouter };
