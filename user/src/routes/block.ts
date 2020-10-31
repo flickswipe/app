@@ -59,4 +59,4 @@ router.post(
   }
 );
 
-export { router as blockUserRouter };
+export { router as blockRouter };
