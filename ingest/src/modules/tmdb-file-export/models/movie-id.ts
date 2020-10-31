@@ -18,6 +18,8 @@ interface MovieIdDoc extends mongoose.Document {
   timesUsed: number;
   neverUse: boolean;
   emitted: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 /**
@@ -43,8 +45,11 @@ const movieIdSchema = new mongoose.Schema(
     },
   },
   {
+    timestamps: true,
     toJSON: {
       transform(doc, ret) {
+        delete ret.createdAt;
+        delete ret.updatedAt;
         delete ret._id;
         delete ret.__v;
       },

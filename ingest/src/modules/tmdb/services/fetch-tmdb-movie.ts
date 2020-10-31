@@ -54,6 +54,7 @@ export async function fetchTmdbMovie(
       if (movieIdDoc.emitted === true) {
         await new MediaItemDestroyedPublisher(natsWrapper.client).publish({
           id: movieIdDoc.id,
+          updatedAt: movieIdDoc.updatedAt,
         });
       }
     }

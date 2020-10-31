@@ -52,6 +52,7 @@ describe("media item destroyed listener", () => {
       await listener.onMessage(
         {
           id: "ab1234567890ab1234567890",
+          updatedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );
@@ -100,6 +101,7 @@ describe("media item destroyed listener", () => {
       await listener.onMessage(
         {
           id: "ab1234567890ab1234567890",
+          updatedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );

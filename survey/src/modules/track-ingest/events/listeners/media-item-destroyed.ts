@@ -43,6 +43,8 @@ async function deleteMediaItem(
 ): Promise<boolean> {
   const { id } = data;
 
+  // @todo don't overwrite more recent data
+
   try {
     await MediaItem.deleteMany({
       _id: id,
