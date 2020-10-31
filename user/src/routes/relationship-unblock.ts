@@ -2,7 +2,7 @@ import { currentUser, NotFoundError, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { unblockRelationship } from "../modules/relationships/relationships";
-import { User } from "../modules/track-auth/models/user";
+import { getUser } from "../modules/track-auth/track-auth";
 
 const router = express.Router();
 
@@ -44,7 +44,7 @@ router.post(
     const { id: targetUserId } = req.params;
 
     // get target user
-    const targetUserDoc = await User.findOne({ _id: targetUserId });
+    const targetUserDoc = await getUser(targetUserId);
 
     if (!targetUserDoc) {
       throw new NotFoundError();
