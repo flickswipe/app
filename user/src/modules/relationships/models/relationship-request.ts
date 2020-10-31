@@ -14,8 +14,8 @@ interface RelationshipRequestAttrs {
  * Properties that a RelationshipRequest document has
  */
 interface RelationshipRequestDoc extends mongoose.Document {
-  sourceUser: string | UserDoc;
-  targetUser: string | UserDoc;
+  sourceUser: string;
+  targetUser: string;
   complete: boolean;
   createdAt: Date;
   updatedAt: Date;

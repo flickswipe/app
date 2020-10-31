@@ -16,8 +16,8 @@ interface RelationshipAttrs {
  */
 interface RelationshipDoc extends mongoose.Document {
   relationshipType: RelationshipType;
-  sourceUser: string | UserDoc;
-  targetUser: string | UserDoc;
+  sourceUser: string;
+  targetUser: string;
   createdAt: Date;
   updatedAt: Date;
 }

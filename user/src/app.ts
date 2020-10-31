@@ -11,6 +11,7 @@ import { relationshipAcceptRouter } from "./routes/relationship-accept";
 import { relationshipCancelRouter } from "./routes/relationship-cancel";
 import { relationshipCreateRouter } from "./routes/relationship-create";
 import { relationshipRejectRouter } from "./routes/relationship-reject";
+import { getRelationshipsRouter } from "./routes/get-relationships";
 
 /**
  * Configure express app
@@ -37,6 +38,7 @@ app.use(
 
 app.use(blockRouter);
 app.use(unblockRouter);
+app.use(getRelationshipsRouter);
 app.use(relationshipAcceptRouter);
 app.use(relationshipCancelRouter);
 app.use(relationshipCreateRouter);
