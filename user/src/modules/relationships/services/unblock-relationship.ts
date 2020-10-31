@@ -7,6 +7,11 @@ export async function unblockRelationship(
   fromUserId: string,
   toUserId: string
 ): Promise<void> {
+  // make sure ids are different
+  if (fromUserId === toUserId) {
+    throw new BadRequestError(`Two different IDs must be supplied`);
+  }
+
   // check if current relationship exists
   const existingRelationshipDoc = await Relationship.findOne({
     relationshipType: RelationshipType.Blocked,

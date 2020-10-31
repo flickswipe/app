@@ -9,6 +9,14 @@ describe("accept relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
+  describe("ids are the same", () => {
+    it("should throw bad request error", async () => {
+      await expect(async () => {
+        await acceptRelationship(A, A);
+      }).rejects.toThrowError(BadRequestError);
+    });
+  });
+
   describe("no incomplete relationship request exists", () => {
     it("should throw bad request error", async () => {
       await expect(async () => {

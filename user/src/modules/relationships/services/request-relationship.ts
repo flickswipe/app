@@ -13,6 +13,11 @@ export async function requestRelationship(
   fromUserId: string,
   toUserId: string
 ): Promise<void> {
+  // make sure ids are different
+  if (fromUserId === toUserId) {
+    throw new BadRequestError(`Two different IDs must be supplied`);
+  }
+
   // check no current relationship exists
   const existingRelationshipDoc = await Relationship.findOne({
     sourceUser: fromUserId,

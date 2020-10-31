@@ -8,6 +8,11 @@ export async function acceptRelationship(
   originalReceiverId: string, // the user who is accepting
   originalRequesterId: string // the user who made the original request
 ): Promise<void> {
+  // make sure ids are different
+  if (originalReceiverId === originalRequesterId) {
+    throw new BadRequestError(`Two different IDs must be supplied`);
+  }
+
   // check opposite request exists
   const oppositeRequestDoc = await RelationshipRequest.findOne({
     sourceUser: originalRequesterId,

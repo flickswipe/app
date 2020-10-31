@@ -1,4 +1,4 @@
-import { RelationshipType } from "@flickswipe/common";
+import { BadRequestError, RelationshipType } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { RelationshipBlockedPublisher } from "../events/publishers/relationship-blocked";
 import { Relationship } from "../models/relationship";
@@ -8,6 +8,11 @@ export async function blockRelationship(
   fromUserId: string,
   toUserId: string
 ): Promise<void> {
+  // make sure ids are different
+  if (fromUserId === toUserId) {
+    throw new BadRequestError(`Two different IDs must be supplied`);
+  }
+
   // check if current relationship exists
   const existingRelationshipDoc = await Relationship.findOne({
     sourceUser: fromUserId,

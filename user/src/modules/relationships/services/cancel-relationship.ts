@@ -7,6 +7,11 @@ export async function cancelRelationship(
   originalRequesterId: string,
   originalReceiverId: string
 ): Promise<void> {
+  // make sure ids are different
+  if (originalRequesterId === originalReceiverId) {
+    throw new BadRequestError(`Two different IDs must be supplied`);
+  }
+
   // check relationship request exists
   const existingRequestDoc = await RelationshipRequest.findOne({
     sourceUser: originalRequesterId,

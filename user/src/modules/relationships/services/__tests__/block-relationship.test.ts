@@ -1,4 +1,4 @@
-import { RelationshipType } from "@flickswipe/common";
+import { BadRequestError, RelationshipType } from "@flickswipe/common";
 import { Types } from "mongoose";
 import { natsWrapper } from "../../../../nats-wrapper";
 import { Relationship } from "../../models/relationship";
@@ -8,6 +8,14 @@ import { blockRelationship } from "../block-relationship";
 describe("block relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
+
+  describe("ids are the same", () => {
+    it("should throw bad request error", async () => {
+      await expect(async () => {
+        await blockRelationship(A, A);
+      }).rejects.toThrowError(BadRequestError);
+    });
+  });
 
   describe("relationship already exists", () => {
     beforeEach(async () => {

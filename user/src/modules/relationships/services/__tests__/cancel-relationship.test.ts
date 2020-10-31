@@ -9,6 +9,14 @@ describe("cancel relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
+  describe("ids are the same", () => {
+    it("should throw bad request error", async () => {
+      await expect(async () => {
+        await cancelRelationship(A, A);
+      }).rejects.toThrowError(BadRequestError);
+    });
+  });
+
   describe("no opposite incomplete relationship request exists", () => {
     it("should throw bad request error", async () => {
       await expect(async () => {

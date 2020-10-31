@@ -8,6 +8,14 @@ describe("unblock relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
+  describe("ids are the same", () => {
+    it("should throw bad request error", async () => {
+      await expect(async () => {
+        await unblockRelationship(A, A);
+      }).rejects.toThrowError(BadRequestError);
+    });
+  });
+
   describe("user is not blocked", () => {
     it("should throw bad request error", async () => {
       await expect(async () => {

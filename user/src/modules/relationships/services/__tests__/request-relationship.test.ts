@@ -14,6 +14,14 @@ describe("request relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
+  describe("ids are the same", () => {
+    it("should throw bad request error", async () => {
+      await expect(async () => {
+        await requestRelationship(A, A);
+      }).rejects.toThrowError(BadRequestError);
+    });
+  });
+
   describe("active relationship exists", () => {
     it("should throw bad request error", async () => {
       await Relationship.build({
