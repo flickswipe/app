@@ -32,11 +32,13 @@ const relationshipSchema = new mongoose.Schema(
       required: true,
     },
     sourceUser: {
-      type: { type: Schema.Types.ObjectId, ref: "User" },
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     targetUser: {
-      type: { type: Schema.Types.ObjectId, ref: "User" },
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

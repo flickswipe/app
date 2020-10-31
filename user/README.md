@@ -91,42 +91,38 @@ tab. They can also unblock users.
 
 ## MongoDB schema
 
-| Relationship (Primary) |                                    |
-| ---------------------- | ---------------------------------- |
-| \_id                   |                                    |
-| relationshipType       | `"pending", "accepted", "blocked"` |
-| sourceUser             | `User._id`                         |
-| targetUser             | `User._id`                         |
-| createdAt              | `Date`                             |
-| updatedAt              | `Date`                             |
+| Relationship (Primary) |                       |
+| ---------------------- | --------------------- |
+| \_id                   |                       |
+| relationshipType       | `"active", "blocked"` |
+| sourceUser             | `User._id`            |
+| targetUser             | `User._id`            |
+| createdAt              | `Date`                |
+| updatedAt              | `Date`                |
+
+| Requests (Primary) |            |
+| ------------------ | ---------- |
+| \_id               |            |
+| sourceUser         | `User._id` |
+| targetUser         | `User._id` |
+| complete           | `true`     |
+| createdAt          | `Date`     |
+| updatedAt          | `Date`     |
 
 ## MongoDB flows
 
-1. When a user sends an invite to someone who has not blocked them, two
-   documents are created:
-
-   | \_id | relationshipType | sourceUser   | targetUser   | …   |
-   | ---- | ---------------- | ------------ | ------------ | --- |
-   |      | accepted         | User(A).\_id | User(B).\_id |     |
-   |      | pending          | User(B).\_id | User(A).\_id |     |
-
-2. When a user rejects a user, both documents are deleted. This handles both
-   pending and accepted relationships.
-
-3. When a user blocks someone, any previous accepted/pending documents between
-   them are deleted and one document is created:
-
-   | \_id | relationshipType | sourceUser   | targetUser   | …   |
-   | ---- | ---------------- | ------------ | ------------ | --- |
-   |      | blocked          | User(A).\_id | User(B).\_id |     |
+1. User A can create a request for User B, so long as there is no active or blocked
+   relationship.
+2. User B can either accept or reject the request.
+3. If the user accepts, two "active" Relationship documents are created and the request
+   is marked as "completed".
+4. If the user rejects, the
 
 ## Events
 
-| Event                 | Payload                                          |
-| --------------------- | ------------------------------------------------ |
-| relationshipCreated   | { id, relationshipType, sourceUser, targetUser } |
-| relationshipUpdated   | { id, relationshipType, sourceUser, targetUser } |
-| relationshipDestroyed | { id, sourceUser, targetUser }                   |
+| Event | Payload |
+| ----- | ------- |
+
 
 # Settings
 
