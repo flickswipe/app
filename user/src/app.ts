@@ -9,6 +9,7 @@ import { blockRouter } from "./routes/block";
 import { unblockRouter } from "./routes/unblock";
 import { inviteAcceptRouter } from "./routes/invite-accept";
 import { inviteCancelRouter } from "./routes/invite-cancel";
+import { inviteCreateRouter } from "./routes/invite-create";
 
 /**
  * Configure express app
@@ -37,6 +38,7 @@ app.use(blockRouter);
 app.use(unblockRouter);
 app.use(inviteAcceptRouter);
 app.use(inviteCancelRouter);
+app.use(inviteCreateRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
