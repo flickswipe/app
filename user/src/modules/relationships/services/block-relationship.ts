@@ -2,6 +2,7 @@ import { RelationshipType } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { RelationshipBlockedPublisher } from "../events/publishers/relationship-blocked";
 import { Relationship } from "../models/relationship";
+import { RelationshipRequest } from "../models/relationship-request";
 
 export async function blockRelationship(
   fromUserId: string,
@@ -31,6 +32,19 @@ export async function blockRelationship(
     relationshipType: RelationshipType.Active,
     sourceUser: toUserId,
     targetUser: fromUserId,
+  });
+
+  // delete any open requests
+  await RelationshipRequest.deleteMany({
+    sourceUser: toUserId,
+    targetUser: fromUserId,
+    complete: false,
+  });
+
+  await RelationshipRequest.deleteMany({
+    sourceUser: fromUserId,
+    targetUser: toUserId,
+    complete: false,
   });
 
   // publish event

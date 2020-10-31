@@ -2,6 +2,7 @@ import { RelationshipType } from "@flickswipe/common";
 import { Types } from "mongoose";
 import { natsWrapper } from "../../../../nats-wrapper";
 import { Relationship } from "../../models/relationship";
+import { RelationshipRequest } from "../../models/relationship-request";
 import { blockRelationship } from "../block-relationship";
 
 describe("block relationship", () => {
@@ -66,6 +67,37 @@ describe("block relationship", () => {
           relationshipType: RelationshipType.Blocked,
         })
       );
+    });
+
+    it("should delete incomplete a->b request", async () => {
+      await RelationshipRequest.build({
+        sourceUser: A,
+        targetUser: B,
+      }).save();
+
+      await blockRelationship(A, B);
+
+      expect(
+        await RelationshipRequest.findOne({
+          sourceUser: A,
+          targetUser: B,
+        })
+      ).toBeNull();
+    });
+    it("should delete incomplete b->a request", async () => {
+      await RelationshipRequest.build({
+        sourceUser: B,
+        targetUser: A,
+      }).save();
+
+      await blockRelationship(A, B);
+
+      expect(
+        await RelationshipRequest.findOne({
+          sourceUser: B,
+          targetUser: A,
+        })
+      ).toBeNull();
     });
     it("should publish event", async () => {
       await blockRelationship(A, B);
