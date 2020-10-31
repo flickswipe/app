@@ -5,6 +5,7 @@ import "express-async-errors";
 
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
+import { blockUserRouter } from "./routes/block-user";
 
 /**
  * Configure express app
@@ -28,6 +29,8 @@ app.use(
 /**
  * Configure routes
  */
+
+app.use(blockUserRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
