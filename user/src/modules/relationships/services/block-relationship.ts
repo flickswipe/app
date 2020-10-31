@@ -6,52 +6,39 @@ import { Relationship } from "../models/relationship";
 export async function blockRelationship(
   fromUserId: string,
   toUserId: string
-): Promise<boolean> {
-  // get existing
-  const existingDoc = await Relationship.findOne({
+): Promise<void> {
+  // check if current relationship exists
+  const existingRelationshipDoc = await Relationship.findOne({
     sourceUser: fromUserId,
     targetUser: toUserId,
   });
 
-  // update
-  if (existingDoc) {
-    existingDoc.relationshipType = RelationshipType.Blocked;
-    try {
-      await existingDoc.save();
-    } catch (err) {
-      console.log(`Couldn't block user`);
-      return false;
-    }
-  }
-
-  // create
-  try {
+  if (existingRelationshipDoc) {
+    // update
+    existingRelationshipDoc.relationshipType = RelationshipType.Blocked;
+    await existingRelationshipDoc.save();
+  } else {
+    // create
     await Relationship.build({
       relationshipType: RelationshipType.Blocked,
       sourceUser: fromUserId,
       targetUser: toUserId,
     }).save();
-  } catch (err) {
-    console.log(`Couldn't block user`);
-    return false;
   }
 
-  // remove opposite relationship if not "blocked"
-  try {
-    await Relationship.deleteOne({
-      relationshipType: { $ne: RelationshipType.Blocked },
-      sourceUser: toUserId,
-      targetUser: fromUserId,
-    });
-  } catch (err) {
-    console.log(`Couldn't delete opposite relationship`, err);
-  }
-
-  // publish event
-  new RelationshipBlockedPublisher(natsWrapper.client).publish({
-    sourceUserId: fromUserId,
-    targetUserId: toUserId,
+  // delete opposite active relationship if it exists
+  await Relationship.deleteOne({
+    relationshipType: RelationshipType.Active,
+    sourceUser: toUserId,
+    targetUser: fromUserId,
   });
 
-  return true;
+  // publish event
+  await new RelationshipBlockedPublisher(natsWrapper.client).publish({
+    sourceUserId: fromUserId,
+    targetUserId: toUserId,
+    updatedAt: new Date(),
+  });
+
+  console.log(`${fromUserId} blocked relationship with ${toUserId}`);
 }
