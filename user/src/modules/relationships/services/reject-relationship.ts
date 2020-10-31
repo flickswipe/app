@@ -1,4 +1,4 @@
-import { BadRequestError, RelationshipType } from "@flickswipe/common";
+import { BadRequestError } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { RelationshipRejectedPublisher } from "../events/publishers/relationship-rejected";
 import { RelationshipRequest } from "../models/relationship-request";
