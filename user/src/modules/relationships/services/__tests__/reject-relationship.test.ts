@@ -9,7 +9,7 @@ describe("reject relationship", () => {
   const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
-  describe("no incomplete relationship request exists", () => {
+  describe("no opposite incomplete relationship request exists", () => {
     it("should throw bad request error", async () => {
       await expect(async () => {
         await rejectRelationship(A, B);
@@ -17,7 +17,7 @@ describe("reject relationship", () => {
     });
   });
 
-  describe("opposite incomplete relationship request exists", () => {
+  describe("incomplete relationship request exists", () => {
     beforeEach(async () => {
       await RelationshipRequest.build({
         sourceUser: A,

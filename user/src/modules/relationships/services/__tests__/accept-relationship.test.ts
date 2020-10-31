@@ -32,6 +32,12 @@ describe("accept relationship", () => {
   });
 
   describe("relationship request exists", () => {
+    beforeEach(async () => {
+      await RelationshipRequest.build({
+        sourceUser: B,
+        targetUser: A,
+      }).save();
+    });
     it("should insert a->b document with correct data", async () => {
       await acceptRelationship(A, B);
 
