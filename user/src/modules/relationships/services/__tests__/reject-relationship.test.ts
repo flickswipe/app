@@ -18,12 +18,13 @@ describe("reject relationship", () => {
   });
 
   describe("opposite incomplete relationship request exists", () => {
-    it("should throw bad request error", async () => {
+    beforeEach(async () => {
       await RelationshipRequest.build({
         sourceUser: A,
         targetUser: B,
       }).save();
-
+    });
+    it("should throw bad request error", async () => {
       await expect(async () => {
         await rejectRelationship(A, B);
       }).rejects.toThrowError(BadRequestError);
@@ -31,12 +32,13 @@ describe("reject relationship", () => {
   });
 
   describe("relationship request exists", () => {
-    it("should update request as complete", async () => {
+    beforeEach(async () => {
       await RelationshipRequest.build({
         sourceUser: B,
         targetUser: A,
       }).save();
-
+    });
+    it("should update request as complete", async () => {
       await rejectRelationship(A, B);
 
       expect(
@@ -51,21 +53,11 @@ describe("reject relationship", () => {
       );
     });
     it("shouldn't create any relationship docs", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-      }).save();
-
       await rejectRelationship(A, B);
 
       expect(await Relationship.countDocuments()).toBe(0);
     });
     it("should publish event", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-      }).save();
-
       await rejectRelationship(A, B);
 
       expect(natsWrapper.client.publish).toHaveBeenCalled();

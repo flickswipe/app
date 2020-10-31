@@ -9,13 +9,14 @@ describe("block relationship", () => {
   const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
 
   describe("relationship already exists", () => {
-    it("should update existing relationship", async () => {
+    beforeEach(async () => {
       await Relationship.build({
         relationshipType: RelationshipType.Active,
         sourceUser: A,
         targetUser: B,
       }).save();
-
+    });
+    it("should update existing relationship", async () => {
       await blockRelationship(A, B);
 
       expect(
@@ -30,12 +31,6 @@ describe("block relationship", () => {
       );
     });
     it("should delete opposite active relationship", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Active,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
-
       await Relationship.build({
         relationshipType: RelationshipType.Active,
         sourceUser: B,
@@ -53,12 +48,6 @@ describe("block relationship", () => {
     });
 
     it("should ignore opposite blocked relationship", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Active,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
-
       await Relationship.build({
         relationshipType: RelationshipType.Blocked,
         sourceUser: B,
@@ -79,12 +68,6 @@ describe("block relationship", () => {
       );
     });
     it("should publish event", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Active,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
-
       await blockRelationship(A, B);
 
       expect(natsWrapper.client.publish).toHaveBeenCalled();

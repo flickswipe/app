@@ -18,12 +18,13 @@ describe("accept relationship", () => {
   });
 
   describe("opposite incomplete relationship request exists", () => {
-    it("should throw bad request error", async () => {
+    beforeEach(async () => {
       await RelationshipRequest.build({
         sourceUser: A,
         targetUser: B,
       }).save();
-
+    });
+    it("should throw bad request error", async () => {
       await expect(async () => {
         await acceptRelationship(A, B);
       }).rejects.toThrowError(BadRequestError);
@@ -31,24 +32,8 @@ describe("accept relationship", () => {
   });
 
   describe("relationship request exists", () => {
-    it("should insert two documents with correct data", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-      }).save();
-
+    it("should insert a->b document with correct data", async () => {
       await acceptRelationship(A, B);
-
-      expect(
-        await Relationship.findOne({
-          sourceUser: B,
-          targetUser: A,
-        })
-      ).toEqual(
-        expect.objectContaining({
-          relationshipType: RelationshipType.Active,
-        })
-      );
 
       expect(
         await Relationship.findOne({
@@ -61,12 +46,21 @@ describe("accept relationship", () => {
         })
       );
     });
-    it("should publish event", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-      }).save();
+    it("should insert b->a document with correct data", async () => {
+      await acceptRelationship(A, B);
 
+      expect(
+        await Relationship.findOne({
+          sourceUser: B,
+          targetUser: A,
+        })
+      ).toEqual(
+        expect.objectContaining({
+          relationshipType: RelationshipType.Active,
+        })
+      );
+    });
+    it("should publish event", async () => {
       await acceptRelationship(A, B);
 
       expect(natsWrapper.client.publish).toHaveBeenCalled();

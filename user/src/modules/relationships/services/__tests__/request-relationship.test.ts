@@ -97,13 +97,14 @@ describe("request relationship", () => {
   });
 
   describe("last completed opposite request too recent", () => {
-    it("should create request document", async () => {
+    beforeEach(async () => {
       await RelationshipRequest.build({
         sourceUser: B,
         targetUser: A,
         complete: true,
       }).save();
-
+    });
+    it("should create request document", async () => {
       await requestRelationship(A, B);
 
       expect(
@@ -118,12 +119,6 @@ describe("request relationship", () => {
       );
     });
     it("should publish event", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-        complete: true,
-      }).save();
-
       await requestRelationship(A, B);
 
       expect(natsWrapper.client.publish).toHaveBeenCalled();
