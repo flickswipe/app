@@ -7,6 +7,8 @@ import { json } from "body-parser";
 import cookieSession from "cookie-session";
 import { blockRouter } from "./routes/block";
 import { unblockRouter } from "./routes/unblock";
+import { inviteAcceptRouter } from "./routes/invite-accept";
+import { inviteCancelRouter } from "./routes/invite-cancel";
 
 /**
  * Configure express app
@@ -33,6 +35,8 @@ app.use(
 
 app.use(blockRouter);
 app.use(unblockRouter);
+app.use(inviteAcceptRouter);
+app.use(inviteCancelRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
