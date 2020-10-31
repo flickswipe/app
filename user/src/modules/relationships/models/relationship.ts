@@ -1,6 +1,5 @@
 import { RelationshipType } from "@flickswipe/common";
 import mongoose, { Schema } from "mongoose";
-import { UserDoc } from "../../track-auth/models/user";
 
 /**
  * Properties used to create a Relationship
