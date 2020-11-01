@@ -1,6 +1,7 @@
 import { LanguagesSetting } from "@flickswipe/common";
 
 export const defaultSettings = {
+  country: "",
   genres: {},
   languages: { en: true } as LanguagesSetting["value"],
   rating: {

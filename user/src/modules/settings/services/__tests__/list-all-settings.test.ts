@@ -1,4 +1,5 @@
 import {
+  CountrySetting,
   GenresSetting,
   LanguagesSetting,
   RatingSetting,
@@ -11,6 +12,7 @@ import { Setting } from "../../models/setting";
 import { listAllSettings, SettingsPayload } from "../list-all-settings";
 
 const defaultSettings: SettingsPayload = {
+  country: "",
   genres: {
     abcdefabcdef: true,
     bcdbcdbcdbcd: false,
@@ -32,6 +34,8 @@ const defaultSettings: SettingsPayload = {
     amazonamazon: true,
   },
 };
+
+const sampleCountrySettingValue = "us" as CountrySetting["value"];
 
 const sampleGenresSettingValue = {
   abcdefabcdef: true,
@@ -66,6 +70,7 @@ describe("get settings", () => {
       const result = await listAllSettings("useruseruser");
 
       expect(result).toEqual({
+        country: "",
         genres: {},
         languages: {},
         rating: {},
@@ -86,6 +91,12 @@ describe("get settings", () => {
 
   describe("settings contain empty objects and default settings exist", () => {
     it("should return all default settings", async () => {
+      await Setting.build({
+        settingType: SettingType.Country,
+        user: "useruseruser",
+        value: "",
+      }).save();
+
       await Setting.build({
         settingType: SettingType.Genres,
         user: "useruseruser",
@@ -125,6 +136,23 @@ describe("get settings", () => {
       const result = await listAllSettings("useruseruser", defaultSettings);
 
       expect(result).toEqual(defaultSettings);
+    });
+  });
+
+  describe("country setting and default settings exist", () => {
+    it("should return country setting alongside default values", async () => {
+      await Setting.build({
+        settingType: SettingType.Country,
+        user: "useruseruser",
+        value: sampleCountrySettingValue,
+      }).save();
+
+      const result = await listAllSettings("useruseruser", defaultSettings);
+      const expectedResult = Object.assign({}, defaultSettings, {
+        country: sampleCountrySettingValue,
+      });
+
+      expect(result).toEqual(expectedResult);
     });
   });
 

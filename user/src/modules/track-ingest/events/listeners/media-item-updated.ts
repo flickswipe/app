@@ -1,4 +1,9 @@
-import { Subjects, Listener, MediaItemUpdatedEvent } from "@flickswipe/common";
+import {
+  Subjects,
+  Listener,
+  MediaItemUpdatedEvent,
+  iso6391,
+} from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
 import {
@@ -6,6 +11,7 @@ import {
   StreamLocationAttrs,
 } from "../../models/stream-location";
 import { Language } from "../../models/language";
+import { Country } from "../../models/country";
 
 const { QUEUE_GROUP_NAME } = process.env;
 
@@ -30,16 +36,18 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
     const promises = [];
 
     // track languages
-    promises.push(createLanguageIfNotExists(data));
+    promises.push(createLanguageIfNotExists(data.language));
 
     // track stream locations
     parseStreamLocations(data).forEach((location) => {
       promises.push(saveStreamLocation(location, data));
+      promises.push(createCountryIfNotExists(location.country));
     });
 
-    // mark message as processed
-    const results = await Promise.all(promises);
-    !results.includes(false) && msg.ack();
+    // wait for all promises to finish
+    await Promise.all(promises);
+
+    msg.ack();
   }
 }
 
@@ -48,25 +56,16 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
  * @returns {boolean} true if message should be acked
  */
 export async function createLanguageIfNotExists(
-  data: MediaItemUpdatedEvent["data"]
-): Promise<boolean> {
-  const { language } = data;
-
+  language: iso6391
+): Promise<void> {
   // create doc if not exists
-  try {
-    let languageDoc = await Language.findOne({
-      language,
-    });
+  let languageDoc = await Language.findOne({
+    language,
+  });
 
-    if (!languageDoc) {
-      languageDoc = await Language.build({ language }).save();
-    }
-  } catch (err) {
-    console.error(`Couldn't track language ${language}`, err);
-    return false;
+  if (!languageDoc) {
+    languageDoc = await Language.build({ language }).save();
   }
-
-  return true;
 }
 
 /**
@@ -113,7 +112,7 @@ export function parseStreamLocations(
 export async function saveStreamLocation(
   { id, name, url, country }: StreamLocationAttrs,
   data: MediaItemUpdatedEvent["data"]
-): Promise<boolean> {
+): Promise<void> {
   // check for existing doc
   const existingDoc = await StreamLocation.findById({
     _id: StreamLocation.id(id),
@@ -121,18 +120,13 @@ export async function saveStreamLocation(
 
   // create if none exists
   if (!existingDoc) {
-    try {
-      await StreamLocation.build({ id, name, url, country }).save();
-    } catch (err) {
-      console.error(`Couldn't create location ${name}`, err);
-      return false;
-    }
-    return true;
+    await StreamLocation.build({ id, name, url, country }).save();
+    return;
   }
 
   // don't overwrite more recent data
   if (existingDoc.updatedAt > data.updatedAt) {
-    return true;
+    return;
   }
 
   // update
@@ -140,12 +134,21 @@ export async function saveStreamLocation(
   existingDoc.url = url;
   existingDoc.country = country;
 
-  try {
-    await existingDoc.save();
-  } catch (err) {
-    console.error(`Couldn't update location ${name}`, err);
-    return false;
-  }
+  await existingDoc.save();
+}
 
-  return true;
+/**
+ * @param country country to save
+ * @param data
+ */
+export async function createCountryIfNotExists(country: string): Promise<void> {
+  // check for existing doc
+  const existingDoc = await Country.findOne({
+    country,
+  });
+
+  // create if none exists
+  if (!existingDoc) {
+    await Country.build({ country }).save();
+  }
 }

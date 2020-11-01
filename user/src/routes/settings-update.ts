@@ -3,6 +3,7 @@ import { BadRequestError, currentUser, requireAuth } from "@flickswipe/common";
 import express, { Request, Response } from "express";
 
 import {
+  updateCountry,
   updateGenres,
   updateLanguages,
   updateRating,
@@ -24,6 +25,7 @@ const router = express.Router();
  *
  * @apiParamExample {json} Request-Example:
  * {
+ *   "country": "us",
  *   "genres": {"genre-id": true, "genre-id": false },
  *   "languages": {"en": true, "es": false },
  *   "rating": {"min": 0, "max": 999 },
@@ -61,6 +63,10 @@ router.post(
 
     // update settings if they exist on body
     const promises = [];
+
+    if (typeof req.body.country === "string") {
+      promises.push(updateCountry(currentUser.id, req.body.country));
+    }
 
     if (typeof req.body.genres === "object") {
       promises.push(updateGenres(currentUser.id, req.body.genres));

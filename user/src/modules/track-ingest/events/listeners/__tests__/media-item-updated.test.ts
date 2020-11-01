@@ -2,9 +2,11 @@ import { iso6391 } from "@flickswipe/common";
 import { Types } from "mongoose";
 import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../../../nats-wrapper";
+import { Country } from "../../../models/country";
 import { Language } from "../../../models/language";
 import { StreamLocation } from "../../../models/stream-location";
 import {
+  createCountryIfNotExists,
   createLanguageIfNotExists,
   MediaItemUpdatedListener,
   parseStreamLocations,
@@ -57,11 +59,7 @@ describe("media item updated listener", () => {
   describe("create language if not exists", () => {
     describe("language doesn't exist", () => {
       it("should add language ", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, { language: "en" });
-
-        await createLanguageIfNotExists(data);
+        await createLanguageIfNotExists("en");
 
         expect(await Language.findOne({ language: "en" })).toEqual(
           expect.objectContaining({
@@ -69,38 +67,14 @@ describe("media item updated listener", () => {
           })
         );
       });
-      it("should return true", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, { language: "en" });
-
-        const result = await createLanguageIfNotExists(data);
-
-        expect(result).toBe(true);
-      });
     });
     describe("language exists", () => {
       it("should not add language", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, { language: "en" });
-
         await Language.build({ language: "en" }).save();
 
-        await createLanguageIfNotExists(data);
+        await createLanguageIfNotExists("en");
 
         expect(await Language.countDocuments({ language: "en" })).toBe(1);
-      });
-      it("should return true", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, { language: "en" });
-
-        await Language.build({ language: "en" }).save();
-
-        const result = await createLanguageIfNotExists(data);
-
-        expect(result).toBe(true);
       });
     });
   });
@@ -142,8 +116,6 @@ describe("media item updated listener", () => {
         },
       });
 
-      console.log("malformed data", data.streamLocations);
-
       expect(parseStreamLocations(data)).toEqual([]);
     });
   });
@@ -170,21 +142,6 @@ describe("media item updated listener", () => {
             country: "us",
           })
         );
-      });
-      it("should return true", async () => {
-        const { sampleEventData } = await setup();
-
-        const result = await saveStreamLocation(
-          {
-            id: Types.ObjectId().toHexString(),
-            name: "Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          sampleEventData
-        );
-
-        expect(result).toBe(true);
       });
     });
 
@@ -221,31 +178,32 @@ describe("media item updated listener", () => {
           })
         );
       });
-      it("should return true", async () => {
-        const { sampleEventData } = await setup();
+    });
 
-        const data = Object.assign(sampleEventData, {
-          updatedAt: new Date(new Date().getTime() - 86600),
+    describe("create country if not exists", () => {
+      describe("country doesn't exist", () => {
+        it("should add country ", async () => {
+          await createCountryIfNotExists("us");
+
+          expect(await Country.findOne({ country: "us" })).toEqual(
+            expect.objectContaining({
+              country: "us",
+            })
+          );
         });
+      });
+      describe("country exists", () => {
+        it("should not add country", async () => {
+          await createCountryIfNotExists("us");
 
-        const existingDoc = await StreamLocation.build({
-          id: Types.ObjectId().toHexString(),
-          name: "Netflix",
-          url: "https://netflix.com",
-          country: "us",
-        }).save();
+          await Country.build({ country: "us" }).save();
 
-        const result = await saveStreamLocation(
-          {
-            id: existingDoc.id,
-            name: "New Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          data
-        );
-
-        expect(result).toBe(true);
+          expect(await Country.findOne({ country: "us" })).toEqual(
+            expect.objectContaining({
+              country: "us",
+            })
+          );
+        });
       });
     });
 
@@ -281,32 +239,6 @@ describe("media item updated listener", () => {
             country: "us",
           })
         );
-      });
-      it("should return true", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, {
-          updatedAt: new Date(new Date().getTime() + 86600),
-        });
-
-        const existingDoc = await StreamLocation.build({
-          id: Types.ObjectId().toHexString(),
-          name: "Netflix",
-          url: "https://netflix.com",
-          country: "us",
-        }).save();
-
-        const result = await saveStreamLocation(
-          {
-            id: existingDoc.id,
-            name: "New Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          data
-        );
-
-        expect(result).toBe(true);
       });
     });
   });

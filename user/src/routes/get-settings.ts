@@ -28,6 +28,7 @@ const router = express.Router();
  *
  * @apiSuccessExample {json} 200 OK
  * {
+ *   "country": "",
  *   "genres": {...},
  *   "languages": {...},
  *   "rating": {...},
@@ -67,7 +68,7 @@ router.get(
 
     // list all stream locations in settings, set unknown stream locations to
     // true by default
-    const allStreamLocations = await getStreamLocations();
+    const allStreamLocations = await getStreamLocations(settings.country);
     allStreamLocations.forEach(({ id }) => {
       if (typeof settings.streamLocations[id] === "undefined") {
         settings.streamLocations[id] = true;
