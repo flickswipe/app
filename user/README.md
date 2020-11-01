@@ -153,14 +153,14 @@ Manages user settings, including:
 | Setting (Primary) |                                                                                  |
 | ----------------- | -------------------------------------------------------------------------------- |
 | \_id              |                                                                                  |
-| user              | `User._id`                                                                       |
 | settingType       | `"genres", "languages", "rating", "release-date", "runtime", "stream-locations"` |
-| setting           | `Object`                                                                         |
+| user              | `User._id`                                                                       |
+| setting           | `{ min, max }, { [key]: boolean }`                                               |
 | createdAt         | `Date`                                                                           |
 | updatedAt         | `Date`                                                                           |
 
 ## Events
 
-| Event              | Payload                                           |
-| ------------------ | ------------------------------------------------- |
-| userSettingUpdated | { id, user, settingType, sourceUser, targetUser } |
+| Event              | Payload                                   |
+| ------------------ | ----------------------------------------- |
+| userUpdatedSetting | { user, settingType, setting, updatedAt } |
