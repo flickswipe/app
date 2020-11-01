@@ -52,9 +52,7 @@ describe("update settings", () => {
     await request(app)
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
-      .send({
-        settings: sampleSettings,
-      })
+      .send(sampleSettings)
       .expect(200);
   });
 
@@ -63,9 +61,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          genres: {},
-        },
+        genres: {},
       });
 
     expect(updateGenres).toHaveBeenCalledWith(expect.any(String), {});
@@ -76,9 +72,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          languages: {},
-        },
+        languages: {},
       });
 
     expect(updateLanguages).toHaveBeenCalledWith(expect.any(String), {});
@@ -89,9 +83,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          rating: {},
-        },
+        rating: {},
       });
 
     expect(updateRating).toHaveBeenCalledWith(expect.any(String), {});
@@ -102,9 +94,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          releaseDate: {},
-        },
+        releaseDate: {},
       });
 
     expect(updateReleaseDate).toHaveBeenCalledWith(expect.any(String), {});
@@ -115,9 +105,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          runtime: {},
-        },
+        runtime: {},
       });
 
     expect(updateRuntime).toHaveBeenCalledWith(expect.any(String), {});
@@ -128,9 +116,7 @@ describe("update settings", () => {
       .post(`/api/en/user/settings/update`)
       .set("Cookie", await global.signIn())
       .send({
-        settings: {
-          streamLocations: {},
-        },
+        streamLocations: {},
       });
 
     expect(updateStreamLocations).toHaveBeenCalledWith(expect.any(String), {});

@@ -8,13 +8,29 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/request
- * @apiName RelationshipCreate
- * @apiGroup RelationshipCreate
+ * @apiName Request Relationship
+ * @apiGroup RequestRelationship
  *
  * @apiDescription
- * Unblocks a user.
+ * Creates a relationship request
  *
  * @apiParam {string} id the user with whom to request relationship
+ *
+ * @apiErrorExample {json}  400 Bad request
+ * {
+ *   "errors": [
+ *      // Present when user attempts to use their own id
+ *      { message: "Two different IDs must be supplied" },
+ *      // Present when user already has a relationship with target user
+ *      { message: "Relationship already exists" },
+ *      // Present when trying to create an invalid request
+ *      { message: "Invalid relationship type" },
+ *      // Present when user already has a relationship request with target user
+ *      { message: "Request already exists" },
+ *      // Present when target user already has a relationship request with user
+ *      { message: "Opposite request already exists; accept it instead." },
+ *   ]
+ * }
  *
  * @apiErrorExample {json}  401 Not authorized
  * {

@@ -8,11 +8,21 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/unblock
- * @apiName UnblockUser
- * @apiGroup UnblockUser
+ * @apiName Unblock Relationship
+ * @apiGroup UnblockRelationship
  *
  * @apiDescription
  * Unblocks a user.
+ *
+ * @apiErrorExample {json}  400 Bad request
+ * {
+ *   "errors": [
+ *      // Present when user attempts to use their own id
+ *      { message: "Two different IDs must be supplied" },
+ *      // Present when user has not blocked target user
+ *      { message: "User is not blocked" },
+ *   ]
+ * }
  *
  * @apiParam {string} id the user to unblock
  *

@@ -1,12 +1,6 @@
-import {
-  BadRequestError,
-  currentUser,
-  requireAuth,
-  validateRequest,
-} from "@flickswipe/common";
+import { BadRequestError, currentUser, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
-import { body } from "express-validator";
 
 import {
   updateGenres,
@@ -21,24 +15,35 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/settings/update
- * @apiName GetSettings
- * @apiGroup GetSettings
+ * @apiName Update Settings
+ * @apiGroup UpdateSettings
  *
  * @apiDescription
- * Updates the user's current settings.
+ * Updates the user's current settings. Any number of keys can be provided, so
+ * long as there is at least one key.
  *
- * @apiErrorExample {json}  401 Not authorized
+ * @apiParamExample {json} Request-Example:
  * {
- *   "errors": [
- *      { message: "Not authorized" },
- *   ]
+ *   "genres": {"genre-id": true, "genre-id": false },
+ *   "languages": {"en": true, "es": false },
+ *   "rating": {"min": 0, "max": 999 },
+ *   "releaseDate": {"min": Date, "max": Date },
+ *   "runtime": {"min": 0, "max": 999 },
+ *   "streamLocations": {"location-id": true, "location-id": false },
  * }
  *
  * @apiErrorExample {json}  400 Bad request
  * {
  *   "errors": [
- *      // present when no settings supplied
+ *      // present when no settings data supplied
  *      { message: "You must update at least one setting" },
+ *   ]
+ * }
+ *
+ * @apiErrorExample {json}  401 Not authorized
+ * {
+ *   "errors": [
+ *      { message: "Not authorized" },
  *   ]
  * }
  *
@@ -49,44 +54,37 @@ const router = express.Router();
  */
 router.post(
   "/api/en/user/settings/update",
-  [
-    body("settings")
-      .notEmpty()
-      .withMessage(`You must supply settings to update`),
-  ],
-  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
     const { currentUser } = req;
-    const { settings } = req.body;
 
     // update settings if they exist on body
     const promises = [];
 
-    if (typeof settings.genres === "object") {
-      promises.push(updateGenres(currentUser.id, settings.genres));
+    if (typeof req.body.genres === "object") {
+      promises.push(updateGenres(currentUser.id, req.body.genres));
     }
 
-    if (typeof settings.languages === "object") {
-      promises.push(updateLanguages(currentUser.id, settings.languages));
+    if (typeof req.body.languages === "object") {
+      promises.push(updateLanguages(currentUser.id, req.body.languages));
     }
 
-    if (typeof settings.rating === "object") {
-      promises.push(updateRating(currentUser.id, settings.rating));
+    if (typeof req.body.rating === "object") {
+      promises.push(updateRating(currentUser.id, req.body.rating));
     }
 
-    if (typeof settings.releaseDate === "object") {
-      promises.push(updateReleaseDate(currentUser.id, settings.releaseDate));
+    if (typeof req.body.releaseDate === "object") {
+      promises.push(updateReleaseDate(currentUser.id, req.body.releaseDate));
     }
 
-    if (typeof settings.runtime === "object") {
-      promises.push(updateRuntime(currentUser.id, settings.runtime));
+    if (typeof req.body.runtime === "object") {
+      promises.push(updateRuntime(currentUser.id, req.body.runtime));
     }
 
-    if (typeof settings.streamLocations === "object") {
+    if (typeof req.body.streamLocations === "object") {
       promises.push(
-        updateStreamLocations(currentUser.id, settings.streamLocations)
+        updateStreamLocations(currentUser.id, req.body.streamLocations)
       );
     }
 

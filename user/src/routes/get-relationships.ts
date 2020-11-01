@@ -16,7 +16,7 @@ type RelationshipsPayload = {
 
 /**
  * @api {get} /api/en/user/relationships
- * @apiName GetRelationships
+ * @apiName Get Relationships
  * @apiGroup GetRelationships
  *
  * @apiDescription

@@ -8,13 +8,23 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/accept
- * @apiName RelationshipAccept
- * @apiGroup RelationshipAccept
+ * @apiName Accept Relationship
+ * @apiGroup AcceptRelationship
  *
  * @apiDescription
- * Unblocks a user.
+ * Accepts a user's relationship request.
  *
  * @apiParam {string} id the user whose relationship request to accept
+ *
+ * @apiErrorExample {json}  400 Bad request
+ * {
+ *   "errors": [
+ *      // Present when user attempts to use their own id
+ *      { message: "Two different IDs must be supplied" },
+ *      // Present when there is no request to accept
+ *      { message: "Relationship request doesn't exist" },
+ *   ]
+ * }
  *
  * @apiErrorExample {json}  401 Not authorized
  * {

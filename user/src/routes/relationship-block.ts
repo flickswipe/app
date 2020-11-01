@@ -8,13 +8,21 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/block
- * @apiName BlockUser
- * @apiGroup BlockUser
+ * @apiName Block Relationship
+ * @apiGroup BlockRelationship
  *
  * @apiDescription
  * Blocks a user.
  *
  * @apiParam {string} id the user to block
+ *
+ * @apiErrorExample {json}  400 Bad request
+ * {
+ *   "errors": [
+ *      // Present when user attempts to use their own id
+ *      { message: "Two different IDs must be supplied" },
+ *   ]
+ * }
  *
  * @apiErrorExample {json}  401 Not authorized
  * {

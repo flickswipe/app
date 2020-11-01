@@ -8,13 +8,23 @@ const router = express.Router();
 
 /**
  * @api {post} /api/en/user/relationships/:id/cancel
- * @apiName RelationshipCancel
- * @apiGroup RelationshipCancel
+ * @apiName Cancel Relationship
+ * @apiGroup CancelRelationship
  *
  * @apiDescription
- * Unblocks a user.
+ * Cancels a user's relationship request.
  *
  * @apiParam {string} id the user whose relationship request to cancel
+ *
+ * @apiErrorExample {json}  400 Bad request
+ * {
+ *   "errors": [
+ *      // Present when user attempts to use their own id
+ *      { message: "Two different IDs must be supplied" },
+ *      // Present when there is no request to cancel
+ *      { message: "Relationship request doesn't exist" },
+ *   ]
+ * }
  *
  * @apiErrorExample {json}  401 Not authorized
  * {

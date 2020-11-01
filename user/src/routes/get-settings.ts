@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @api {get} /api/en/user/settings
- * @apiName GetSettings
+ * @apiName Get Settings
  * @apiGroup GetSettings
  *
  * @apiDescription

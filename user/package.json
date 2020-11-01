@@ -56,7 +56,17 @@
     }
   },
   "apidoc": {
-    "order": []
+    "order": [
+      "GetSettings",
+      "UpdateSettings",
+      "GetRelationships",
+      "RequestRelationship",
+      "CancelRelationship",
+      "AcceptRelationship",
+      "RejectRelationship",
+      "BlockRelationship",
+      "UnblockRelationship"
+    ]
   },
   "keywords": [
     "microservice"
