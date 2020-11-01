@@ -54,11 +54,22 @@ const tmdbGenreSchema = new mongoose.Schema(
  */
 interface TmdbGenreModel extends mongoose.Model<TmdbGenreDoc> {
   build(attrs: TmdbGenreAttrs): TmdbGenreDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 tmdbGenreSchema.statics.build = (attrs: TmdbGenreAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.tmdbGenreId}`.padStart(12, "0"));
-  return new TmdbGenre(Object.assign({ _id }, attrs));
+  return new TmdbGenre(
+    Object.assign(
+      { _id: tmdbGenreSchema.statics.id(`${attrs.tmdbGenreId}`) },
+      attrs
+    )
+  );
+};
+
+tmdbGenreSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
+    : mongoose.Types.ObjectId();
 };
 
 /**

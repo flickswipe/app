@@ -2,6 +2,8 @@
  * Types
  */
 
+import { TmdbGenre } from "../../models/tmdb-genre";
+
 // raw data received by parser
 export interface TmdbMovieApiResultRaw {
   adult: boolean;
@@ -57,7 +59,7 @@ export interface TmdbMovieApiResult {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;
@@ -82,11 +84,18 @@ export interface TmdbMovieApiResult {
  *
  * @returns {TmdbMovieApiResult} parsed api result
  */
-const parser = (raw: TmdbMovieApiResultRaw): TmdbMovieApiResult | null => {
+const parser = async (
+  raw: TmdbMovieApiResultRaw
+): Promise<TmdbMovieApiResult | null> => {
   // ignore missing data
   if (!raw?.id) {
     return null;
   }
+
+  // get genre ids
+  const genres = await Promise.all(
+    raw.genres.map(({ id }) => TmdbGenre.findOne({ tmdbGenreId: id }, "_id"))
+  );
 
   // parse
   return {
@@ -97,7 +106,9 @@ const parser = (raw: TmdbMovieApiResultRaw): TmdbMovieApiResult | null => {
       poster: raw.poster_path,
       backdrop: raw.backdrop_path,
     },
-    genres: raw.genres.map(({ id }) => id),
+    genres: genres
+      .filter((genre) => genre && typeof genre.id === "string")
+      .map(({ id }) => id),
     rating: {
       average: raw.vote_average,
       count: raw.vote_count,

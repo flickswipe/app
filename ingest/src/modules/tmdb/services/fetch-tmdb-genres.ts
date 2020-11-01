@@ -4,6 +4,7 @@ import { tmdbGenresParser } from "./queries/tmdb-genres-parser";
 
 import { GenreDetectedPublisher } from "../../../events/publishers/genre-detected";
 import { natsWrapper } from "../../../nats-wrapper";
+import { unifyISO6391 } from "../../../services/unify-iso6391";
 
 /**
  * Fetch genre data from the TMDB RESTful API
@@ -27,7 +28,7 @@ export async function fetchTmdbGenres(
     return null;
   }
 
-  const result = tmdbGenresParser(raw);
+  const result = await tmdbGenresParser(raw);
 
   // skip missing or irrelevant results
   if (!result?.genres) {
@@ -49,7 +50,7 @@ export async function fetchTmdbGenres(
       await new GenreDetectedPublisher(natsWrapper.client).publish({
         id: existingDoc.id,
         name: existingDoc.name,
-        language: existingDoc.language,
+        language: unifyISO6391(existingDoc.language),
         detectedAt: new Date(),
       });
 
@@ -70,7 +71,7 @@ export async function fetchTmdbGenres(
       await new GenreDetectedPublisher(natsWrapper.client).publish({
         id: insertedDoc.id,
         name: insertedDoc.name,
-        language: insertedDoc.language,
+        language: unifyISO6391(insertedDoc.language),
         detectedAt: new Date(),
       });
     }

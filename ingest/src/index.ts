@@ -93,7 +93,7 @@ if (!TMDB_KEY) {
     ],
     // Languages to fetch data in
     languages: [
-      "en-US", // English
+      "en", // English
     ],
     // Whether to include adult media
     includeAdultContent: false,

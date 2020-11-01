@@ -33,23 +33,34 @@ export class EmailTokenCreatedListener extends Listener<
     data: EmailTokenCreatedEvent["data"],
     msg: Message
   ): Promise<void> {
-    // route token types to handler services
-    try {
-      switch (data.emailTokenType) {
-        case EmailTokenType.SignIn:
-          await sendMagicLink(data);
-          break;
+    (await sendMail(data)) && msg.ack();
+  }
+}
 
-        case EmailTokenType.AddEmail:
-          await sendAddEmailLink(data);
-          break;
-      }
-    } catch (err) {
-      console.error(err);
-      return;
+/**
+ * @param data
+ * @returns {boolean} true if message should e acked
+ */
+async function sendMail(
+  data: EmailTokenCreatedEvent["data"]
+): Promise<boolean> {
+  // route token types to handler services
+  try {
+    switch (data.emailTokenType) {
+      case EmailTokenType.SignIn:
+        await sendMagicLink(data);
+        return true;
+
+      case EmailTokenType.AddEmail:
+        await sendAddEmailLink(data);
+        return true;
+
+      default:
+        // ignore data we don't know how to handle
+        return false;
     }
-
-    // mark message as processed
-    msg.ack();
+  } catch (err) {
+    console.error("Couldn't send mail", err);
+    return false;
   }
 }

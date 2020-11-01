@@ -1,8 +1,10 @@
+import { Types } from "mongoose";
 import { MediaItemUpdatedPublisher } from "../events/publishers/media-item-updated";
 import { natsWrapper } from "../nats-wrapper";
 import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
 import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
 import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
+import { unifyISO6391 } from "./unify-iso6391";
 
 export async function announceMovie({
   imdbId,
@@ -37,6 +39,7 @@ export async function announceMovie({
   // merge data
   const streamLocations: {
     [key: string]: {
+      id: string;
       name: string;
       url: string;
     }[];
@@ -47,7 +50,10 @@ export async function announceMovie({
     const { country, locations, updatedAt } = utellyDoc;
 
     const result = locations.map(
-      (location: { displayName: string; url: string }) => ({
+      (location: { id: string; displayName: string; url: string }) => ({
+        id: Types.ObjectId(
+          location.id.padStart(24, "0").slice(-24)
+        ).toHexString(),
         name: location.displayName,
         url: location.url,
       })
@@ -76,10 +82,14 @@ export async function announceMovie({
   );
 
   const mediaItem = {
+    id: tmdbMovieDoc.id,
+    tmdbMovieId: tmdbMovieDoc.tmdbMovieId,
+    imdbId: tmdbMovieDoc.imdbId,
     title: tmdbMovieDoc.title,
+    genres: tmdbMovieDoc.genres,
     images: tmdbMovieDoc.images,
     rating: tmdbMovieDoc.rating,
-    language: tmdbMovieDoc.language,
+    language: unifyISO6391(tmdbMovieDoc.language),
     releaseDate: tmdbMovieDoc.releaseDate,
     runtime: tmdbMovieDoc.runtime,
     plot: tmdbMovieDoc.plot || "",

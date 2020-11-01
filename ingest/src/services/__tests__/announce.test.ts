@@ -31,7 +31,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -75,7 +75,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -106,7 +106,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,
@@ -137,6 +137,55 @@ describe("announce", () => {
       expect(natsWrapper.client.publish).toHaveBeenCalled();
     });
 
+    it("should normalize language attribute in published event", async () => {
+      await MovieId.build({
+        tmdbMovieId: 1,
+      }).save();
+
+      await TmdbMovie.build({
+        tmdbMovieId: 1,
+        imdbId: "tt1234567",
+        title: "My Test Movie",
+        images: {
+          poster: "/poster.jpg",
+          backdrop: "/backdrop.jpg",
+        },
+        genres: ["xxx"],
+        rating: {
+          average: 10,
+          count: 1,
+          popularity: 10,
+        },
+        language: "english",
+        releaseDate: new Date(),
+        runtime: 180,
+        plot: "My Test Movie plot description",
+        neverUse: true,
+      }).save();
+
+      await Utelly.build({
+        imdbId: "tt1234567",
+        country: "uk",
+        locations: [
+          {
+            displayName: "Netflix",
+            name: "NETFLIXUK",
+            id: "1234567890",
+            url: "https://netflix.com/m/123456",
+          },
+        ],
+      }).save();
+
+      await announceMovie({ imdbId: "tt1234567" });
+
+      expect(natsWrapper.client.publish).toHaveBeenCalledWith(
+        "media-item:updated",
+        // @ts-ignore
+        expect.stringContaining('"language":"en"'),
+        expect.any(Function)
+      );
+    });
+
     it("should mark movie id as emitted", async () => {
       await MovieId.build({
         tmdbMovieId: 1,
@@ -150,7 +199,7 @@ describe("announce", () => {
           poster: "/poster.jpg",
           backdrop: "/backdrop.jpg",
         },
-        genres: [1],
+        genres: ["xxx"],
         rating: {
           average: 10,
           count: 1,

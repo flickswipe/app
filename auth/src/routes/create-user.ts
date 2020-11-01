@@ -41,7 +41,7 @@ type UserPayload = {
  *   ]
  * }
  *
- * @apiSuccessExample {json} 202 Accepted
+ * @apiSuccessExample {json} 201 Created
  * {
  *   "message": "User created"
  * }

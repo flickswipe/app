@@ -12,7 +12,7 @@ describe("fetch tmdb genres", () => {
       data: tmdbGenresApiResultSample,
     });
 
-    await fetchTmdbGenres("en-US");
+    await fetchTmdbGenres("en");
     expect(axios).toHaveBeenCalled();
   });
 
@@ -20,7 +20,7 @@ describe("fetch tmdb genres", () => {
     // @ts-ignore
     axios.mockResolvedValueOnce({});
 
-    const result = await fetchTmdbGenres("en-US");
+    const result = await fetchTmdbGenres("en");
 
     expect(result).toBeNull();
   });
@@ -29,7 +29,7 @@ describe("fetch tmdb genres", () => {
     const existingDocAttrs = {
       tmdbGenreId: 69,
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     };
 
     // @ts-ignore
@@ -46,11 +46,11 @@ describe("fetch tmdb genres", () => {
 
     await TmdbGenre.build(existingDocAttrs).save();
 
-    const result = await fetchTmdbGenres("en-US");
+    const result = await fetchTmdbGenres("en");
 
     const overwrittenDoc = await TmdbGenre.findOne({
       tmdbGenreId: 69,
-      language: "en-US",
+      language: "en",
     });
 
     // has been overwritten
@@ -64,7 +64,7 @@ describe("fetch tmdb genres", () => {
     const existingDocAttrs = {
       tmdbGenreId: 69,
       name: "My Genre",
-      language: "en-US",
+      language: "en",
     };
 
     // @ts-ignore
@@ -81,9 +81,40 @@ describe("fetch tmdb genres", () => {
 
     await TmdbGenre.build(existingDocAttrs).save();
 
-    await fetchTmdbGenres("en-US");
+    await fetchTmdbGenres("en");
 
     expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+
+  it("should normalize language attribute in published event when updating doc", async () => {
+    const existingDocAttrs = {
+      tmdbGenreId: 69,
+      name: "My Genre",
+      language: "en",
+    };
+
+    // @ts-ignore
+    axios.mockResolvedValueOnce({
+      data: {
+        genres: [
+          {
+            id: 69,
+            name: "My Overwritten Genre",
+          },
+        ],
+      },
+    });
+
+    await TmdbGenre.build(existingDocAttrs).save();
+
+    await fetchTmdbGenres("en");
+
+    expect(natsWrapper.client.publish).toHaveBeenCalledWith(
+      "genre:detected",
+      // @ts-ignore
+      expect.stringContaining('"language":"en"'),
+      expect.any(Function)
+    );
   });
 
   it("should create tmdb genre docs and return", async () => {
@@ -92,7 +123,7 @@ describe("fetch tmdb genres", () => {
       data: tmdbGenresApiResultSample,
     });
 
-    const newDocs = (await fetchTmdbGenres("en-US")) as TmdbGenreDoc[];
+    const newDocs = (await fetchTmdbGenres("en")) as TmdbGenreDoc[];
 
     // has been returned
     expect(newDocs.length).toBeGreaterThan(0);
@@ -108,8 +139,24 @@ describe("fetch tmdb genres", () => {
       data: tmdbGenresApiResultSample,
     });
 
-    await fetchTmdbGenres("en-US");
+    await fetchTmdbGenres("en");
 
     expect(natsWrapper.client.publish).toHaveBeenCalledTimes(19);
+  });
+
+  it("should normalize language attribute in published event when creating doc", async () => {
+    // @ts-ignore
+    axios.mockResolvedValueOnce({
+      data: tmdbGenresApiResultSample,
+    });
+
+    await fetchTmdbGenres("en");
+
+    expect(natsWrapper.client.publish).toHaveBeenCalledWith(
+      "genre:detected",
+      // @ts-ignore
+      expect.stringContaining('"language":"en"'),
+      expect.any(Function)
+    );
   });
 });

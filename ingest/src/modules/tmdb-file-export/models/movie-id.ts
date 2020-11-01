@@ -18,6 +18,8 @@ interface MovieIdDoc extends mongoose.Document {
   timesUsed: number;
   neverUse: boolean;
   emitted: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 /**
@@ -43,8 +45,11 @@ const movieIdSchema = new mongoose.Schema(
     },
   },
   {
+    timestamps: true,
     toJSON: {
       transform(doc, ret) {
+        delete ret.createdAt;
+        delete ret.updatedAt;
         delete ret._id;
         delete ret.__v;
       },
@@ -57,11 +62,22 @@ const movieIdSchema = new mongoose.Schema(
  */
 interface MovieIdModel extends mongoose.Model<MovieIdDoc> {
   build(attrs: MovieIdAttrs): MovieIdDoc;
+  id(string: string): mongoose.Types.ObjectId;
 }
 
 movieIdSchema.statics.build = (attrs: MovieIdAttrs) => {
-  const _id = mongoose.Types.ObjectId(`${attrs.tmdbMovieId}`.padStart(12, "0"));
-  return new MovieId(Object.assign({ _id }, attrs));
+  return new MovieId(
+    Object.assign(
+      { _id: movieIdSchema.statics.id(`${attrs.tmdbMovieId}`) },
+      attrs
+    )
+  );
+};
+
+movieIdSchema.statics.id = (string = "") => {
+  return string
+    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
+    : mongoose.Types.ObjectId();
 };
 
 /**

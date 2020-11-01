@@ -16,6 +16,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: flickswipe/survey
+      context: survey
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: flickswipe/ingest
       context: ingest
       docker:
@@ -26,6 +34,14 @@ build:
             dest: .
     - image: flickswipe/mail
       context: mail
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: flickswipe/user
+      context: user
       docker:
         dockerfile: Dockerfile
       sync:

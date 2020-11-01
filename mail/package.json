@@ -2,7 +2,7 @@
   "name": "@flickswipe/mail",
   "version": "0.0.1",
   "description": "Listens to events and sends mail accordingly",
-  "main": "index.js",
+  "main": "src/index.js",
   "private": true,
   "scripts": {
     "start": "ts-node-dev src/index.ts",
@@ -36,8 +36,7 @@
       },
       "project": "./tsconfig.json",
       "projectFolderIgnoreList": [
-        "**/node_modules/**",
-        "**/__tests__/**"
+        "**/node_modules/**"
       ]
     },
     "env": {
@@ -58,7 +57,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.24",
+    "@flickswipe/common": "0.0.46",
     "@types/jsdom": "^16.2.4",
     "@types/nodemailer": "^6.4.0",
     "jsdom": "^16.4.0",

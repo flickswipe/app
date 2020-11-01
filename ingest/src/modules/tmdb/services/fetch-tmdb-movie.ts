@@ -32,7 +32,7 @@ export async function fetchTmdbMovie(
     return null;
   }
 
-  const result = tmdbMovieParser(raw);
+  const result = await tmdbMovieParser(raw);
 
   // skip missing or irrelevant results
   if (!result || shouldSkip(result, options)) {
@@ -54,6 +54,7 @@ export async function fetchTmdbMovie(
       if (movieIdDoc.emitted === true) {
         await new MediaItemDestroyedPublisher(natsWrapper.client).publish({
           id: movieIdDoc.id,
+          updatedAt: movieIdDoc.updatedAt,
         });
       }
     }
