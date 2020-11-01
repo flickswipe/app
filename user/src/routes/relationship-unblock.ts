@@ -59,4 +59,4 @@ router.post(
   }
 );
 
-export { router as unblockRouter };
+export { router as relationshipUnblockRouter };

@@ -7,14 +7,14 @@ jest.mock("../../modules/relationships/relationships");
 describe("get relationships", () => {
   describe("user not signed in", () => {
     it("returns a 400", async () => {
-      await request(app).post("/api/en/user/relationships").send().expect(401);
+      await request(app).get("/api/en/user/relationships").send().expect(401);
     });
   });
 
   describe("user signed in", () => {
     it("returns a 200", async () => {
       await request(app)
-        .post("/api/en/user/relationships")
+        .get("/api/en/user/relationships")
         .set("Cookie", await global.signIn())
         .send()
         .expect(200);
@@ -22,7 +22,7 @@ describe("get relationships", () => {
 
     it("calls listAllRelationships", async () => {
       await request(app)
-        .post("/api/en/user/relationships")
+        .get("/api/en/user/relationships")
         .set("Cookie", await global.signIn())
         .send();
 
@@ -31,7 +31,7 @@ describe("get relationships", () => {
 
     it("returns value of listAllRelationships", async () => {
       const response = await request(app)
-        .post("/api/en/user/relationships")
+        .get("/api/en/user/relationships")
         .set("Cookie", await global.signIn())
         .send();
 

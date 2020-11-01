@@ -15,7 +15,7 @@ type RelationshipsPayload = {
 };
 
 /**
- * @api {post} /api/en/user/relationships
+ * @api {get} /api/en/user/relationships
  * @apiName GetRelationships
  * @apiGroup GetRelationships
  *
@@ -37,7 +37,7 @@ type RelationshipsPayload = {
  *   "pending": ["..."],
  * }
  */
-router.post(
+router.get(
   "/api/en/user/relationships",
   currentUser,
   requireAuth,

@@ -59,4 +59,4 @@ router.post(
   }
 );
 
-export { router as relationshipCreateRouter };
+export { router as relationshipRequestRouter };

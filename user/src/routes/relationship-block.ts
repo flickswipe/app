@@ -59,4 +59,4 @@ router.post(
   }
 );
 
-export { router as blockRouter };
+export { router as relationshipBlockRouter };
