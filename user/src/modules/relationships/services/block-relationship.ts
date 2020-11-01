@@ -1,6 +1,10 @@
-import { BadRequestError, RelationshipType } from "@flickswipe/common";
+import {
+  BadRequestError,
+  RelationshipType,
+  RelationshipUpdateType,
+} from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipBlockedPublisher } from "../events/publishers/relationship-blocked";
+import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
 import { Relationship } from "../models/relationship";
 import { RelationshipRequest } from "../models/relationship-request";
 
@@ -53,7 +57,8 @@ export async function blockRelationship(
   });
 
   // publish event
-  await new RelationshipBlockedPublisher(natsWrapper.client).publish({
+  await new RelationshipUpdatedPublisher(natsWrapper.client).publish({
+    relationshipUpdateType: RelationshipUpdateType.Blocked,
     sourceUserId: fromUserId,
     targetUserId: toUserId,
     updatedAt: new Date(),

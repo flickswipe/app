@@ -112,10 +112,12 @@ tab. They can also unblock users.
 ## MongoDB flows
 
 - A can send request to B, unless:
+
   - A has sent a request that B has not accepted or rejected
   - A has sent a "completed" request in the last 24 hours
   - A has blocked B
   - B has blocked A
+
 - After sending a request, the following actions can occur:
 
   - A can cancel the request
@@ -125,19 +127,15 @@ tab. They can also unblock users.
   All 3 actions mark the request as "complete"
 
 - If B accepts the request, two "active" relationships are created
+
 - If A blocks B, the A-B relationship is set to "blocked", any "active" B-A
   relationship is deleted, and any non-"complete" requests are deleted.
 
 ## Events
 
-| Event                 | Payload                                 |
-| --------------------- | --------------------------------------- |
-| RelationshipRequested | `{ sourceUser, targetUser, updatedAt }` |
-| RelationshipCancelled | `{ sourceUser, targetUser, updatedAt }` |
-| RelationshipRejected  | `{ sourceUser, targetUser, updatedAt }` |
-| RelationshipAccepted  | `{ sourceUser, targetUser, updatedAt }` |
-| RelationshipBlocked   | `{ sourceUser, targetUser, updatedAt }` |
-| RelationshipUnblocked | `{ sourceUser, targetUser, updatedAt }` |
+| Event               | Payload                                                         |
+| ------------------- | --------------------------------------------------------------- |
+| RelationshipUpdated | `{ relationshipUpdateType, sourceUser, targetUser, updatedAt }` |
 
 # Settings
 

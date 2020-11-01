@@ -1,6 +1,10 @@
-import { BadRequestError, RelationshipType } from "@flickswipe/common";
+import {
+  BadRequestError,
+  RelationshipType,
+  RelationshipUpdateType,
+} from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipAcceptedPublisher } from "../events/publishers/relationship-accepted";
+import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
 import { Relationship } from "../models/relationship";
 import { RelationshipRequest } from "../models/relationship-request";
 
@@ -39,7 +43,8 @@ export async function acceptRelationship(
   ]);
 
   // publish event
-  await new RelationshipAcceptedPublisher(natsWrapper.client).publish({
+  await new RelationshipUpdatedPublisher(natsWrapper.client).publish({
+    relationshipUpdateType: RelationshipUpdateType.Accepted,
     sourceUserId: originalReceiverId,
     targetUserId: originalRequesterId,
     updatedAt: new Date(),

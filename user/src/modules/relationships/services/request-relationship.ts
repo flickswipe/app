@@ -2,10 +2,11 @@ import {
   BadRequestError,
   NotAuthorizedError,
   RelationshipType,
+  RelationshipUpdateType,
   TooManyRequestsError,
 } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipRequestedPublisher } from "../events/publishers/relationship-requested";
+import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
 import { Relationship } from "../models/relationship";
 import { RelationshipRequest } from "../models/relationship-request";
 
@@ -90,7 +91,8 @@ export async function requestRelationship(
   }).save();
 
   // publish event
-  await new RelationshipRequestedPublisher(natsWrapper.client).publish({
+  await new RelationshipUpdatedPublisher(natsWrapper.client).publish({
+    relationshipUpdateType: RelationshipUpdateType.Requested,
     sourceUserId: fromUserId,
     targetUserId: toUserId,
     updatedAt: new Date(),

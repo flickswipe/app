@@ -1,6 +1,6 @@
-import { BadRequestError } from "@flickswipe/common";
+import { BadRequestError, RelationshipUpdateType } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipCancelledPublisher } from "../events/publishers/relationship-cancelled";
+import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
 import { RelationshipRequest } from "../models/relationship-request";
 
 export async function cancelRelationship(
@@ -28,7 +28,8 @@ export async function cancelRelationship(
   await existingRequestDoc.save();
 
   // publish event
-  await new RelationshipCancelledPublisher(natsWrapper.client).publish({
+  await new RelationshipUpdatedPublisher(natsWrapper.client).publish({
+    relationshipUpdateType: RelationshipUpdateType.Cancelled,
     sourceUserId: originalRequesterId,
     targetUserId: originalReceiverId,
     updatedAt: new Date(),
