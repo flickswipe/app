@@ -1,6 +1,7 @@
 import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
+import { listAllSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
 import { getMediaItem } from "../modules/track-ingest/track-ingest";
 import { getSuggestions } from "../modules/track-predict/track-predict";
 
@@ -44,9 +45,17 @@ router.get(
       getMediaItem
     );
 
-    // filter out suggestions that don't exist any more
+    // get all survey responses
+    const mediaItemsWithResponses = (
+      await listAllSurveyResponses(currentUser.id)
+    ).map(({ mediaItem }) => mediaItem);
+
+    // filter out suggestions that aren't relevant
     const queue = (await Promise.all(suggestions))
+      // resolved to a media item
       .filter((n) => n)
+      // hasn't been responded to yet
+      .filter((mediaItem) => !mediaItemsWithResponses.includes(mediaItem.id))
       .map((mediaItem) => ({
         id: mediaItem.id,
         title: mediaItem.title,
