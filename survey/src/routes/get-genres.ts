@@ -8,6 +8,7 @@ import {
 import express, { Request, Response } from "express";
 
 import { Genre } from "../modules/track-ingest/models/genre";
+import { getGenres } from "../modules/track-ingest/track-ingest";
 
 const router = express.Router();
 
@@ -53,9 +54,7 @@ router.get(
   async (req: Request, res: Response) => {
     const { iso6391: language } = req.params;
     // get genres
-    const genres = await Genre.find({
-      language: language as iso6391,
-    });
+    const genres = await getGenres(language as iso6391);
 
     // throw error if not found
     if (!genres.length) {

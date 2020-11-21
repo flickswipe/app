@@ -2,7 +2,7 @@ import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
-import { MediaItem } from "../modules/track-ingest/models/media-item";
+import { getMediaItem } from "../modules/track-ingest/track-ingest";
 
 const router = express.Router();
 
@@ -59,9 +59,7 @@ router.get(
     const { id } = req.params;
 
     // get media item
-    const mediaItem = await MediaItem.findById({
-      _id: id,
-    }).populate("genres");
+    const mediaItem = await getMediaItem(id);
 
     // throw error if not found
     if (!mediaItem) {
