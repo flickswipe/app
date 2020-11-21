@@ -28,7 +28,7 @@ const router = express.Router();
  * @apiErrorExample {json}  400 Bad request
  * {
  *   "errors": [
- *      // Present when invalid interestType given
+ *      // Present when invalid id given
  *      { field: "id", message: "must be valid id" },
  *      // Present when invalid interestType given
  *      { field: "interestType", message: "value must be one of..." },
