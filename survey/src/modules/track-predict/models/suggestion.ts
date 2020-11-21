@@ -25,11 +25,7 @@ interface SuggestionDoc extends mongoose.Document {
 const suggestion = new mongoose.Schema(
   {
     user: { type: String, required: true },
-    mediaItem: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "MediaItem",
-      required: true,
-    },
+    mediaItem: { type: String, required: true },
   },
   {
     timestamps: true,

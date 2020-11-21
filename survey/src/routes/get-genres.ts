@@ -7,7 +7,6 @@ import {
 
 import express, { Request, Response } from "express";
 
-import { Genre } from "../modules/track-ingest/models/genre";
 import { getGenres } from "../modules/track-ingest/track-ingest";
 
 const router = express.Router();
