@@ -1,0 +1,10 @@
+{
+  "eslint.workingDirectories": [
+    { "directory": "auth", "changeProcessCWD": true },
+    { "directory": "docs", "changeProcessCWD": true },
+    { "directory": "ingest", "changeProcessCWD": true },
+    { "directory": "mail", "changeProcessCWD": true },
+    { "directory": "survey", "changeProcessCWD": true },
+    { "directory": "user", "changeProcessCWD": true }
+  ]
+}
