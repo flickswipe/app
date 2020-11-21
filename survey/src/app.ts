@@ -8,6 +8,7 @@ import cookieSession from "cookie-session";
 
 import { getGenresRouter } from "./routes/get-genres";
 import { getMediaItemRouter } from "./routes/get-media-item";
+import { getSuggestionsRouter } from "./routes/get-suggestions";
 
 /**
  * Configure express app
@@ -33,6 +34,7 @@ app.use(
  */
 app.use(getGenresRouter);
 app.use(getMediaItemRouter);
+app.use(getSuggestionsRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
