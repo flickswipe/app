@@ -1,6 +1,6 @@
-# survey
+# Survey
 
-Provides endpoints for aggregated media item data.
+Provides media item data to user and consumes user ratings.
 
 ### Overview
 
@@ -38,3 +38,21 @@ start ./apidoc/index.html
 | streamLocations            | `number`                         |
 | createdAt                  | `Date`                           |
 | updatedAt                  | `Date`                           |
+
+| Suggestion |                 |
+| ---------- | --------------- |
+| id         |                 |
+| user       | `User._id`      |
+| mediaItem  | `MediaItem._id` |
+| createdAt  | `Date`          |
+| updatedAt  | `Date`          |
+
+| SurveyResponse |                                                     |
+| -------------- | --------------------------------------------------- |
+| id             |                                                     |
+| user           | `User._id`                                          |
+| mediaItem      | `MediaItem._id`                                     |
+| interest       | `"interested", "uninterested", "consumed", "never"` |
+| rating         | `number`                                            |
+| createdAt      | `Date`                                              |
+| updatedAt      | `Date`                                              |
