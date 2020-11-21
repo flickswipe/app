@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import {
+  updateCountry,
   updateGenres,
   updateLanguages,
   updateRating,
@@ -31,6 +32,9 @@ describe("update settings", () => {
 
   it.each([
     {
+      country: "",
+    },
+    {
       genres: {},
     },
     {
@@ -54,6 +58,17 @@ describe("update settings", () => {
       .set("Cookie", await global.signIn())
       .send(sampleSettings)
       .expect(200);
+  });
+
+  it("should call updateCountry correctly", async () => {
+    await request(app)
+      .post(`/api/en/user/settings/update`)
+      .set("Cookie", await global.signIn())
+      .send({
+        country: "",
+      });
+
+    expect(updateCountry).toHaveBeenCalledWith(expect.any(String), "");
   });
 
   it("should call updateGenres correctly", async () => {

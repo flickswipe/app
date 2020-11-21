@@ -1,4 +1,5 @@
 export const listAllSettings = jest.fn().mockResolvedValue({
+  country: "",
   genres: {},
   languages: {},
   rating: {},
@@ -6,6 +7,7 @@ export const listAllSettings = jest.fn().mockResolvedValue({
   runtime: {},
   streamLocations: {},
 });
+export const updateCountry = jest.fn().mockResolvedValue(null);
 export const updateGenres = jest.fn().mockResolvedValue(null);
 export const updateLanguages = jest.fn().mockResolvedValue(null);
 export const updateRating = jest.fn().mockResolvedValue(null);

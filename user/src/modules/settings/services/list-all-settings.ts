@@ -1,4 +1,5 @@
 import {
+  CountrySetting,
   GenresSetting,
   LanguagesSetting,
   RatingSetting,
@@ -11,6 +12,7 @@ import camelCase from "camelcase";
 
 export type SettingsPayload = {
   [key: string]: any;
+  country: CountrySetting["value"];
   genres: GenresSetting["value"];
   languages: LanguagesSetting["value"];
   rating: RatingSetting["value"];
@@ -46,6 +48,7 @@ export async function listAllSettings(
   // add default settings
   settingsPayload = Object.assign(
     {
+      country: "",
       genres: {},
       languages: {},
       rating: {},
