@@ -7,7 +7,7 @@ import { getSuggestions } from "../modules/track-predict/track-predict";
 const router = express.Router();
 
 /**
- * @api {post} /api/en/survey/queue
+ * @api {get} /api/en/survey/queue
  * @apiName Queue
  * @apiGroup Queue
  *

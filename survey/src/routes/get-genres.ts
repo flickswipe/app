@@ -12,7 +12,7 @@ import { getGenres } from "../modules/track-ingest/track-ingest";
 const router = express.Router();
 
 /**
- * @api {post} /api/en/survey/media-item/:id
+ * @api {get} /api/en/survey/media-item/:id
  * @apiName Genres
  * @apiGroup Genres
  *
