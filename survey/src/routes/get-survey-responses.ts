@@ -6,7 +6,7 @@ import { listAllSurveyResponses } from "../modules/handle-survey-response/handle
 const router = express.Router();
 
 /**
- * @api {get} /api/en/user/responses/interested
+ * @api {get} /api/en/survey/responses/interested
  * @apiName InterestedResponses
  * @apiGroup InterestedResponses
  *
@@ -28,14 +28,15 @@ const router = express.Router();
  * ]
  */
 router.get(
-  "/api/:iso6391/user/responses/interested",
+  "/api/:iso6391/survey/responses/interested",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
     const { currentUser } = req;
 
     // get media items from survey responses
-    const mediaItems = (await listAllSurveyResponses(currentUser.id))
+    const surveyResponses = await listAllSurveyResponses(currentUser.id);
+    const mediaItems = surveyResponses
       .filter(({ interestType }) => interestType === InterestType.Interested)
       .map(({ mediaItem }) => mediaItem);
 

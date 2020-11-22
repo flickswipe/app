@@ -6,7 +6,7 @@ import { listAllSurveyResponses } from "../modules/handle-survey-response/handle
 const router = express.Router();
 
 /**
- * @api {get} /api/en/user/ratings
+ * @api {get} /api/en/survey/ratings
  * @apiName Ratings
  * @apiGroup Ratings
  *
@@ -31,7 +31,7 @@ const router = express.Router();
  * ]
  */
 router.get(
-  "/api/:iso6391/user/ratings",
+  "/api/:iso6391/survey/ratings",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
