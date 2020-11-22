@@ -42,9 +42,7 @@ describe("user created listener", () => {
 
       const existingDoc = await User.findOne({ _id: id });
 
-      expect(existingDoc).toEqual(
-        expect.objectContaining({ id, email: "test@user.com" })
-      );
+      expect(existingDoc).toEqual(expect.objectContaining({ id }));
     });
 
     it("should throw an error", async () => {
@@ -96,21 +94,20 @@ describe("user created listener", () => {
   describe("create new doc", () => {
     it("should create a new doc", async () => {
       const { listener, msg } = await setup();
+      const id = mongoose.Types.ObjectId().toHexString();
 
       await listener.onMessage(
         {
-          id: mongoose.Types.ObjectId().toHexString(),
+          id: id,
           email: "test@user.com",
           createdAt: new Date(),
         },
         msg
       );
 
-      const newDoc = await User.findOne({ email: "test@user.com" });
+      const newDoc = await User.findOne({ id });
 
-      expect(newDoc).toEqual(
-        expect.objectContaining({ email: "test@user.com" })
-      );
+      expect(newDoc).toEqual(expect.objectContaining({ id }));
     });
 
     it("should acknowledge the message", async () => {
