@@ -1,4 +1,5 @@
 import { BadRequestError, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateRuntime } from "../update-runtime";
 
@@ -56,6 +57,12 @@ describe("update runtime setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateRuntime(userId, runtimeSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -73,5 +80,11 @@ describe("update runtime setting", () => {
         })
       );
     });
+  });
+
+  it("should publish event", async () => {
+    await updateRuntime(userId, runtimeSetting);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 import { BadRequestError, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateStreamLocations } from "../update-stream-locations";
 
@@ -55,6 +56,12 @@ describe("update stream locations setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateStreamLocations(userId, streamLocationsSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -71,6 +78,12 @@ describe("update stream locations setting", () => {
           value: streamLocationsSetting,
         })
       );
+    });
+
+    it("should publish event", async () => {
+      await updateStreamLocations(userId, streamLocationsSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
     });
   });
 });

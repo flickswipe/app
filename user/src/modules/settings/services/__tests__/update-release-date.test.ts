@@ -1,4 +1,5 @@
 import { BadRequestError, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateReleaseDate } from "../update-release-date";
 
@@ -54,6 +55,12 @@ describe("update release date setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateReleaseDate(userId, releaseDateSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -71,5 +78,11 @@ describe("update release date setting", () => {
         })
       );
     });
+  });
+
+  it("should publish event", async () => {
+    await updateReleaseDate(userId, releaseDateSetting);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

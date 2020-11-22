@@ -4,6 +4,8 @@ import {
   SettingType,
 } from "@flickswipe/common";
 import { Types } from "mongoose";
+import { natsWrapper } from "../../../nats-wrapper";
+import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
 
 export async function updateRating(
@@ -28,13 +30,20 @@ export async function updateRating(
   if (existingDoc) {
     existingDoc.value = value;
     await existingDoc.save();
-    return;
+  } else {
+    // create
+    await Setting.build({
+      settingType: SettingType.Rating,
+      user: userId,
+      value: value,
+    }).save();
   }
 
-  // create
-  await Setting.build({
+  // publish event
+  new UserUpdatedSettingPublisher(natsWrapper.client).publish({
     settingType: SettingType.Rating,
     user: userId,
     value: value,
-  }).save();
+    updatedAt: new Date(),
+  });
 }

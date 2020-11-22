@@ -1,4 +1,5 @@
 import { BadRequestError, iso6391, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateLanguages } from "../update-languages";
 
@@ -56,6 +57,12 @@ describe("update languages setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateLanguages(userId, languagesSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -72,6 +79,12 @@ describe("update languages setting", () => {
           value: languagesSetting,
         })
       );
+    });
+
+    it("should publish event", async () => {
+      await updateLanguages(userId, languagesSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
     });
   });
 });
