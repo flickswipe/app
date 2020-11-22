@@ -5,6 +5,7 @@ import {
 } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
+import { createSuggestions } from "../../../generate-suggestions/generate-suggestions";
 import { Setting } from "../../models/setting";
 
 const { QUEUE_GROUP_NAME } = process.env;
@@ -27,7 +28,13 @@ export class UserUpdatedSettingListener extends Listener<UserUpdatedSettingEvent
     data: UserUpdatedSettingEvent["data"],
     msg: Message
   ): Promise<void> {
+    // update database
     await updateUserSettings(data);
+
+    // create suggestions
+    const userId = data.user;
+    await createSuggestions(userId, true);
+
     msg.ack();
   }
 }

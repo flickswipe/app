@@ -7,6 +7,7 @@ import {
 
 import { Message } from "node-nats-streaming";
 import { User } from "../../models/user";
+import { createSuggestions } from "../../services/create-suggestions";
 
 const { QUEUE_GROUP_NAME } = process.env;
 
@@ -36,6 +37,11 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
 
     // create
     await createUser(data);
+
+    // create suggestions
+    const userId = data.id;
+    await createSuggestions(userId);
+
     msg.ack();
   }
 }

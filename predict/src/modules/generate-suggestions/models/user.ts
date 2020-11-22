@@ -5,6 +5,7 @@ import mongoose from "mongoose";
  */
 interface UserAttrs {
   id: string;
+  queueLength?: number;
 }
 
 /**
@@ -12,6 +13,7 @@ interface UserAttrs {
  */
 interface UserDoc extends mongoose.Document {
   id: string;
+  queueLength: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,6 +26,10 @@ const userSchema = new mongoose.Schema(
     id: {
       type: String,
       required: true,
+    },
+    queueLength: {
+      type: Number,
+      default: 0,
     },
   },
   {
