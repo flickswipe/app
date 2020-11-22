@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { getUserWithSmallestQueue } from "./modules/generate-suggestions/generate-suggestions";
+import { createSuggestions } from "./modules/generate-suggestions/__mocks__/generate-suggestions";
 
 import { natsWrapper } from "./nats-wrapper";
 
@@ -57,4 +59,19 @@ if (!QUEUE_GROUP_NAME) {
   } catch (err) {
     console.error(err);
   }
+
+  // continuously generate suggestions
+  const loop = async () => {
+    const user = await getUserWithSmallestQueue();
+
+    if (!user) {
+      setTimeout(loop, 60 * 1000);
+      return;
+    }
+
+    await createSuggestions(user.id);
+    setImmediate(loop);
+  };
+
+  loop();
 })();

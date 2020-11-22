@@ -11,7 +11,9 @@ export async function getUserWithSmallestQueue(
     },
   }).sort({ queueLength: "asc", updatedAt: "desc" });
 
-  return {
-    id: user.id,
-  };
+  return user
+    ? {
+        id: user.id,
+      }
+    : null;
 }
