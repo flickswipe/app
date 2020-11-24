@@ -18,28 +18,28 @@ const {
 } = process.env;
 
 if (!NATS_CLIENT_ID) {
-  throw new Error("NATS_CLIENT_ID must be defined");
+  throw new Error(`NATS_CLIENT_ID must be defined`);
 }
 if (!NATS_URL) {
-  throw new Error("NATS_URL must be defined");
+  throw new Error(`NATS_URL must be defined`);
 }
 if (!NATS_CLUSTER_ID) {
-  throw new Error("NATS_CLUSTER_ID must be defined");
+  throw new Error(`NATS_CLUSTER_ID must be defined`);
 }
 if (!MONGO_URI) {
-  throw new Error("MONGO_URI must be defined");
+  throw new Error(`MONGO_URI must be defined`);
 }
 if (!JWT_KEY) {
-  throw new Error("JWT_KEY must be defined");
+  throw new Error(`JWT_KEY must be defined`);
 }
 if (!PORT) {
-  throw new Error("PORT must be defined");
+  throw new Error(`PORT must be defined`);
 }
 if (!HOST) {
-  throw new Error("HOST must be defined");
+  throw new Error(`HOST must be defined`);
 }
 if (!QUEUE_GROUP_NAME) {
-  throw new Error("QUEUE_GROUP_NAME must be defined");
+  throw new Error(`QUEUE_GROUP_NAME must be defined`);
 }
 
 /**

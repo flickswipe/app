@@ -28,35 +28,27 @@ export class MediaItemsSuggestedListener extends Listener<MediaItemsSuggestedEve
     msg: Message
   ): Promise<void> {
     // create suggestion doc if none exists
-    ((await Suggestion.findOne(data)) || (await createSuggestionDocs(data))) &&
-      msg.ack();
+    (await Suggestion.findOne(data)) || (await createSuggestionDocs(data));
+    msg.ack();
   }
 }
 
 /**
  * @param data data to create with
- * @returns {boolean} true if message should be acked
  */
 async function createSuggestionDocs(
   data: MediaItemsSuggestedEvent["data"]
-): Promise<boolean> {
+): Promise<void> {
   const { user, mediaItems } = data;
 
   const promises = [];
 
-  try {
-    for (const mediaItem of mediaItems) {
-      const promise = Suggestion.build({ user, mediaItem }).save();
-      promises.push(promise);
-    }
-
-    await Promise.all(promises);
-  } catch (err) {
-    console.error(`Couldn't create suggestion, will try again later.`);
-    console.error(err);
-    return;
+  for (const mediaItem of mediaItems) {
+    const promise = Suggestion.build({ user, mediaItem }).save();
+    promises.push(promise);
   }
 
+  await Promise.all(promises);
+
   console.log(`Suggested ${mediaItems.length} media items for user #${user}`);
-  return true;
 }

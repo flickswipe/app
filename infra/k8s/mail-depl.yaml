@@ -44,16 +44,3 @@ spec:
               value: "mail_queue_group"
             - name: SENDER_ADDRESS
               value: "'Alvera Cormier' <alvera.cormier@ethereal.email>"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mail-srv
-spec:
-  selector:
-    app: mail
-  ports:
-    - name: mail
-      protocol: TCP
-      port: 3000
-      targetPort: 3000

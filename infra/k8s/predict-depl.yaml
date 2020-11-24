@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predict-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: predict
+  template:
+    metadata:
+      labels:
+        app: predict
+    spec:
+      containers:
+        - name: predict
+          image: flickswipe/predict
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: flickswipe
+            - name: MONGO_URI
+              value: "mongodb://predict-mongo-srv:27017/predict"
+            - name: QUEUE_GROUP_NAME
+              value: "predict_queue_group"

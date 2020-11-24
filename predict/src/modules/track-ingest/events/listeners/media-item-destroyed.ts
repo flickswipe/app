@@ -12,9 +12,7 @@ const { QUEUE_GROUP_NAME } = process.env;
 /**
  * Listen to `MediaItemDestroyed` events
  */
-export class MediaItemDestroyedListener extends Listener<
-  MediaItemDestroyedEvent
-> {
+export class MediaItemDestroyedListener extends Listener<MediaItemDestroyedEvent> {
   // set listener subject
   subject: Subjects.MediaItemDestroyed = Subjects.MediaItemDestroyed;
 
@@ -29,31 +27,24 @@ export class MediaItemDestroyedListener extends Listener<
     data: MediaItemDestroyedEvent["data"],
     msg: Message
   ): Promise<void> {
-    (await deleteMediaItem(data)) && msg.ack();
+    await deleteMediaItem(data);
+    msg.ack();
   }
 }
 
 /**
  * Delete doc from MediaItem collection
  * @param data message data
- * @returns {boolean} true if msg should be acked
  */
 async function deleteMediaItem(
   data: MediaItemDestroyedEvent["data"]
-): Promise<boolean> {
+): Promise<void> {
   const { id } = data;
 
   // @todo don't overwrite more recent data
 
-  try {
-    await MediaItem.deleteMany({
-      _id: id,
-    });
-    console.log(`Removed media item ${id}`);
-  } catch (err) {
-    console.error(`Couldn't delete media item ${id}`, err);
-    return false;
-  }
-
-  return true;
+  await MediaItem.deleteMany({
+    _id: id,
+  });
+  console.log(`Removed media item ${id}`);
 }

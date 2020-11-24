@@ -38,35 +38,28 @@ export class UserUpdatedEmailListener extends Listener<UserUpdatedEmailEvent> {
     }
 
     // update
-    (await updateUserEmail(existingDoc, data)) && msg.ack();
+    await updateUserEmail(existingDoc, data);
+    msg.ack();
   }
 }
 
 /**
  * @param data data to update with
- * @returns {boolean} true if message should be acked
  */
 async function updateUserEmail(
   existingDoc: UserDoc,
   data: UserUpdatedEmailEvent["data"]
-): Promise<boolean> {
+): Promise<void> {
   const { id, email } = data;
 
   // don't update if current data more recent
   if (existingDoc.updatedAt > data.updatedAt) {
     console.log(`Skipping user update: current data is more recent`);
-    return true;
+    return;
   }
   // update
   existingDoc.email = email;
-
-  try {
-    await existingDoc.save();
-  } catch (err) {
-    console.error(`Couldn't update user #${id}'s email to ${email}`, err);
-    return false;
-  }
+  await existingDoc.save();
 
   console.log(`Updated user #${id}'s email to ${existingDoc.email}`);
-  return true;
 }

@@ -1,5 +1,3 @@
-import util from "util";
-
 import {
   AnySetting,
   BadRequestError,
@@ -115,8 +113,7 @@ async function getUserSuggestions(
   userId: string,
   settings: SimpleSetting[]
 ): Promise<string[]> {
-  console.log("Got userId", userId);
-  console.log("Got settings", settings);
+  console.log("Creating suggestions for userId", userId);
 
   // Base query
   const query = {};
@@ -304,12 +301,7 @@ async function getUserSuggestions(
   }
 
   // Query candidates from media item collection
-  console.log("Getting suggestion candidates with query");
-  console.log(util.inspect(query, { showHidden: false, depth: null }));
-
   const candidates = await queryMediaItems(query, MAX_SUGGESTIONS_TO_GENERATE);
-
-  console.log("Candidates", candidates);
   const suggestions: string[] = candidates.map(({ id }) => id).filter((n) => n);
 
   console.log(

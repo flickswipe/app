@@ -35,24 +35,18 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
     }
 
     // create
-    (await createUser(data)) && msg.ack();
+    await createUser(data);
+    msg.ack();
   }
 }
 
 /**
  * @param data data to update with
- * @returns {boolean} true if message should be acked
  */
-async function createUser(data: UserCreatedEvent["data"]): Promise<boolean> {
+async function createUser(data: UserCreatedEvent["data"]): Promise<void> {
   const { id, email } = data;
 
-  try {
-    await User.build({ id, email }).save();
-  } catch (err) {
-    console.error(`Couldn't create user ${id} with email ${email}`, err);
-    return false;
-  }
+  await User.build({ id, email }).save();
 
   console.log(`Created user #${id} with email "${email}"`);
-  return true;
 }

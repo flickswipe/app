@@ -40,6 +40,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: flickswipe/predict
+      context: predict
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: flickswipe/user
       context: user
       docker:
