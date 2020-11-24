@@ -1,4 +1,5 @@
 import { BadRequestError, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateGenres } from "../update-genres";
 
@@ -53,6 +54,12 @@ describe("update genres setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateGenres("useruseruser", genresSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -69,6 +76,12 @@ describe("update genres setting", () => {
           value: genresSetting,
         })
       );
+    });
+
+    it("should publish event", async () => {
+      await updateGenres("useruseruser", genresSetting);
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
     });
   });
 });

@@ -26,22 +26,28 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
     const existingDoc = await MediaItem.findOne({ _id: data.id });
 
     if (existingDoc) {
-      (await updateMediaItem(existingDoc, data)) && msg.ack();
+      await updateMediaItem(existingDoc, data);
+      msg.ack();
       return;
     }
 
-    (await createMediaItem(data)) && msg.ack();
+    await createMediaItem(data);
+    msg.ack();
   }
 }
 
+/**
+ * @param existingDoc doc to update
+ * @param data
+ */
 async function updateMediaItem(
   existingDoc: MediaItemDoc,
   data: MediaItemUpdatedEvent["data"]
-): Promise<boolean> {
+): Promise<void> {
   // don't overwrite more recent data
   if (existingDoc.updatedAt > data.updatedAt) {
     console.log(`Skipping media item update: current data is more recent`);
-    return true;
+    return;
   }
   // update
   existingDoc.imdbId = data.imdbId;
@@ -55,27 +61,18 @@ async function updateMediaItem(
   existingDoc.plot = data.plot;
   existingDoc.streamLocations = data.streamLocations;
 
-  try {
-    await existingDoc.save();
-  } catch (err) {
-    console.error(`Couldn't update media item "${data.title}"`, err);
-    return false;
-  }
+  await existingDoc.save();
 
   console.log(`Updated media item "${data.title}"`);
-  return true;
 }
 
+/**
+ * @param data
+ */
 async function createMediaItem(
   data: MediaItemUpdatedEvent["data"]
-): Promise<boolean> {
-  try {
-    await MediaItem.build(data).save();
-  } catch (err) {
-    console.error(`Couldn't create media item "${data.title}"`, err);
-    return false;
-  }
+): Promise<void> {
+  await MediaItem.build(data).save();
 
   console.log(`Created media item "${data.title}"`);
-  return true;
 }

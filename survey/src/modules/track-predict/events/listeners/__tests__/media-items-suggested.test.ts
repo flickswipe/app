@@ -1,11 +1,11 @@
 import { Message } from "node-nats-streaming";
 import { Suggestion } from "../../../models/suggestion";
 import { natsWrapper } from "../../../../../nats-wrapper";
-import { MediaItemSuggestedListener } from "../media-item-suggested";
+import { MediaItemsSuggestedListener } from "../media-items-suggested";
 
 const setup = async () => {
   return {
-    listener: new MediaItemSuggestedListener(natsWrapper.client),
+    listener: new MediaItemsSuggestedListener(natsWrapper.client),
 
     // @ts-ignore
     msg: {
@@ -27,7 +27,7 @@ describe("media item suggested listener", () => {
       await listener.onMessage(
         {
           user: "useruseruser",
-          mediaItem: "itemitemitem",
+          mediaItems: ["itemitemitem"],
         },
         msg
       );
@@ -55,7 +55,7 @@ describe("media item suggested listener", () => {
       await listener.onMessage(
         {
           user: "useruseruser",
-          mediaItem: "itemitemitem",
+          mediaItems: ["itemitemitem"],
         },
         msg
       );
@@ -71,7 +71,7 @@ describe("media item suggested listener", () => {
       await listener.onMessage(
         {
           user: "useruseruser",
-          mediaItem: "itemitemitem",
+          mediaItems: ["itemitemitem"],
         },
         msg
       );
@@ -92,7 +92,7 @@ describe("media item suggested listener", () => {
     await listener.onMessage(
       {
         user: "useruseruser",
-        mediaItem: "itemitemitem",
+        mediaItems: ["itemitemitem"],
       },
       msg
     );

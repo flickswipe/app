@@ -10,6 +10,8 @@ import { getGenresRouter } from "./routes/get-genres";
 import { getMediaItemRouter } from "./routes/get-media-item";
 import { getSuggestionsRouter } from "./routes/get-suggestions";
 import { surveyRespondRouter } from "./routes/survey-respond";
+import { getSurveyResponsesRouter } from "./routes/get-survey-responses";
+import { getRatingsRouter } from "./routes/get-ratings";
 
 /**
  * Configure express app
@@ -35,6 +37,8 @@ app.use(
  */
 app.use(getGenresRouter);
 app.use(getMediaItemRouter);
+app.use(getSurveyResponsesRouter);
+app.use(getRatingsRouter);
 app.use(getSuggestionsRouter);
 app.use(surveyRespondRouter);
 

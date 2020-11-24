@@ -15,9 +15,7 @@ const { QUEUE_GROUP_NAME } = process.env;
 /**
  * Listen to `EmailTokenCreated` events
  */
-export class EmailTokenCreatedListener extends Listener<
-  EmailTokenCreatedEvent
-> {
+export class EmailTokenCreatedListener extends Listener<EmailTokenCreatedEvent> {
   // set listener subject
   subject: Subjects.EmailTokenCreated = Subjects.EmailTokenCreated;
 
@@ -33,34 +31,27 @@ export class EmailTokenCreatedListener extends Listener<
     data: EmailTokenCreatedEvent["data"],
     msg: Message
   ): Promise<void> {
-    (await sendMail(data)) && msg.ack();
+    await sendMail(data);
+    msg.ack();
   }
 }
 
 /**
  * @param data
- * @returns {boolean} true if message should e acked
  */
-async function sendMail(
-  data: EmailTokenCreatedEvent["data"]
-): Promise<boolean> {
+async function sendMail(data: EmailTokenCreatedEvent["data"]): Promise<void> {
   // route token types to handler services
-  try {
-    switch (data.emailTokenType) {
-      case EmailTokenType.SignIn:
-        await sendMagicLink(data);
-        return true;
+  switch (data.emailTokenType) {
+    case EmailTokenType.SignIn:
+      await sendMagicLink(data);
+      return;
 
-      case EmailTokenType.AddEmail:
-        await sendAddEmailLink(data);
-        return true;
+    case EmailTokenType.AddEmail:
+      await sendAddEmailLink(data);
+      return;
 
-      default:
-        // ignore data we don't know how to handle
-        return false;
-    }
-  } catch (err) {
-    console.error("Couldn't send mail", err);
-    return false;
+    default:
+      // ignore data we don't know how to handle
+      return;
   }
 }

@@ -16,24 +16,24 @@ const {
 } = process.env;
 
 if (!MONGO_URI) {
-  throw new Error("MONGO_URI must be defined");
+  throw new Error(`MONGO_URI must be defined`);
 }
 if (!NATS_CLIENT_ID) {
-  throw new Error("NATS_CLIENT_ID must be defined");
+  throw new Error(`NATS_CLIENT_ID must be defined`);
 }
 if (!NATS_URL) {
-  throw new Error("NATS_URL must be defined");
+  throw new Error(`NATS_URL must be defined`);
 }
 if (!NATS_CLUSTER_ID) {
-  throw new Error("NATS_CLUSTER_ID must be defined");
+  throw new Error(`NATS_CLUSTER_ID must be defined`);
 }
 
 if (!RAPIDAPI_KEY) {
-  throw new Error("RAPIDAPI_KEY must be defined");
+  throw new Error(`RAPIDAPI_KEY must be defined`);
 }
 
 if (!TMDB_KEY) {
-  throw new Error("TMDB_KEY must be defined");
+  throw new Error(`TMDB_KEY must be defined`);
 }
 
 /**

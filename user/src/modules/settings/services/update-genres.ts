@@ -4,6 +4,8 @@ import {
   SettingType,
 } from "@flickswipe/common";
 import { Types } from "mongoose";
+import { natsWrapper } from "../../../nats-wrapper";
+import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
 
 export async function updateGenres(
@@ -30,13 +32,20 @@ export async function updateGenres(
   if (existingDoc) {
     existingDoc.value = value;
     await existingDoc.save();
-    return;
+  } else {
+    // create
+    await Setting.build({
+      settingType: SettingType.Genres,
+      user: userId,
+      value: value,
+    }).save();
   }
 
-  // create
-  await Setting.build({
+  // publish event
+  new UserUpdatedSettingPublisher(natsWrapper.client).publish({
     settingType: SettingType.Genres,
     user: userId,
     value: value,
-  }).save();
+    updatedAt: new Date(),
+  });
 }

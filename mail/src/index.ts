@@ -21,31 +21,31 @@ const {
 } = process.env;
 
 if (!NATS_CLIENT_ID) {
-  throw new Error("NATS_CLIENT_ID must be defined");
+  throw new Error(`NATS_CLIENT_ID must be defined`);
 }
 if (!NATS_URL) {
-  throw new Error("NATS_URL must be defined");
+  throw new Error(`NATS_URL must be defined`);
 }
 if (!NATS_CLUSTER_ID) {
-  throw new Error("NATS_CLUSTER_ID must be defined");
+  throw new Error(`NATS_CLUSTER_ID must be defined`);
 }
 if (!SMTP_PORT) {
-  throw new Error("SMTP_PORT must be defined");
+  throw new Error(`SMTP_PORT must be defined`);
 }
 if (!SMTP_HOST) {
-  throw new Error("SMTP_HOST must be defined");
+  throw new Error(`SMTP_HOST must be defined`);
 }
 if (!SMTP_USER) {
-  throw new Error("SMTP_USER must be defined");
+  throw new Error(`SMTP_USER must be defined`);
 }
 if (!SMTP_PASS) {
-  throw new Error("SMTP_PASS must be defined");
+  throw new Error(`SMTP_PASS must be defined`);
 }
 if (!QUEUE_GROUP_NAME) {
-  throw new Error("QUEUE_GROUP_NAME must be defined");
+  throw new Error(`QUEUE_GROUP_NAME must be defined`);
 }
 if (!SENDER_ADDRESS) {
-  throw new Error("SENDER_ADDRESS must be defined");
+  throw new Error(`SENDER_ADDRESS must be defined`);
 }
 
 /**
@@ -82,7 +82,10 @@ if (!SENDER_ADDRESS) {
 
   // send test email
   if (NODE_ENV === "development") {
-    const result = await sendTestEmail();
-    console.log("sent test email", result);
+    try {
+      await sendTestEmail();
+    } catch (err) {
+      console.error(`Can't send test email`, err);
+    }
   }
 })();

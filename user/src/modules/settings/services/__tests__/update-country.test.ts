@@ -1,4 +1,5 @@
 import { BadRequestError, SettingType } from "@flickswipe/common";
+import { natsWrapper } from "../../../../nats-wrapper";
 import { Setting, SettingDoc } from "../../models/setting";
 import { updateCountry } from "../update-country";
 
@@ -35,6 +36,12 @@ describe("update country setting", () => {
         })
       );
     });
+
+    it("should publish event", async () => {
+      await updateCountry("useruseruser", "us");
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
   describe("setting doesn't exist", () => {
@@ -51,6 +58,12 @@ describe("update country setting", () => {
           value: "us",
         })
       );
+    });
+
+    it("should publish event", async () => {
+      await updateCountry("useruseruser", "us");
+
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
     });
   });
 });

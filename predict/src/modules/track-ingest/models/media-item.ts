@@ -61,6 +61,7 @@ interface MediaItemDoc extends mongoose.Document {
       url: string;
     }[];
   };
+  streamLocationIds: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -109,6 +110,9 @@ const mediaItem = new mongoose.Schema(
     streamLocations: {
       type: Object,
     },
+    streamLocationIds: {
+      type: [{ type: String }],
+    },
   },
   {
     timestamps: true,
@@ -116,6 +120,7 @@ const mediaItem = new mongoose.Schema(
       transform(doc, ret) {
         delete ret._id;
         delete ret.__v;
+        delete ret.streamLocationIds;
         delete ret.createdAt;
         delete ret.updatedAt;
       },
@@ -133,7 +138,15 @@ interface MediaItemModel extends mongoose.Model<MediaItemDoc> {
 
 mediaItem.statics.build = (attrs: MediaItemAttrs) => {
   return new MediaItem(
-    Object.assign({ _id: mediaItem.statics.id(attrs.id) }, attrs)
+    Object.assign(
+      {
+        _id: mediaItem.statics.id(attrs.id),
+        streamLocationIds: mediaItem.statics.streamLocationIds(
+          attrs.streamLocations
+        ),
+      },
+      attrs
+    )
   );
 };
 
@@ -141,6 +154,14 @@ mediaItem.statics.id = (string = "") => {
   return string
     ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
     : mongoose.Types.ObjectId();
+};
+
+mediaItem.statics.streamLocationIds = (streamLocations: {
+  [country: string]: { id: string };
+}) => {
+  return Object.values(streamLocations)
+    .flat()
+    .map(({ id }: { id: string }) => id);
 };
 
 /**
