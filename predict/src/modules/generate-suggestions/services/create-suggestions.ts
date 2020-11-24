@@ -42,20 +42,12 @@ export async function createSuggestions(
 
   // clear queue if necessary
   if (clearExistingSuggestions) {
-    userDoc.queueLength = 0;
-
     // delete suggestions
     await Suggestion.deleteMany({ user: userId });
   }
 
   // create new suggestions
   const suggestions = await getUserSuggestions(userId, settings);
-
-  // add new suggestions to queue length
-  userDoc.queueLength += suggestions.length;
-
-  // update with new queue length
-  await userDoc.save();
 
   // update suggestions collection
   await Promise.all(
@@ -66,6 +58,10 @@ export async function createSuggestions(
       }).save()
     )
   );
+
+  // update with new queue length
+  userDoc.queueLength = await Suggestion.countDocuments({ user: userId });
+  await userDoc.save();
 
   // publish new suggestions
   new MediaItemsSuggestedPublisher(natsWrapper.client).publish({

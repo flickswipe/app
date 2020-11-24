@@ -3,6 +3,8 @@ import { SurveyResponse } from "../../../models/survey-response";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { MediaItemRatedListener } from "../media-item-rated";
 import { InterestType } from "@flickswipe/common";
+import { Suggestion } from "../../../../generate-suggestions/models/suggestion";
+import { User } from "../../../../generate-suggestions/models/user";
 
 const setup = async () => {
   return {
@@ -16,6 +18,17 @@ const setup = async () => {
 };
 
 describe("media item rated listener", () => {
+  beforeEach(async () => {
+    await User.build({
+      id: "aaabbbcccddd",
+    }).save();
+
+    await Suggestion.build({
+      user: "aaabbbcccddd",
+      mediaItem: "ab1234567890ab1234567890",
+    }).save();
+  });
+
   describe("ignore old data", () => {
     it("should not add data twice", async () => {
       await SurveyResponse.build({
@@ -38,6 +51,23 @@ describe("media item rated listener", () => {
 
       // no new documents created
       expect(await SurveyResponse.countDocuments()).toBe(1);
+    });
+
+    it("should remove suggestion from queue", async () => {
+      const { listener, msg } = await setup();
+
+      await listener.onMessage(
+        {
+          id: "ab1234567890ab1234567890",
+          user: "aaabbbcccddd",
+          interestType: InterestType.Interested,
+          rating: null,
+          updatedAt: new Date(new Date().getTime() - 86600),
+        },
+        msg
+      );
+
+      expect(await Suggestion.countDocuments()).toBe(0);
     });
 
     it("should acknowledge the message", async () => {
@@ -86,6 +116,24 @@ describe("media item rated listener", () => {
         })
       ).toBe(1);
     });
+
+    it("should remove suggestion from queue", async () => {
+      const { listener, msg } = await setup();
+
+      await listener.onMessage(
+        {
+          id: "ab1234567890ab1234567890",
+          user: "aaabbbcccddd",
+          interestType: InterestType.Interested,
+          rating: null,
+          updatedAt: new Date(new Date().getTime() - 86600),
+        },
+        msg
+      );
+
+      expect(await Suggestion.countDocuments()).toBe(0);
+    });
+
     it("should acknowledge the message", async () => {
       const { listener, msg } = await setup();
 

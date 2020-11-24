@@ -1,6 +1,7 @@
 import { Subjects, Listener, MediaItemRatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
+import { deleteSuggestion } from "../../../generate-suggestions/generate-suggestions";
 import { SurveyResponse } from "../../models/survey-response";
 
 const { QUEUE_GROUP_NAME } = process.env;
@@ -32,6 +33,8 @@ export class MediaItemRatedListener extends Listener<MediaItemRatedEvent> {
       await createSurveyReponse(data);
     }
 
+    await removeFromQueue(data);
+
     msg.ack();
   }
 }
@@ -40,4 +43,10 @@ async function createSurveyReponse(
   data: MediaItemRatedEvent["data"]
 ): Promise<void> {
   await SurveyResponse.build({ user: data.user, mediaItem: data.id }).save();
+}
+
+async function removeFromQueue(
+  data: MediaItemRatedEvent["data"]
+): Promise<void> {
+  await deleteSuggestion(data.user, data.id);
 }
