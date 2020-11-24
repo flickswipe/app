@@ -52,7 +52,7 @@ const router = express.Router();
  * }
  */
 router.get(
-  "/api/en/survey/media-item/:id",
+  "/api/:iso6391/survey/media-item/:id",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

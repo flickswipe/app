@@ -40,7 +40,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/auth/send-add-email-link",
+  "/api/:iso6391/auth/send-add-email-link",
   [body("email").isEmail().withMessage(`Email must be valid`)],
   validateRequest,
   currentUser,

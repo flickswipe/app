@@ -44,7 +44,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/user/relationships/:id/block",
+  "/api/:iso6391/user/relationships/:id/block",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

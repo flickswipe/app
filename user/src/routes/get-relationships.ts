@@ -38,7 +38,7 @@ type RelationshipsPayload = {
  * }
  */
 router.get(
-  "/api/en/user/relationships",
+  "/api/:iso6391/user/relationships",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

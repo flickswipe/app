@@ -47,7 +47,7 @@ type UserPayload = {
  * }
  */
 router.post(
-  "/api/en/auth/create-user",
+  "/api/:iso6391/auth/create-user",
   currentUser,
   async (req: Request, res: Response) => {
     const { currentUser } = req;

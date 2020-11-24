@@ -46,7 +46,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/user/relationships/:id/unblock",
+  "/api/:iso6391/user/relationships/:id/unblock",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

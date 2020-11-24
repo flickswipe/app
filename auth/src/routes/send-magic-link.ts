@@ -39,7 +39,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/auth/send-magic-link",
+  "/api/:iso6391/auth/send-magic-link",
   [body("email").isEmail().withMessage(`Email must be valid`)],
   validateRequest,
   currentUser,

@@ -55,7 +55,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/user/settings/update",
+  "/api/:iso6391/user/settings/update",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

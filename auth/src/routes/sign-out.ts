@@ -17,7 +17,7 @@ const router = express.Router();
  *   "message": "User signed out"
  * }
  */
-router.post("/api/en/auth/sign-out", async (req, res) => {
+router.post("/api/:iso6391/auth/sign-out", async (req, res) => {
   Jwt.clearSession(req);
 
   res.status(200).send({

@@ -38,7 +38,7 @@ const router = express.Router();
  * }
  */
 router.get(
-  "/api/en/user/settings",
+  "/api/:iso6391/user/settings",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

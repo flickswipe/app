@@ -46,7 +46,7 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/user/relationships/:id/cancel",
+  "/api/:iso6391/user/relationships/:id/cancel",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
