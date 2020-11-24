@@ -5,6 +5,7 @@ import {
 } from "@flickswipe/common";
 import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../../../nats-wrapper";
+import { User } from "../../../../generate-suggestions/models/user";
 import { Setting } from "../../../models/setting";
 import { UserUpdatedSettingListener } from "../user-updated-setting";
 
@@ -31,6 +32,10 @@ describe("user updated setting listener", () => {
 
   describe("existing doc", () => {
     beforeEach(async () => {
+      await User.build({
+        id: "aaabbbcccddd",
+      }).save();
+
       await Setting.build({
         settingType: SettingType.Country,
         user: "aaabbbcccddd",
@@ -98,6 +103,12 @@ describe("user updated setting listener", () => {
   });
 
   describe("create new doc", () => {
+    beforeEach(async () => {
+      await User.build({
+        id: "aaabbbcccddd",
+      }).save();
+    });
+
     it("should create a new doc", async () => {
       await listener.onMessage(
         {
