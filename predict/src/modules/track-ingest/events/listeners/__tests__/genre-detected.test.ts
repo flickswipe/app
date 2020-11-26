@@ -3,6 +3,9 @@ import { Genre } from "../../../models/genre";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { GenreDetectedListener } from "../genre-detected";
 
+// sample data
+import { GENRE_A } from "../../../../../test/sample-data/genres";
+
 const setup = async () => {
   return {
     listener: new GenreDetectedListener(natsWrapper.client),
@@ -17,112 +20,95 @@ const setup = async () => {
 describe("genre detected listener", () => {
   describe("ignore old data", () => {
     it("should not overwrite a more recent doc", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
+      const existingDoc = await Genre.build(GENRE_A).save();
 
       const { listener, msg } = await setup();
 
       await listener.onMessage(
         {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
+          genreId: GENRE_A.genreId,
+          name: "New Name",
+          language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() - 86600),
         },
         msg
       );
 
       // has not been overwritten
-      expect(
-        await Genre.findOne({
-          _id: "ab1234567890ab1234567890",
-          language: "en",
-        })
-      ).toEqual(
+      expect(await Genre.findById(existingDoc.id)).toEqual(
         expect.objectContaining({
-          name: "My Genre",
+          name: GENRE_A.name,
+          updatedAt: existingDoc.updatedAt,
         })
       );
+
+      // no extra record inserted
+      expect(await Genre.countDocuments()).toBe(1);
     });
 
     it("should acknowledge the message", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
+      await Genre.build(GENRE_A).save();
 
       const { listener, msg } = await setup();
 
       await listener.onMessage(
         {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
+          genreId: GENRE_A.genreId,
+          name: "New Name",
+          language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() - 86600),
         },
         msg
       );
 
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
 
   describe("update existing doc", () => {
     it("should overwrite existing doc", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
+      const existingDoc = await Genre.build(GENRE_A).save();
 
       const { listener, msg } = await setup();
 
       await listener.onMessage(
         {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
+          genreId: GENRE_A.genreId,
+          name: "New Name",
+          language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );
 
       // has been overwritten
-      expect(
-        await Genre.findOne({
-          _id: "ab1234567890ab1234567890",
-          language: "en",
-        })
-      ).toEqual(
+      expect(await Genre.findById(existingDoc.id)).toEqual(
         expect.objectContaining({
-          name: "My New Genre",
+          name: "New Name",
         })
       );
+
+      // no extra record inserted
+      expect(await Genre.countDocuments()).toBe(1);
     });
 
     it("should acknowledge the message", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
+      await Genre.build(GENRE_A).save();
 
       const { listener, msg } = await setup();
 
       await listener.onMessage(
         {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
+          genreId: GENRE_A.genreId,
+          name: "New Name",
+          language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );
 
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
 
@@ -132,9 +118,9 @@ describe("genre detected listener", () => {
 
         await listener.onMessage(
           {
-            id: "ab1234567890ab1234567890",
-            name: "My Genre",
-            language: "en",
+            genreId: GENRE_A.genreId,
+            name: GENRE_A.name,
+            language: GENRE_A.language,
             detectedAt: new Date(),
           },
           msg
@@ -143,12 +129,12 @@ describe("genre detected listener", () => {
         // has not been overwritten
         expect(
           await Genre.findOne({
-            _id: "ab1234567890ab1234567890",
-            language: "en",
+            genreId: GENRE_A.genreId,
+            language: GENRE_A.language,
           })
         ).toEqual(
           expect.objectContaining({
-            name: "My Genre",
+            name: GENRE_A.name,
           })
         );
       });
@@ -159,14 +145,15 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          id: "ab1234567890ab1234567890",
-          name: "My Genre",
-          language: "en",
+          genreId: GENRE_A.genreId,
+          name: GENRE_A.name,
+          language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );
 
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });

@@ -23,10 +23,6 @@ interface UserDoc extends mongoose.Document {
  */
 const userSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     queueLength: {
       type: Number,
       default: 0,
@@ -54,7 +50,13 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 userSchema.statics.build = (attrs: UserAttrs) => {
-  return new User(Object.assign({ _id: attrs.id }, attrs));
+  return new User(
+    Object.assign({ _id: userSchema.statics.id(attrs.id) }, attrs)
+  );
+};
+
+userSchema.statics.id = (value: string) => {
+  return mongoose.Types.ObjectId(value);
 };
 
 /**

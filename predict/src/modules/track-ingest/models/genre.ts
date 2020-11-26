@@ -5,7 +5,7 @@ import { iso6391 } from "@flickswipe/common";
  * Properties used to create a Genre
  */
 interface GenreAttrs {
-  id: string;
+  genreId: string;
   name: string;
   language: iso6391;
 }
@@ -15,6 +15,7 @@ interface GenreAttrs {
  */
 interface GenreDoc extends mongoose.Document {
   id: string;
+  genreId: string;
   name: string;
   language: iso6391;
   createdAt: Date;
@@ -26,7 +27,7 @@ interface GenreDoc extends mongoose.Document {
  */
 const genreSchema = new mongoose.Schema(
   {
-    id: {
+    genreId: {
       type: String,
       required: true,
     },
@@ -43,6 +44,7 @@ const genreSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(doc, ret) {
+        ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
         delete ret.language;
@@ -58,19 +60,10 @@ const genreSchema = new mongoose.Schema(
  */
 interface GenreModel extends mongoose.Model<GenreDoc> {
   build(attrs: GenreAttrs): GenreDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
-  return new Genre(
-    Object.assign({ _id: genreSchema.statics.id(attrs.id) }, attrs)
-  );
-};
-
-genreSchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
-    : mongoose.Types.ObjectId();
+  return new Genre(attrs);
 };
 
 /**

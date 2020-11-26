@@ -6,6 +6,17 @@ import { InterestType } from "@flickswipe/common";
 import { Suggestion } from "../../../../generate-suggestions/models/suggestion";
 import { User } from "../../../../generate-suggestions/models/user";
 
+// sample data
+import { USER_A } from "../../../../../test/sample-data/users";
+import { MEDIA_ITEM_A } from "../../../../../test/sample-data/media-items";
+const EVENT_DATA = {
+  id: MEDIA_ITEM_A.id,
+  user: USER_A.id,
+  interestType: InterestType.Consumed,
+  rating: 5,
+  updatedAt: new Date(new Date().getTime() - 86600),
+};
+
 const setup = async () => {
   return {
     listener: new MediaItemRatedListener(natsWrapper.client),
@@ -20,34 +31,24 @@ const setup = async () => {
 describe("media item rated listener", () => {
   beforeEach(async () => {
     await User.build({
-      id: "aaabbbcccddd",
+      id: USER_A.id,
     }).save();
 
     await Suggestion.build({
-      user: "aaabbbcccddd",
-      mediaItem: "ab1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_A.id,
     }).save();
   });
 
   describe("ignore old data", () => {
     it("should not add data twice", async () => {
       await SurveyResponse.build({
-        user: "aaabbbcccddd",
-        mediaItem: "ab1234567890ab1234567890",
+        user: USER_A.id,
+        mediaItem: MEDIA_ITEM_A.id,
       }).save();
 
       const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
+      await listener.onMessage(EVENT_DATA, msg);
 
       // no new documents created
       expect(await SurveyResponse.countDocuments()).toBe(1);
@@ -55,40 +56,22 @@ describe("media item rated listener", () => {
 
     it("should remove suggestion from queue", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
+      // has been removed
       expect(await Suggestion.countDocuments()).toBe(0);
     });
 
     it("should acknowledge the message", async () => {
       await SurveyResponse.build({
-        user: "aaabbbcccddd",
-        mediaItem: "ab1234567890ab1234567890",
+        user: USER_A.id,
+        mediaItem: MEDIA_ITEM_A.id,
       }).save();
 
       const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
@@ -97,57 +80,30 @@ describe("media item rated listener", () => {
     it("should create a new doc", async () => {
       const { listener, msg } = await setup();
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
+      await listener.onMessage(EVENT_DATA, msg);
 
       // has been created
       expect(
         await SurveyResponse.countDocuments({
-          user: "aaabbbcccddd",
-          mediaItem: "ab1234567890ab1234567890",
+          user: USER_A.id,
+          mediaItem: MEDIA_ITEM_A.id,
         })
       ).toBe(1);
     });
 
     it("should remove suggestion from queue", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
+      // has been removed
       expect(await Suggestion.countDocuments()).toBe(0);
     });
 
     it("should acknowledge the message", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          user: "aaabbbcccddd",
-          interestType: InterestType.Interested,
-          rating: null,
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });

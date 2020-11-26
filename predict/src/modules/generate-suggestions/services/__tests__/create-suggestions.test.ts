@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { BadRequestError, SettingType } from "@flickswipe/common";
 import { natsWrapper } from "../../../../nats-wrapper";
 import { MediaItem } from "../../../track-ingest/models/media-item";
@@ -7,191 +8,155 @@ import { Suggestion } from "../../models/suggestion";
 import { User } from "../../models/user";
 import { createSuggestions } from "../create-suggestions";
 
+// sample data
+import { USER_A, USER_B } from "../../../../test/sample-data/users";
+import {
+  MEDIA_ITEM_A,
+  MEDIA_ITEM_B,
+} from "../../../../test/sample-data/media-items";
+
 const expectOnlyOneCorrectSuggestionDocToExist = async () => {
   expect(
     await Suggestion.findOne({
-      user: "aaabbbcccddd",
-      mediaItem: "ab1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_A.id,
     })
   ).not.toBeNull();
 
+  // has only one correct doc
   expect(await Suggestion.countDocuments()).toBe(1);
 };
 
 const expectTwoSuggestionDocsToExist = async () => {
+  // has suggested media item a
   expect(
     await Suggestion.findOne({
-      user: "aaabbbcccddd",
-      mediaItem: "ab1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_A.id,
     })
   ).not.toBeNull();
 
+  // has suggested media item b
   expect(
     await Suggestion.findOne({
-      user: "aaabbbcccddd",
-      mediaItem: "bc1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_B.id,
     })
   ).not.toBeNull();
 
+  // has exactly two docs
   expect(await Suggestion.countDocuments()).toBe(2);
 };
 
 describe("create suggestions", () => {
   beforeEach(async () => {
-    // create user
     await User.build({
-      id: "aaabbbcccddd",
+      id: USER_A.id,
     }).save();
 
-    // create target media item
-    await MediaItem.build({
-      id: "ab1234567890ab1234567890",
-      tmdbMovieId: 123,
-      imdbId: "tt1234567",
-      title: "My Movie",
-      images: {
-        poster: "https://example.com/",
-        backdrop: "https://example.com/",
-      },
-      genres: ["bc1234567890ab1234567890"],
-      rating: {
-        average: 100,
-        count: 101,
-        popularity: 102,
-      },
-      language: "en",
-      releaseDate: new Date("2020-01-01"),
-      runtime: 103,
-      plot: "My movie plit...",
-      streamLocations: {
-        us: [
-          {
-            id: "0987654321234567890",
-            name: "Netflix",
-            url: "https://example.com/",
-          },
-        ],
-      },
-    }).save();
+    await MediaItem.build(MEDIA_ITEM_A).save();
 
-    // create media item to filter out
-    await MediaItem.build({
-      id: "bc1234567890ab1234567890",
-      tmdbMovieId: 321,
-      imdbId: "tt7654321",
-      title: "My Ignored Movie",
-      images: {
-        poster: "https://example.com/",
-        backdrop: "https://example.com/",
-      },
-      genres: ["cd1234567890ab1234567890"],
-      rating: {
-        average: 50,
-        count: 51,
-        popularity: 52,
-      },
-      language: "es",
-      releaseDate: new Date("1980-01-01"),
-      runtime: 54,
-      plot: "My movie plot...",
-      streamLocations: {
-        uk: [
-          {
-            id: "123456789098",
-            name: "Amazon Prime",
-            url: "https://example.com/",
-          },
-        ],
-      },
-    }).save();
+    await MediaItem.build(MEDIA_ITEM_B).save();
   });
 
   it("should throw a BadRequestError if user doesn't exist", async () => {
-    await expect(() => createSuggestions("bbbcccdddeee")).rejects.toThrowError(
+    // throws error
+    await expect(() => createSuggestions(USER_B.id)).rejects.toThrowError(
       BadRequestError
     );
   });
 
   it("should filter out media items that are in suggestions", async () => {
     await Suggestion.build({
-      user: "aaabbbcccddd",
-      mediaItem: "bc1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_B.id,
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
+    // has suggested media item a
     expect(
       await Suggestion.findOne({
-        user: "aaabbbcccddd",
-        mediaItem: "ab1234567890ab1234567890",
+        user: USER_A.id,
+        mediaItem: MEDIA_ITEM_A.id,
       })
     ).not.toBeNull();
 
+    // has exactly two suggestions
     expect(await Suggestion.countDocuments()).toBe(2);
   });
 
   it("should filter out media items that have survey responses", async () => {
     await SurveyResponse.build({
-      user: "aaabbbcccddd",
-      mediaItem: "bc1234567890ab1234567890",
+      user: USER_A.id,
+      mediaItem: MEDIA_ITEM_B.id,
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by country setting", async () => {
+    const MediaItemACountry = Object.keys(MEDIA_ITEM_A.streamLocations)[0];
+
     await Setting.build({
       settingType: SettingType.Country,
-      user: "aaabbbcccddd",
-      value: "us",
+      user: USER_A.id,
+      value: MediaItemACountry,
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by whitelist genres setting", async () => {
+    const MediaItemAGenre = MEDIA_ITEM_A.genres[0];
+
     await Setting.build({
       settingType: SettingType.Genres,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        bc1234567890ab1234567890: true,
+        [MediaItemAGenre]: true,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by blacklist genres setting", async () => {
+    const MediaItemBGenre = MEDIA_ITEM_B.genres[0];
+
     await Setting.build({
       settingType: SettingType.Genres,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        cd1234567890ab1234567890: false,
+        [MediaItemBGenre]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by whitelist/blacklist genres setting", async () => {
+    const MediaItemAGenre = MEDIA_ITEM_A.genres[0];
+    const MediaItemBGenre = MEDIA_ITEM_B.genres[0];
+
     await Setting.build({
       settingType: SettingType.Genres,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        bc1234567890ab1234567890: true,
-        cd1234567890ab1234567890: false,
+        [MediaItemAGenre]: true,
+        [MediaItemBGenre]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -199,13 +164,13 @@ describe("create suggestions", () => {
   it("should filter out media items by whitelist languages setting", async () => {
     await Setting.build({
       settingType: SettingType.Languages,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        en: true,
+        [MEDIA_ITEM_A.language]: true,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -213,13 +178,13 @@ describe("create suggestions", () => {
   it("should filter out media items by blacklist languages setting", async () => {
     await Setting.build({
       settingType: SettingType.Languages,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        es: false,
+        [MEDIA_ITEM_B.language]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -227,57 +192,72 @@ describe("create suggestions", () => {
   it("should filter out media items by whitelist/blacklist languages setting", async () => {
     await Setting.build({
       settingType: SettingType.Languages,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        en: true,
-        es: false,
+        [MEDIA_ITEM_A.language]: true,
+        [MEDIA_ITEM_B.language]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by whitelist streamLocations setting", async () => {
+    const MediaItemAStreamLocation = Object.values(
+      MEDIA_ITEM_A.streamLocations
+    )[0][0];
+
     await Setting.build({
       settingType: SettingType.StreamLocations,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        "0987654321234567890": true,
+        [MediaItemAStreamLocation.id]: true,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by blacklist streamLocations setting", async () => {
+    const MediaItemBStreamLocation = Object.values(
+      MEDIA_ITEM_B.streamLocations
+    )[0][0];
+
     await Setting.build({
       settingType: SettingType.StreamLocations,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        "123456789098": false,
+        [MediaItemBStreamLocation.id]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
   it("should filter out media items by whitelist/blacklist streamLocations setting", async () => {
+    const MediaItemAStreamLocation = Object.values(
+      MEDIA_ITEM_A.streamLocations
+    )[0][0];
+    const MediaItemBStreamLocation = Object.values(
+      MEDIA_ITEM_B.streamLocations
+    )[0][0];
+
     await Setting.build({
       settingType: SettingType.StreamLocations,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        "0987654321234567890": true,
-        "123456789098": false,
+        [MediaItemAStreamLocation.id]: true,
+        [MediaItemBStreamLocation.id]: false,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -285,13 +265,13 @@ describe("create suggestions", () => {
   it("should filter out media items by min rating setting", async () => {
     await Setting.build({
       settingType: SettingType.Rating,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: 75,
+        min: MEDIA_ITEM_A.rating.average - 1,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -299,14 +279,14 @@ describe("create suggestions", () => {
   it("should filter out media items by min/max rating setting", async () => {
     await Setting.build({
       settingType: SettingType.Rating,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: 75,
-        max: 150,
+        min: MEDIA_ITEM_A.rating.average - 1,
+        max: MEDIA_ITEM_A.rating.average + 1,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -314,13 +294,13 @@ describe("create suggestions", () => {
   it("should filter out media items by min releaseDate setting", async () => {
     await Setting.build({
       settingType: SettingType.ReleaseDate,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: new Date("2000-01-01"),
+        min: new Date(MEDIA_ITEM_A.releaseDate.getTime() - 86600),
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -328,14 +308,14 @@ describe("create suggestions", () => {
   it("should filter out media items by min/max releaseDate setting", async () => {
     await Setting.build({
       settingType: SettingType.ReleaseDate,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: new Date("2000-01-01"),
-        max: new Date("2030-01-01"),
+        min: new Date(MEDIA_ITEM_A.releaseDate.getTime() - 86600),
+        max: new Date(MEDIA_ITEM_A.releaseDate.getTime() + 86600),
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -343,13 +323,13 @@ describe("create suggestions", () => {
   it("should filter out media items by min runtime setting", async () => {
     await Setting.build({
       settingType: SettingType.Runtime,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: 100,
+        min: MEDIA_ITEM_A.runtime - 1,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -357,14 +337,14 @@ describe("create suggestions", () => {
   it("should filter out media items by min/max runtime setting", async () => {
     await Setting.build({
       settingType: SettingType.Runtime,
-      user: "aaabbbcccddd",
+      user: USER_A.id,
       value: {
-        min: 100,
-        max: 200,
+        min: MEDIA_ITEM_A.runtime - 1,
+        max: MEDIA_ITEM_A.runtime + 1,
       },
     }).save();
 
-    await createSuggestions("aaabbbcccddd");
+    await createSuggestions(USER_A.id);
 
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
@@ -372,69 +352,65 @@ describe("create suggestions", () => {
   describe("clear suggestions", () => {
     beforeEach(async () => {
       await Suggestion.build({
-        user: "aaabbbcccddd",
-        mediaItem: "bc1234567890ab1234567890",
+        user: USER_A.id,
+        mediaItem: mongoose.Types.ObjectId().toHexString(),
       }).save();
     });
 
     it("should clear suggestions", async () => {
-      // ONLY PERMIT ONE SETTING
-      await Setting.build({
-        settingType: SettingType.Runtime,
-        user: "aaabbbcccddd",
-        value: {
-          min: 100,
-          max: 200,
-        },
-      }).save();
-
-      await createSuggestions("aaabbbcccddd", true);
-
-      await expectOnlyOneCorrectSuggestionDocToExist();
-    });
-
-    it("should update queue length correctly", async () => {
-      // ONLY PERMIT ONE SETTING
-      await Setting.build({
-        settingType: SettingType.Runtime,
-        user: "aaabbbcccddd",
-        value: {
-          min: 100,
-          max: 200,
-        },
-      }).save();
-
-      await createSuggestions("aaabbbcccddd", true);
-
-      expect(await User.findById("aaabbbcccddd")).toEqual(
-        expect.objectContaining({
-          queueLength: 1,
-        })
-      );
-    });
-  });
-
-  describe("add suggestions", () => {
-    it("should clear suggestions", async () => {
-      await createSuggestions("aaabbbcccddd", false);
-
+      await createSuggestions(USER_A.id, true);
       await expectTwoSuggestionDocsToExist();
     });
 
     it("should update queue length correctly", async () => {
-      await createSuggestions("aaabbbcccddd", false);
+      await createSuggestions(USER_A.id, true);
 
-      expect(await User.findById("aaabbbcccddd")).toEqual(
+      expect(await User.findById(USER_A.id)).toEqual(
         expect.objectContaining({
           queueLength: 2,
         })
       );
     });
+
+    it("should publish an event", async () => {
+      await createSuggestions(USER_A.id, true);
+
+      // has been published
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 
-  it("should publish an event", async () => {
-    await createSuggestions("aaabbbcccddd");
+  describe("add suggestions", () => {
+    beforeEach(async () => {
+      await Suggestion.build({
+        user: USER_A.id,
+        mediaItem: mongoose.Types.ObjectId().toHexString(),
+      }).save();
+    });
 
-    expect(natsWrapper.client.publish).toHaveBeenCalled();
+    it("should not clear suggestions", async () => {
+      await createSuggestions(USER_A.id, false);
+
+      // has exactly 3 documents
+      expect(await Suggestion.countDocuments()).toBe(3);
+    });
+
+    it("should update queue length correctly", async () => {
+      await createSuggestions(USER_A.id, false);
+
+      // has been updated
+      expect(await User.findById(USER_A.id)).toEqual(
+        expect.objectContaining({
+          queueLength: 3,
+        })
+      );
+    });
+
+    it("should publish an event", async () => {
+      await createSuggestions(USER_A.id, false);
+
+      // has been published
+      expect(natsWrapper.client.publish).toHaveBeenCalled();
+    });
   });
 });

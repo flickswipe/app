@@ -23,10 +23,10 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
     data: GenreDetectedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const { id, language } = data;
+    const { genreId, language } = data;
 
     // update doc
-    const existingDoc = await Genre.findOne({ _id: id, language });
+    const existingDoc = await Genre.findOne({ genreId: genreId, language });
     if (existingDoc) {
       await updateGenreDoc(existingDoc, data);
       msg.ack();
@@ -47,7 +47,7 @@ async function updateGenreDoc(
   existingDoc: GenreDoc,
   data: GenreDetectedEvent["data"]
 ): Promise<void> {
-  const { id, name } = data;
+  const { genreId, name } = data;
 
   // don't update if current data more recent
   if (existingDoc.updatedAt > data.detectedAt) {
@@ -59,16 +59,16 @@ async function updateGenreDoc(
   existingDoc.name = name;
   await existingDoc.save();
 
-  console.log(`Updated genre #${id}'s name to ${existingDoc.name}`);
+  console.log(`Updated genre #${genreId}'s name to ${existingDoc.name}`);
 }
 
 /**
  * @param data data to create with
  */
 async function createGenreDoc(data: GenreDetectedEvent["data"]): Promise<void> {
-  const { id, name, language } = data;
+  const { genreId, name, language } = data;
 
-  await Genre.build({ id, name, language }).save();
+  await Genre.build({ genreId, name, language }).save();
 
-  console.log(`Created genre #${id} with name "${name}" (${language})`);
+  console.log(`Created genre #${genreId} with name "${name}" (${language})`);
 }

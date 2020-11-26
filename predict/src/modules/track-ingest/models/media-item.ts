@@ -69,15 +69,19 @@ interface MediaItemDoc extends mongoose.Document {
 /**
  * MediaItem mongoose schema
  */
-const mediaItem = new mongoose.Schema(
+const mediaItemSchema = new mongoose.Schema(
   {
     tmdbMovieId: {
       type: Number,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     imdbId: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     title: {
       type: String,
@@ -87,7 +91,7 @@ const mediaItem = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: [{ type: mongoose.Schema.Types.ObjectId, ref: "Genre" }],
+    genres: [{ type: String }],
     rating: {
       type: Object,
       required: true,
@@ -136,12 +140,12 @@ interface MediaItemModel extends mongoose.Model<MediaItemDoc> {
   id(string: string): mongoose.Types.ObjectId;
 }
 
-mediaItem.statics.build = (attrs: MediaItemAttrs) => {
+mediaItemSchema.statics.build = (attrs: MediaItemAttrs) => {
   return new MediaItem(
     Object.assign(
       {
-        _id: mediaItem.statics.id(attrs.id),
-        streamLocationIds: mediaItem.statics.streamLocationIds(
+        _id: mediaItemSchema.statics.id(attrs.id),
+        streamLocationIds: mediaItemSchema.statics.streamLocationIds(
           attrs.streamLocations
         ),
       },
@@ -150,13 +154,11 @@ mediaItem.statics.build = (attrs: MediaItemAttrs) => {
   );
 };
 
-mediaItem.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
-    : mongoose.Types.ObjectId();
+mediaItemSchema.statics.id = (value: string) => {
+  return mongoose.Types.ObjectId(value);
 };
 
-mediaItem.statics.streamLocationIds = (streamLocations: {
+mediaItemSchema.statics.streamLocationIds = (streamLocations: {
   [country: string]: { id: string };
 }) => {
   return Object.values(streamLocations)
@@ -169,7 +171,7 @@ mediaItem.statics.streamLocationIds = (streamLocations: {
  */
 const MediaItem = mongoose.model<MediaItemDoc, MediaItemModel>(
   "MediaItem",
-  mediaItem
+  mediaItemSchema
 );
 
 /**

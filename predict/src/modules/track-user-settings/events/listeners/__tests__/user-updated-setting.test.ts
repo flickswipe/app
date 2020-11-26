@@ -1,4 +1,5 @@
 import {
+  CountrySetting,
   Listener,
   SettingType,
   UserUpdatedSettingEvent,
@@ -8,6 +9,20 @@ import { natsWrapper } from "../../../../../nats-wrapper";
 import { User } from "../../../../generate-suggestions/models/user";
 import { Setting } from "../../../models/setting";
 import { UserUpdatedSettingListener } from "../user-updated-setting";
+
+// sample data
+import { USER_A } from "../../../../../test/sample-data/users";
+const COUNTRY_A = "us";
+const COUNTRY_B = "uk";
+const EVENT_DATA = {
+  settingType: SettingType.Country,
+  user: USER_A.id,
+  value: COUNTRY_B,
+  updatedAt: new Date(new Date().getTime() + 86600),
+} as CountrySetting;
+const STALE_EVENT_DATA = Object.assign({}, EVENT_DATA, {
+  updatedAt: new Date(new Date().getTime() - 86600),
+}) as CountrySetting;
 
 const setup = async () => {
   return {
@@ -21,83 +36,58 @@ const setup = async () => {
 };
 
 describe("user updated setting listener", () => {
-  let listener: Listener<UserUpdatedSettingEvent>;
-  let msg: Message;
-
-  beforeEach(async () => {
-    const setupValues = await setup();
-    listener = setupValues.listener;
-    msg = setupValues.msg;
-  });
-
   describe("existing doc", () => {
     beforeEach(async () => {
       await User.build({
-        id: "aaabbbcccddd",
+        id: USER_A.id,
       }).save();
 
       await Setting.build({
         settingType: SettingType.Country,
-        user: "aaabbbcccddd",
-        value: "us",
+        user: USER_A.id,
+        value: COUNTRY_A,
       }).save();
     });
 
     it("should ignore old data", async () => {
-      await listener.onMessage(
-        {
-          settingType: SettingType.Country,
-          user: "aaabbbcccddd",
-          value: "uk",
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
+      const { listener, msg } = await setup();
+      await listener.onMessage(STALE_EVENT_DATA, msg);
 
+      // has not been updated
       expect(
         await Setting.findOne({
           settingType: SettingType.Country,
-          user: "aaabbbcccddd",
+          user: USER_A.id,
         })
       ).toEqual(
         expect.objectContaining({
-          value: "us",
+          value: COUNTRY_A,
         })
       );
     });
+
     it("should overwrite doc", async () => {
-      await listener.onMessage(
-        {
-          settingType: SettingType.Country,
-          user: "aaabbbcccddd",
-          value: "uk",
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
+      // has been updated
       expect(
         await Setting.findOne({
           settingType: SettingType.Country,
-          user: "aaabbbcccddd",
+          user: USER_A.id,
         })
       ).toEqual(
         expect.objectContaining({
-          value: "uk",
+          value: COUNTRY_B,
         })
       );
     });
-    it("should acknowledge the message", async () => {
-      await listener.onMessage(
-        {
-          settingType: SettingType.Country,
-          user: "aaabbbcccddd",
-          value: "uk",
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
 
+    it("should acknowledge the message", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
@@ -105,43 +95,28 @@ describe("user updated setting listener", () => {
   describe("create new doc", () => {
     beforeEach(async () => {
       await User.build({
-        id: "aaabbbcccddd",
+        id: USER_A.id,
       }).save();
     });
 
     it("should create a new doc", async () => {
-      await listener.onMessage(
-        {
-          settingType: SettingType.Country,
-          user: "aaabbbcccddd",
-          value: "uk",
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
+      // has been created
       expect(
-        await Setting.findOne({
+        await Setting.countDocuments({
           settingType: SettingType.Country,
-          user: "aaabbbcccddd",
+          user: USER_A.id,
         })
-      ).toEqual(
-        expect.objectContaining({
-          value: "uk",
-        })
-      );
+      ).toBe(1);
     });
-    it("should acknowledge the message", async () => {
-      await listener.onMessage(
-        {
-          settingType: SettingType.Country,
-          user: "aaabbbcccddd",
-          value: "uk",
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
 
+    it("should acknowledge the message", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });

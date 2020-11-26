@@ -45,7 +45,6 @@ const suggestion = new mongoose.Schema(
  */
 interface SuggestionModel extends mongoose.Model<SuggestionDoc> {
   build(attrs: SuggestionAttrs): SuggestionDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 suggestion.statics.build = (attrs: SuggestionAttrs) => {
