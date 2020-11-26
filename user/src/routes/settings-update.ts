@@ -1,4 +1,10 @@
-import { BadRequestError, currentUser, requireAuth } from "@flickswipe/common";
+import {
+  BadRequestError,
+  currentUser,
+  requireAuth,
+  validateIso6391Param,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
@@ -56,6 +62,8 @@ const router = express.Router();
  */
 router.post(
   "/api/:iso6391/user/settings/update",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

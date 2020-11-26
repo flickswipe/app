@@ -5,6 +5,7 @@ import {
   InterestType,
   BadRequestError,
   validateRequest,
+  validateIso6391Param,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
@@ -61,9 +62,7 @@ const router = express.Router();
 router.post(
   "/api/:iso6391/survey/:id/respond",
   [
-    param("id")
-      .custom((value: any) => Types.ObjectId.isValid(value))
-      .withMessage(`must be valid id`),
+    validateIso6391Param("iso6391"),
     body("interestType")
       .notEmpty()
       .isIn(Object.values(InterestType))

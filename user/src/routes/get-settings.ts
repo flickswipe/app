@@ -1,4 +1,10 @@
-import { currentUser, iso6391, requireAuth } from "@flickswipe/common";
+import {
+  currentUser,
+  iso6391,
+  requireAuth,
+  validateIso6391Param,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { defaultSettings } from "../default-settings";
@@ -39,6 +45,8 @@ const router = express.Router();
  */
 router.get(
   "/api/:iso6391/user/settings",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

@@ -1,4 +1,11 @@
-import { currentUser, NotFoundError, requireAuth } from "@flickswipe/common";
+import {
+  currentUser,
+  NotFoundError,
+  requireAuth,
+  validateIso6391Param,
+  validateObjectIdParam,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { unblockRelationship } from "../modules/relationships/relationships";
@@ -47,6 +54,8 @@ const router = express.Router();
  */
 router.post(
   "/api/:iso6391/user/relationships/:id/unblock",
+  [validateIso6391Param("iso6391"), validateObjectIdParam("id")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

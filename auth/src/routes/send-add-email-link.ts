@@ -4,6 +4,7 @@ import {
   EmailTokenType,
   mongodbCatch,
   requireAuth,
+  validateIso6391Param,
   validateRequest,
 } from "@flickswipe/common";
 
@@ -41,7 +42,10 @@ const router = express.Router();
  */
 router.post(
   "/api/:iso6391/auth/send-add-email-link",
-  [body("email").isEmail().withMessage(`Email must be valid`)],
+  [
+    validateIso6391Param("iso6391"),
+    body("email").isEmail().withMessage(`Email must be valid`),
+  ],
   validateRequest,
   currentUser,
   requireAuth,

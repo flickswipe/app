@@ -3,6 +3,8 @@ import {
   currentUser,
   requireAuth,
   iso6391,
+  validateIso6391Param,
+  validateRequest,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
@@ -48,6 +50,8 @@ const router = express.Router();
  */
 router.get(
   "/api/:iso6391/survey/genres",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

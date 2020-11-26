@@ -1,4 +1,10 @@
-import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
+import {
+  NotFoundError,
+  currentUser,
+  requireAuth,
+  validateRequest,
+  validateIso6391Param,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { listAllSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
@@ -35,6 +41,8 @@ const router = express.Router();
  */
 router.get(
   "/api/:iso6391/survey/queue",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

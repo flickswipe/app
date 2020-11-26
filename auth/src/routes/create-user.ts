@@ -1,4 +1,9 @@
-import { BadRequestError, currentUser } from "@flickswipe/common";
+import {
+  BadRequestError,
+  currentUser,
+  validateIso6391Param,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
@@ -48,6 +53,8 @@ type UserPayload = {
  */
 router.post(
   "/api/:iso6391/auth/create-user",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   async (req: Request, res: Response) => {
     const { currentUser } = req;
