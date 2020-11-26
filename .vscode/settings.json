@@ -5,6 +5,7 @@
     { "directory": "ingest", "changeProcessCWD": true },
     { "directory": "mail", "changeProcessCWD": true },
     { "directory": "survey", "changeProcessCWD": true },
+    { "directory": "predict", "changeProcessCWD": true },
     { "directory": "user", "changeProcessCWD": true }
   ]
 }
