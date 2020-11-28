@@ -60,10 +60,14 @@ const tmdbMovieSchema = new mongoose.Schema(
     tmdbMovieId: {
       type: Number,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     imdbId: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     title: {
       type: String,
@@ -121,19 +125,10 @@ const tmdbMovieSchema = new mongoose.Schema(
  */
 interface TmdbMovieModel extends mongoose.Model<TmdbMovieDoc> {
   build(attrs: TmdbMovieAttrs): TmdbMovieDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 tmdbMovieSchema.statics.build = (attrs: TmdbMovieAttrs) => {
-  return new TmdbMovie(
-    Object.assign({ _id: tmdbMovieSchema.statics.id(attrs.imdbId) }, attrs)
-  );
-};
-
-tmdbMovieSchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
-    : mongoose.Types.ObjectId();
+  return new TmdbMovie(attrs);
 };
 
 /**

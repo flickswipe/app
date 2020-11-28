@@ -129,6 +129,14 @@ function shouldSkip(
     return true;
   }
 
+  // filter condition: must be recent
+  if (
+    options.earliestReleaseDate instanceof Date &&
+    result.releaseDate < options.earliestReleaseDate
+  ) {
+    return true;
+  }
+
   return false;
 }
 
@@ -145,14 +153,6 @@ function shouldNeverUse(
 ): boolean {
   // filter condition: no adult content
   if (!options.includeAdultContent && result.adult) {
-    return true;
-  }
-
-  // filter condition: must be recent
-  if (
-    options.earliestReleaseDate instanceof Date &&
-    result.releaseDate < options.earliestReleaseDate
-  ) {
     return true;
   }
 

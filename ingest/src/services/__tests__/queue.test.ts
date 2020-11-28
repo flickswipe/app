@@ -1,175 +1,129 @@
 import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
 import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
+import { TMDB_MOVIE_A, TMDB_MOVIE_B } from "../../test/sample-data/tmdb-movies";
 import { Queue } from "../queue";
+
+// sample data
+const TMDB_MOVIE_A_NEVER_USE = Object.assign({}, TMDB_MOVIE_A, {
+  neverUse: true,
+});
+const MOVIE_ID_A = {
+  tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
+  timesUsed: 0,
+};
+const MOVIE_ID_A_NEVER_USE = {
+  tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
+  timesUsed: 0,
+  neverUse: true,
+};
+const MOVIE_ID_B = {
+  tmdbMovieId: TMDB_MOVIE_B.tmdbMovieId,
+  timesUsed: 1,
+};
 
 describe("Queue", () => {
   describe("is first import", () => {
-    it("should return true if no movie id documents exist", async () => {
-      const result = await Queue.isFirstImport();
-      expect(result).toBe(true);
+    describe("no movie id docs already exist", () => {
+      it("should return true", async () => {
+        // returns true
+        expect(await Queue.isFirstImport()).toBe(true);
+      });
     });
+    describe("movie id docs already exist", () => {
+      beforeEach(async () => {
+        await MovieId.build(MOVIE_ID_A).save();
+      });
 
-    it("should return false if movie id documents exist", async () => {
-      await MovieId.build({
-        tmdbMovieId: 1,
-      }).save();
-
-      const result = await Queue.isFirstImport();
-      expect(result).toBe(false);
+      it("should return false", async () => {
+        // returns false
+        expect(await Queue.isFirstImport()).toBe(false);
+      });
     });
   });
 
   describe("get next tdmb movie", () => {
-    it("should return null if no documents exist", async () => {
-      const result = await Queue.getNextTmdbMovie();
-      expect(result).toBe(null);
+    describe("no movie id docs already exist", () => {
+      it("should return null", async () => {
+        // returns null
+        expect(await Queue.getNextTmdbMovie()).toBe(null);
+      });
     });
 
-    it("should return null if no valid documents exist", async () => {
-      await MovieId.build({
-        tmdbMovieId: 1,
-        neverUse: true,
-      }).save();
+    describe("movie id docs already exist but are not valid", () => {
+      beforeEach(async () => {
+        await MovieId.build(MOVIE_ID_A_NEVER_USE).save();
+      });
 
-      const result = await Queue.getNextTmdbMovie();
-      expect(result).toBe(null);
+      it("should return null", async () => {
+        // returns null
+        expect(await Queue.getNextTmdbMovie()).toBe(null);
+      });
     });
 
-    it("should return tmdb movie id of least used document", async () => {
-      await Promise.all([
-        MovieId.build({
-          tmdbMovieId: 1,
-          timesUsed: 1,
-        }).save(),
-        MovieId.build({
-          tmdbMovieId: 2,
-          timesUsed: 2,
-        }).save(),
-      ]);
+    describe("movie id docs already exist", () => {
+      beforeEach(async () => {
+        await Promise.all([
+          MovieId.build(MOVIE_ID_A).save(),
+          MovieId.build(MOVIE_ID_B).save(),
+        ]);
+      });
 
-      const result = await Queue.getNextTmdbMovie();
-      expect(result).toBe(1);
-    });
+      it("should return tmdb movie id of least used doc", async () => {
+        // returns correct id
+        expect(await Queue.getNextTmdbMovie()).toBe(MOVIE_ID_A.tmdbMovieId);
+      });
 
-    it("should increment timesUsed of returned document", async () => {
-      await MovieId.build({
-        tmdbMovieId: 1,
-      }).save();
+      it("should increment timesUsed", async () => {
+        await Queue.getNextTmdbMovie();
 
-      await Queue.getNextTmdbMovie();
-
-      expect(await MovieId.findOne({ tmdbMovieId: 1 })).toEqual(
-        expect.objectContaining({ timesUsed: 1 })
-      );
+        // has been incremented
+        expect(
+          await MovieId.findOne({ tmdbMovieId: MOVIE_ID_A.tmdbMovieId })
+        ).toEqual(
+          expect.objectContaining({ timesUsed: MOVIE_ID_A.timesUsed + 1 })
+        );
+      });
     });
   });
 
   describe("get next utelly", () => {
-    it("should return null if no documents exist", async () => {
-      const result = await Queue.getNextUtelly();
-      expect(result).toBe(null);
+    describe("no tmdb movie docs already exist", () => {
+      it("should return null", async () => {
+        expect(await Queue.getNextUtelly()).toBe(null);
+      });
     });
 
-    it("should return null if no valid documents exist", async () => {
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
+    describe("tmdb movie docs already exist but are not valid", () => {
+      beforeEach(async () => {
+        await TmdbMovie.build(TMDB_MOVIE_A_NEVER_USE).save();
+      });
 
-      const result = await Queue.getNextUtelly();
-      expect(result).toBe(null);
+      it("should return null", async () => {
+        expect(await Queue.getNextUtelly()).toBe(null);
+      });
     });
 
-    it("should return tmdb movie id of least used document", async () => {
-      await Promise.all([
-        TmdbMovie.build({
-          tmdbMovieId: 1,
-          imdbId: "tt1234567",
-          title: "My Test Movie",
-          images: {
-            poster: "/poster.jpg",
-            backdrop: "/backdrop.jpg",
-          },
-          genres: ["xxx"],
-          rating: {
-            average: 10,
-            count: 1,
-            popularity: 10,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 180,
-          plot: "My Test Movie plot description",
-          timesUsed: 1,
-        }).save(),
-        TmdbMovie.build({
-          tmdbMovieId: 2,
-          imdbId: "tt1234568",
-          title: "My Test Movie Sequel",
-          images: {
-            poster: "/poster.jpg",
-            backdrop: "/backdrop.jpg",
-          },
-          genres: ["yyy"],
-          rating: {
-            average: 20,
-            count: 2,
-            popularity: 20,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 180,
-          plot: "My Test Movie Sequel plot description",
-          timesUsed: 2,
-        }).save(),
-      ]);
+    describe("tmdb movie docs already exist", () => {
+      beforeEach(async () => {
+        await Promise.all([
+          TmdbMovie.build(TMDB_MOVIE_A).save(),
+          TmdbMovie.build(TMDB_MOVIE_B).save(),
+        ]);
+      });
 
-      const result = await Queue.getNextUtelly();
-      expect(result).toBe("tt1234567");
-    });
+      it("should return imdb id of least used doc", async () => {
+        expect(await Queue.getNextUtelly()).toBe(TMDB_MOVIE_A.imdbId);
+      });
 
-    it("should increment timesUsed of returned document", async () => {
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-      }).save();
+      it("should increment timesUsed", async () => {
+        await Queue.getNextUtelly();
 
-      await Queue.getNextUtelly();
-
-      expect(await TmdbMovie.findOne({ tmdbMovieId: 1 })).toEqual(
-        expect.objectContaining({ timesUsed: 1 })
-      );
+        expect(
+          await TmdbMovie.findOne({ tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId })
+        ).toEqual(
+          expect.objectContaining({ timesUsed: TMDB_MOVIE_A.timesUsed + 1 })
+        );
+      });
     });
   });
 });

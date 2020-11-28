@@ -8,6 +8,10 @@ import { fetchTmdbGenres } from "../../modules/tmdb/services/fetch-tmdb-genres";
 import { announceMovie } from "../announce";
 import { fetchUtelly } from "../../modules/rapidapi-utelly/services/fetch-utelly";
 
+// Sample Data
+const TMDB_MOVIE_ID = 1;
+const IMDB_ID = "tt1234567";
+
 // Mock Queue
 jest.mock("../queue");
 
@@ -27,13 +31,18 @@ jest.mock("../announce");
 jest.mock("../../modules/rapidapi-utelly/services/fetch-utelly");
 
 // options
-const OPTIONS = {
+const START_OPTIONS = {
   countries: ["us"],
   languages: ["en"],
   includeAdultContent: false,
   earliestReleaseDate: new Date("1970-01-01"),
   minTmdbPopularity: 0,
 } as StartOptions;
+
+const IMPORT_OPTIONS = {
+  countries: ["us"],
+  languages: ["en"],
+};
 
 // Handle async functions inside setTimeout and setInterval
 function flushPromises() {
@@ -67,7 +76,7 @@ describe("ingestion", () => {
       // @ts-ignore
       Queue.isFirstImport.mockResolvedValueOnce(true);
 
-      await Ingestion.start(OPTIONS);
+      await Ingestion.start(START_OPTIONS);
 
       expect(runFirstImport).toHaveBeenCalled();
     });
@@ -76,7 +85,7 @@ describe("ingestion", () => {
       // @ts-ignore
       Queue.isFirstImport.mockResolvedValueOnce(false);
 
-      await Ingestion.start(OPTIONS);
+      await Ingestion.start(START_OPTIONS);
 
       expect(runRegularImport).toHaveBeenCalled();
     });
@@ -111,28 +120,19 @@ describe("ingestion", () => {
     });
 
     it("should run TMDB file export fetch", async () => {
-      await Ingestion.runFirstImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runFirstImport(IMPORT_OPTIONS);
 
       expect(runTmdbFileExportFetch).toHaveBeenCalled();
     });
 
     it("should run TMDB genres fetch", async () => {
-      await Ingestion.runFirstImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runFirstImport(IMPORT_OPTIONS);
 
       expect(runTmdbGenresFetch).toHaveBeenCalled();
     });
 
     it("should run regular import", async () => {
-      await Ingestion.runFirstImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runFirstImport(IMPORT_OPTIONS);
 
       expect(runRegularImport).toHaveBeenCalled();
     });
@@ -181,37 +181,25 @@ describe("ingestion", () => {
     });
 
     it("should schedule TMDB file export fetch", async () => {
-      await Ingestion.runRegularImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runRegularImport(IMPORT_OPTIONS);
 
       expect(scheduleTmdbFileExportFetch).toHaveBeenCalled();
     });
 
     it("should schedule TMDB movie fetch", async () => {
-      await Ingestion.runRegularImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runRegularImport(IMPORT_OPTIONS);
 
       expect(scheduleTmdbMovieFetch).toHaveBeenCalled();
     });
 
     it("should schedule TMDB genres fetch", async () => {
-      await Ingestion.runRegularImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runRegularImport(IMPORT_OPTIONS);
 
       expect(scheduleTmdbGenresFetch).toHaveBeenCalled();
     });
 
     it("should schedule utelly data fetch", async () => {
-      await Ingestion.runRegularImport({
-        countries: ["us"],
-        languages: ["en"],
-      });
+      await Ingestion.runRegularImport(IMPORT_OPTIONS);
 
       expect(scheduleUtellyDataFetch).toHaveBeenCalled();
     });
@@ -239,7 +227,7 @@ describe("ingestion", () => {
     });
 
     it("should use setTimeout and setInterval", async () => {
-      Ingestion.scheduleTmdbFileExportFetch(OPTIONS);
+      Ingestion.scheduleTmdbFileExportFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -249,7 +237,7 @@ describe("ingestion", () => {
     });
 
     it("should run TMDB file export fetch", () => {
-      Ingestion.scheduleTmdbFileExportFetch(OPTIONS);
+      Ingestion.scheduleTmdbFileExportFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
 
@@ -267,7 +255,7 @@ describe("ingestion", () => {
         // do nothing
       });
 
-      await Ingestion.runTmdbFileExportFetch(new Date(), OPTIONS);
+      await Ingestion.runTmdbFileExportFetch(new Date(), START_OPTIONS);
       expect(fetchTmdbFileExport).toHaveBeenCalled();
     });
   });
@@ -294,7 +282,7 @@ describe("ingestion", () => {
     });
 
     it("should use setInterval", async () => {
-      Ingestion.scheduleTmdbMovieFetch(OPTIONS);
+      Ingestion.scheduleTmdbMovieFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -304,9 +292,9 @@ describe("ingestion", () => {
 
     it("should run TMDB movie fetch", async () => {
       // @ts-ignore
-      Queue.getNextTmdbMovie.mockResolvedValueOnce(1);
+      Queue.getNextTmdbMovie.mockResolvedValueOnce(TMDB_MOVIE_ID);
 
-      Ingestion.scheduleTmdbMovieFetch(OPTIONS);
+      Ingestion.scheduleTmdbMovieFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -325,7 +313,7 @@ describe("ingestion", () => {
         // do nothing
       });
 
-      await Ingestion.runTmdbMovieFetch(1, OPTIONS);
+      await Ingestion.runTmdbMovieFetch(1, START_OPTIONS);
       expect(fetchTmdbMovie).toHaveBeenCalled();
     });
   });
@@ -352,7 +340,7 @@ describe("ingestion", () => {
     });
 
     it("should use setInterval", async () => {
-      Ingestion.scheduleTmdbGenresFetch(OPTIONS);
+      Ingestion.scheduleTmdbGenresFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -361,7 +349,7 @@ describe("ingestion", () => {
     });
 
     it("should run TMDB genres fetch", async () => {
-      Ingestion.scheduleTmdbGenresFetch(OPTIONS);
+      Ingestion.scheduleTmdbGenresFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -381,7 +369,7 @@ describe("ingestion", () => {
       });
 
       await Ingestion.runTmdbGenresFetch(
-        Object.assign({}, OPTIONS, { languages: ["en", "es", "fr"] })
+        Object.assign({}, START_OPTIONS, { languages: ["en", "es", "fr"] })
       );
       expect(fetchTmdbGenres).toHaveBeenCalledTimes(3);
     });
@@ -409,7 +397,7 @@ describe("ingestion", () => {
     });
 
     it("should use setInterval", async () => {
-      Ingestion.scheduleUtellyDataFetch(OPTIONS);
+      Ingestion.scheduleUtellyDataFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -419,9 +407,9 @@ describe("ingestion", () => {
 
     it("should run utelly data fetch", async () => {
       // @ts-ignore
-      Queue.getNextUtelly.mockResolvedValueOnce("tt1234567");
+      Queue.getNextUtelly.mockResolvedValueOnce(IMDB_ID);
 
-      Ingestion.scheduleUtellyDataFetch(OPTIONS);
+      Ingestion.scheduleUtellyDataFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -431,14 +419,14 @@ describe("ingestion", () => {
 
     it("should announce new movie", async () => {
       // @ts-ignore
-      Queue.getNextUtelly.mockResolvedValueOnce("tt4154796");
+      Queue.getNextUtelly.mockResolvedValueOnce(IMDB_ID);
 
       // @ts-ignore
       announceMovie.mockImplementationOnce(async () => {
         // do nothing
       });
 
-      Ingestion.scheduleUtellyDataFetch(OPTIONS);
+      Ingestion.scheduleUtellyDataFetch(START_OPTIONS);
 
       jest.runOnlyPendingTimers();
       await flushPromises();
@@ -458,8 +446,8 @@ describe("ingestion", () => {
       });
 
       await Ingestion.runUtellyDataFetch(
-        "tt1234567",
-        Object.assign({}, OPTIONS, { countries: ["uk", "us", "es"] })
+        IMDB_ID,
+        Object.assign({}, START_OPTIONS, { countries: ["uk", "us", "es"] })
       );
       expect(fetchUtelly).toHaveBeenCalledTimes(3);
     });

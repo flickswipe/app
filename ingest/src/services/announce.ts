@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose from "mongoose";
 import { MediaItemUpdatedPublisher } from "../events/publishers/media-item-updated";
 import { natsWrapper } from "../nats-wrapper";
 import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
@@ -51,7 +51,7 @@ export async function announceMovie({
 
     const result = locations.map(
       (location: { id: string; displayName: string; url: string }) => ({
-        id: Types.ObjectId(
+        id: mongoose.Types.ObjectId(
           location.id.padStart(24, "0").slice(-24)
         ).toHexString(),
         name: location.displayName,

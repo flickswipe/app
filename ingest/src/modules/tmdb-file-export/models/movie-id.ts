@@ -30,6 +30,8 @@ const movieIdSchema = new mongoose.Schema(
     tmdbMovieId: {
       type: Number,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     timesUsed: {
       type: Number,

@@ -3,53 +3,84 @@ import axios from "axios";
 
 import { MovieId } from "../../models/movie-id";
 
+// sample data
 import { fetchTmdbFileExport } from "../fetch-tmdb-file-export";
 
 describe("fetch tmdb file export", () => {
-  it("should call axios", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: fs.createReadStream(`${__dirname}/movies.1000.json.gz.sample`),
+  describe("data provided", () => {
+    describe("irrelevant data", () => {
+      describe("adult content", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: fs.createReadStream(
+              `${__dirname}/movies.adult.json.gz.sample`
+            ),
+          });
+        });
+
+        it("shouldn't create docs", async () => {
+          await fetchTmdbFileExport(new Date(), { includeAdultContent: false });
+
+          // no extra inserts
+          expect(await MovieId.countDocuments()).toBe(0);
+        });
+      });
+
+      describe("not popular", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: fs.createReadStream(
+              `${__dirname}/movies.unpopular.json.gz.sample`
+            ),
+          });
+        });
+
+        it("shouldn't create docs", async () => {
+          await fetchTmdbFileExport(new Date(), { minTmdbPopularity: 1 });
+
+          // no extra inserts
+          expect(await MovieId.countDocuments()).toBe(0);
+        });
+      });
     });
-
-    await fetchTmdbFileExport(new Date());
-
-    expect(axios).toHaveBeenCalled();
   });
 
-  it("should skip if data is adult content", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: fs.createReadStream(`${__dirname}/movies.adult.json.gz.sample`),
+  describe("relevant data", () => {
+    beforeEach(() => {
+      // @ts-ignore
+      axios.mockResolvedValueOnce({
+        data: fs.createReadStream(`${__dirname}/movies.1000.json.gz.sample`),
+      });
     });
 
-    await fetchTmdbFileExport(new Date(), { includeAdultContent: false });
+    describe("doc already exists", () => {
+      let existingDocCount: number;
+      beforeEach(async () => {
+        await fetchTmdbFileExport(new Date());
+        existingDocCount = await MovieId.countDocuments();
 
-    const count = await MovieId.countDocuments({});
-    expect(count).toBe(0);
-  });
+        // @ts-ignore
+        axios.mockResolvedValueOnce({
+          data: fs.createReadStream(`${__dirname}/movies.1000.json.gz.sample`),
+        });
+      });
+      it("shouldn't add duplicate data", async () => {
+        await fetchTmdbFileExport(new Date());
 
-  it("should skip if data is not popular enough", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: fs.createReadStream(`${__dirname}/movies.unpopular.json.gz.sample`),
+        // has been created
+        expect(await MovieId.countDocuments()).toEqual(existingDocCount);
+      });
     });
 
-    await fetchTmdbFileExport(new Date(), { minTmdbPopularity: 1 });
+    describe("no doc already exists", () => {
+      it("should create movie id docs", async () => {
+        await fetchTmdbFileExport(new Date());
 
-    const count = await MovieId.countDocuments({});
-    expect(count).toBe(0);
-  });
-
-  it("should create movie id docs", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: fs.createReadStream(`${__dirname}/movies.1000.json.gz.sample`),
+        // has been created
+        expect(await MovieId.countDocuments()).toBeGreaterThan(0);
+      });
     });
-
-    await fetchTmdbFileExport(new Date());
-
-    const count = await MovieId.countDocuments({});
-    expect(count).toBeGreaterThan(0);
   });
 });

@@ -38,6 +38,8 @@ const utellySchema = new mongoose.Schema(
     imdbId: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     country: {
       type: String,
@@ -64,19 +66,10 @@ const utellySchema = new mongoose.Schema(
  */
 interface UtellyModel extends mongoose.Model<UtellyDoc> {
   build(attrs: UtellyAttrs): UtellyDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 utellySchema.statics.build = (attrs: UtellyAttrs) => {
-  return new Utelly(
-    Object.assign({ _id: utellySchema.statics.id(attrs.imdbId) }, attrs)
-  );
-};
-
-utellySchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
-    : mongoose.Types.ObjectId();
+  return new Utelly(attrs);
 };
 /**
  * Initialize model
