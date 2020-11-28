@@ -11,7 +11,7 @@ export class Email {
   textTemplate: string;
   htmlTemplate: string;
 
-  static hydrate(content: string, data: Record<string, string>): string {
+  static compile(content: string, data: Record<string, string>): string {
     const [leftDelimiter, rightDelimiter] = Email.delimiters;
 
     Object.keys(data).forEach((key) => {
@@ -34,9 +34,9 @@ export class Email {
   }
 
   send(targetEmail: string, data: Record<string, string>): Promise<any> {
-    const subject = Email.hydrate(this.subjectTemplate, data);
-    const text = Email.hydrate(this.textTemplate, data);
-    const html = Email.hydrate(this.htmlTemplate, data);
+    const subject = Email.compile(this.subjectTemplate, data);
+    const text = Email.compile(this.textTemplate, data);
+    const html = Email.compile(this.htmlTemplate, data);
 
     return transporterWrapper.sendMail({
       to: targetEmail,

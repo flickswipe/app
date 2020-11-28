@@ -1,5 +1,4 @@
 import { Message } from "node-nats-streaming";
-import { EmailTokenType } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { EmailTokenCreatedListener } from "../email-token-created";
 
@@ -11,6 +10,12 @@ jest.mock("../../../services/send-add-email-link");
 
 // mock sendMagicLink
 jest.mock("../../../services/send-magic-link");
+
+// sample data
+import {
+  SIGN_IN_TOKEN_A,
+  ADD_EMAIL_TOKEN_A,
+} from "../../../test/sample-data/tokens";
 
 const setup = async () => {
   return {
@@ -25,55 +30,37 @@ const setup = async () => {
 
 describe("email token created listener", () => {
   describe("email token type: sign in", () => {
-    const data = {
-      id: "AAAAAA",
-      emailTokenType: EmailTokenType.SignIn,
-      email: "test@user",
-      url: "https://example.com/",
-      token: "AAAAAA",
-      expiresAt: new Date(),
-    };
-
     it("calls sendMagicLink", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(SIGN_IN_TOKEN_A, msg);
 
-      await listener.onMessage(data, msg);
-
+      // has been called
       expect(sendMagicLink).toHaveBeenCalled();
     });
 
     it("acks the message", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(SIGN_IN_TOKEN_A, msg);
 
-      await listener.onMessage(data, msg);
-
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
 
   describe("email token type: add email", () => {
-    const data = {
-      id: "AAAAAA",
-      emailTokenType: EmailTokenType.AddEmail,
-      email: "test@user",
-      url: "https://example.com/",
-      token: "AAAAAA",
-      expiresAt: new Date(),
-    };
-
     it("calls sendAddEmailLink", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(ADD_EMAIL_TOKEN_A, msg);
 
-      await listener.onMessage(data, msg);
-
+      // has been called
       expect(sendAddEmailLink).toHaveBeenCalled();
     });
 
     it("acks the message", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(ADD_EMAIL_TOKEN_A, msg);
 
-      await listener.onMessage(data, msg);
-
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
