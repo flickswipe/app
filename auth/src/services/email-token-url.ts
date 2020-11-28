@@ -50,7 +50,7 @@ const generateEmailTokenUrl = async (
   let email = payload?.email;
 
   if (!email) {
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findById(userId);
     email = user && user.email;
   }
 
@@ -144,8 +144,7 @@ export class EmailTokenUrl {
 
     // magic links automatically create a new user
     if (emailTokenType === EmailTokenType.SignIn) {
-      const newUser = User.build({ email });
-      await newUser.save();
+      const newUser = await User.build({ email }).save();
       return await generateEmailTokenUrl(
         emailTokenType,
         newUser.id,
@@ -155,7 +154,9 @@ export class EmailTokenUrl {
     }
 
     // other links fail
-    throw new BadRequestError(`Can't generate email token url: invalid email`);
+    throw new BadRequestError(
+      `Can't generate email token url: invalid email ${email}`
+    );
   }
 
   /**
@@ -177,15 +178,15 @@ export class EmailTokenUrl {
     // check object id is valid
     if (!ObjectId.isValid(userId)) {
       throw new BadRequestError(
-        `Can't generate email token url: invalid user id`
+        `Can't generate email token url: invalid user id "${userId}"`
       );
     }
 
     // check user exists
-    const user = await User.findOne({ _id: new ObjectId(userId) });
+    const user = await User.findById(userId);
     if (!user) {
       throw new BadRequestError(
-        `Can't generate email token url: invalid user id`
+        `Can't generate email token url: invalid user id "${userId}"`
       );
     }
 
