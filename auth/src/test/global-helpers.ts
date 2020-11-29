@@ -4,6 +4,7 @@
 import request from "supertest";
 
 import { app } from "../app";
+import { User, UserDoc } from "../models/user";
 
 declare global {
   // @ts-ignore
