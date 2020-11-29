@@ -50,13 +50,11 @@ const expectTwoSuggestionDocsToExist = async () => {
 
 describe("create suggestions", () => {
   beforeEach(async () => {
-    await User.build({
-      id: USER_A.id,
-    }).save();
-
-    await MediaItem.build(MEDIA_ITEM_A).save();
-
-    await MediaItem.build(MEDIA_ITEM_B).save();
+    await Promise.all([
+      User.build({ id: USER_A.id }).save(),
+      MediaItem.build(MEDIA_ITEM_A).save(),
+      MediaItem.build(MEDIA_ITEM_B).save(),
+    ]);
   });
 
   it("should throw a BadRequestError if user doesn't exist", async () => {

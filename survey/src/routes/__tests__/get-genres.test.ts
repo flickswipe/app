@@ -8,7 +8,7 @@ import { GENRE_A } from "../../test/sample-data/genres";
 describe("get genres", () => {
   describe("invalid conditions", () => {
     describe("not signed in", () => {
-      // returns correct status
+      // has correct status
       it("returns a 401", async () => {
         await request(app).get("/api/en/survey/genres").send().expect(401);
       });
@@ -16,7 +16,7 @@ describe("get genres", () => {
 
     describe("no genres exist", () => {
       it("returns a 404", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get("/api/en/survey/genres")
           .set("Cookie", await global.signIn())
@@ -32,7 +32,7 @@ describe("get genres", () => {
     });
 
     it("returns a 200", async () => {
-      // returns correct status
+      // has correct status
       await request(app)
         .get("/api/en/survey/genres")
         .set("Cookie", await global.signIn())
@@ -45,7 +45,7 @@ describe("get genres", () => {
         .get("/api/en/survey/genres")
         .set("Cookie", await global.signIn())
         .send();
-      // returns correct data
+      // has correct data
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body[0]).toEqual(
         expect.objectContaining({

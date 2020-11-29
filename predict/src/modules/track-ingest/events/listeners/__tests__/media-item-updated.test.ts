@@ -25,67 +25,69 @@ const setup = async () => {
 };
 
 describe("media item updated listener", () => {
-  describe("ignore old data", () => {
-    it("should not overwrite a more recent doc", async () => {
-      const existingDoc = await MediaItem.build(MEDIA_ITEM_A).save();
+  describe("media item exists", () => {
+    describe("data received out of order", () => {
+      it("should not update media item", async () => {
+        const existingDoc = await MediaItem.build(MEDIA_ITEM_A).save();
 
-      const { listener, msg } = await setup();
-      await listener.onMessage(STALE_EVENT_DATA, msg);
+        const { listener, msg } = await setup();
+        await listener.onMessage(STALE_EVENT_DATA, msg);
 
-      // has not been overwritten
-      expect(await MediaItem.findById(existingDoc.id)).toEqual(
-        expect.objectContaining({
-          title: existingDoc.title,
-          updatedAt: existingDoc.updatedAt,
-        })
-      );
+        // has not been overwritten
+        expect(await MediaItem.findById(existingDoc.id)).toEqual(
+          expect.objectContaining({
+            title: existingDoc.title,
+            updatedAt: existingDoc.updatedAt,
+          })
+        );
 
-      // no extra records inserted
-      expect(await MediaItem.countDocuments()).toBe(1);
+        // no extra records inserted
+        expect(await MediaItem.countDocuments()).toBe(1);
+      });
+
+      it("should acknowledge the message", async () => {
+        await MediaItem.build(MEDIA_ITEM_A).save();
+
+        const { listener, msg } = await setup();
+        await listener.onMessage(STALE_EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
     });
 
-    it("should acknowledge the message", async () => {
-      await MediaItem.build(MEDIA_ITEM_A).save();
+    describe("data received in order", () => {
+      it("should update media item", async () => {
+        const existingDoc = await MediaItem.build(MEDIA_ITEM_A).save();
 
-      const { listener, msg } = await setup();
-      await listener.onMessage(STALE_EVENT_DATA, msg);
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
 
-      // has been acked
-      expect(msg.ack).toHaveBeenCalled();
+        // has been overwritten
+        expect(await MediaItem.findById(existingDoc.id)).toEqual(
+          expect.objectContaining({
+            title: EVENT_DATA.title,
+          })
+        );
+
+        // no extra records inserted
+        expect(await MediaItem.countDocuments()).toBe(1);
+      });
+
+      it("should acknowledge the message", async () => {
+        await MediaItem.build(MEDIA_ITEM_A).save();
+
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
     });
   });
 
-  describe("update existing doc", () => {
-    it("should overwrite existing doc", async () => {
-      const existingDoc = await MediaItem.build(MEDIA_ITEM_A).save();
-
-      const { listener, msg } = await setup();
-      await listener.onMessage(EVENT_DATA, msg);
-
-      // has been overwritten
-      expect(await MediaItem.findById(existingDoc.id)).toEqual(
-        expect.objectContaining({
-          title: EVENT_DATA.title,
-        })
-      );
-
-      // no extra records inserted
-      expect(await MediaItem.countDocuments()).toBe(1);
-    });
-
-    it("should acknowledge the message", async () => {
-      await MediaItem.build(MEDIA_ITEM_A).save();
-
-      const { listener, msg } = await setup();
-      await listener.onMessage(EVENT_DATA, msg);
-
-      // has been acked
-      expect(msg.ack).toHaveBeenCalled();
-    });
-  });
-
-  describe("create new doc", () => {
-    it("should create a new doc", async () => {
+  describe("no media item exists", () => {
+    it("should create media item", async () => {
       const { listener, msg } = await setup();
       await listener.onMessage(EVENT_DATA, msg);
 
@@ -99,6 +101,7 @@ describe("media item updated listener", () => {
       // no extra records inserted
       expect(await MediaItem.countDocuments()).toBe(1);
     });
+
     it("should acknowledge the message", async () => {
       const { listener, msg } = await setup();
 

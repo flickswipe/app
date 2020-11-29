@@ -7,22 +7,22 @@ import cloneDeep from "clone-deep";
 // sample data
 import {
   MEDIA_ITEM_A,
-  MEDIA_ITEM_A_OVERWRITTEN,
+  MEDIA_ITEM_A_NEW,
 } from "../../../../../test/sample-data/media-items";
 
 const EVENT_DATA = {
-  id: MEDIA_ITEM_A_OVERWRITTEN.id,
-  tmdbMovieId: MEDIA_ITEM_A_OVERWRITTEN.tmdbMovieId,
-  imdbId: MEDIA_ITEM_A_OVERWRITTEN.imdbId,
-  title: MEDIA_ITEM_A_OVERWRITTEN.title,
-  images: MEDIA_ITEM_A_OVERWRITTEN.images,
-  genres: MEDIA_ITEM_A_OVERWRITTEN.genres,
-  rating: MEDIA_ITEM_A_OVERWRITTEN.rating,
-  language: MEDIA_ITEM_A_OVERWRITTEN.language,
-  releaseDate: MEDIA_ITEM_A_OVERWRITTEN.releaseDate,
-  runtime: MEDIA_ITEM_A_OVERWRITTEN.runtime,
-  plot: MEDIA_ITEM_A_OVERWRITTEN.plot,
-  streamLocations: MEDIA_ITEM_A_OVERWRITTEN.streamLocations,
+  id: MEDIA_ITEM_A_NEW.id,
+  tmdbMovieId: MEDIA_ITEM_A_NEW.tmdbMovieId,
+  imdbId: MEDIA_ITEM_A_NEW.imdbId,
+  title: MEDIA_ITEM_A_NEW.title,
+  images: MEDIA_ITEM_A_NEW.images,
+  genres: MEDIA_ITEM_A_NEW.genres,
+  rating: MEDIA_ITEM_A_NEW.rating,
+  language: MEDIA_ITEM_A_NEW.language,
+  releaseDate: MEDIA_ITEM_A_NEW.releaseDate,
+  runtime: MEDIA_ITEM_A_NEW.runtime,
+  plot: MEDIA_ITEM_A_NEW.plot,
+  streamLocations: MEDIA_ITEM_A_NEW.streamLocations,
   updatedAt: new Date(new Date().getTime() + 86600),
 };
 const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
@@ -73,7 +73,7 @@ describe("media item updated listener", () => {
 
         // has been updated
         expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
-          expect.objectContaining(cloneDeep(MEDIA_ITEM_A_OVERWRITTEN))
+          expect.objectContaining(cloneDeep(MEDIA_ITEM_A_NEW))
         );
       });
 
@@ -94,7 +94,7 @@ describe("media item updated listener", () => {
 
       // has been created
       expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
-        expect.objectContaining(cloneDeep(MEDIA_ITEM_A_OVERWRITTEN))
+        expect.objectContaining(cloneDeep(MEDIA_ITEM_A_NEW))
       );
     });
 

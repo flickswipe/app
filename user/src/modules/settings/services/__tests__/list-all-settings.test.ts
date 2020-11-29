@@ -1,260 +1,167 @@
-import {
-  CountrySetting,
-  GenresSetting,
-  LanguagesSetting,
-  RatingSetting,
-  ReleaseDateSetting,
-  RuntimeSetting,
-  SettingType,
-  StreamLocationsSetting,
-} from "@flickswipe/common";
 import { Setting } from "../../models/setting";
-import { listAllSettings, SettingsPayload } from "../list-all-settings";
+import { listAllSettings } from "../list-all-settings";
 
-const defaultSettings: SettingsPayload = {
-  country: "",
-  genres: {
-    abcdefabcdef: true,
-    bcdbcdbcdbcd: false,
-  },
-  languages: {
-    en: true,
-  } as SettingsPayload["languages"],
-  rating: {
-    min: 7,
-  },
-  releaseDate: {
-    min: new Date("01-01-1970"),
-  },
-  runtime: {
-    max: 120,
-  },
-  streamLocations: {
-    netflixnetfl: true,
-    amazonamazon: true,
-  },
-};
-
-const sampleCountrySettingValue = "us" as CountrySetting["value"];
-
-const sampleGenresSettingValue = {
-  abcdefabcdef: true,
-  bcdbcdbcdbcd: false,
-} as GenresSetting["value"];
-
-const sampleLanguagesSettingValue = {
-  en: true,
-  es: false,
-} as LanguagesSetting["value"];
-
-const sampleRatingSettingValue = {
-  min: 5,
-} as RatingSetting["value"];
-
-const sampleReleaseDateSettingValue = {
-  min: new Date("01-01-1970"),
-} as ReleaseDateSetting["value"];
-
-const sampleRuntimeSettingValue = {
-  min: 90,
-} as RuntimeSetting["value"];
-
-const sampleStreamLocationsSettingValue = {
-  netflixnetfl: true,
-  amazonamazon: false,
-} as StreamLocationsSetting["value"];
+// sample data
+import { USER_A } from "../../../../test/sample-data/users";
+import {
+  ALL_SETTINGS,
+  COUNTRY_SETTING,
+  GENRES_SETTING,
+  LANGUAGES_SETTING,
+  RATING_SETTING,
+  RELEASE_DATE_SETTING,
+  RUNTIME_SETTING,
+  STREAM_LOCATIONS_SETTING,
+  COUNTRY_SETTING_EMPTY,
+  GENRES_SETTING_EMPTY,
+  LANGUAGES_SETTING_EMPTY,
+  RATING_SETTING_EMPTY,
+  RELEASE_DATE_SETTING_EMPTY,
+  RUNTIME_SETTING_EMPTY,
+  STREAM_LOCATIONS_SETTING_EMPTY,
+  ALL_SETTINGS_EMPTY,
+} from "../../../../test/sample-data/settings";
 
 describe("get settings", () => {
   describe("no settings or default settings", () => {
     it("should return all keys with empty objects", async () => {
-      const result = await listAllSettings("useruseruser");
-
-      expect(result).toEqual({
-        country: "",
-        genres: {},
-        languages: {},
-        rating: {},
-        releaseDate: {},
-        runtime: {},
-        streamLocations: {},
-      });
+      // has correct data
+      expect(await listAllSettings(USER_A.id)).toEqual(ALL_SETTINGS_EMPTY);
     });
   });
 
   describe("no settings, but default settings exist", () => {
     it("should return all default settings", async () => {
-      const result = await listAllSettings("useruseruser", defaultSettings);
-
-      expect(result).toEqual(defaultSettings);
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS)).toEqual(
+        ALL_SETTINGS
+      );
     });
   });
 
   describe("settings contain empty objects and default settings exist", () => {
+    beforeEach(async () => {
+      await Promise.all([
+        Setting.build(COUNTRY_SETTING_EMPTY).save(),
+        Setting.build(GENRES_SETTING_EMPTY).save(),
+        Setting.build(LANGUAGES_SETTING_EMPTY).save(),
+        Setting.build(RATING_SETTING_EMPTY).save(),
+        Setting.build(RELEASE_DATE_SETTING_EMPTY).save(),
+        Setting.build(RUNTIME_SETTING_EMPTY).save(),
+        Setting.build(STREAM_LOCATIONS_SETTING_EMPTY).save(),
+      ]);
+    });
+
     it("should return all default settings", async () => {
-      await Setting.build({
-        settingType: SettingType.Country,
-        user: "useruseruser",
-        value: "",
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.Genres,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.Languages,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.Rating,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.ReleaseDate,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.Runtime,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.StreamLocations,
-        user: "useruseruser",
-        value: {},
-      }).save();
-
-      const result = await listAllSettings("useruseruser", defaultSettings);
-
-      expect(result).toEqual(defaultSettings);
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS)).toEqual(
+        ALL_SETTINGS
+      );
     });
   });
 
   describe("country setting and default settings exist", () => {
+    beforeEach(async () => {
+      await Setting.build(COUNTRY_SETTING).save();
+    });
+
     it("should return country setting alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.Country,
-        user: "useruseruser",
-        value: sampleCountrySettingValue,
-      }).save();
-
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        country: sampleCountrySettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          country: COUNTRY_SETTING.value,
+        })
+      );
     });
   });
 
   describe("genres settings and default settings exist", () => {
-    it("should return a genres settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.Genres,
-        user: "useruseruser",
-        value: sampleGenresSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(GENRES_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        genres: sampleGenresSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return genres settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          genres: GENRES_SETTING.value,
+        })
+      );
     });
   });
 
   describe("languages settings and default settings exist", () => {
-    it("should return a languages settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.Languages,
-        user: "useruseruser",
-        value: sampleLanguagesSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(LANGUAGES_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        languages: sampleLanguagesSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return languages settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          languages: LANGUAGES_SETTING.value,
+        })
+      );
     });
   });
 
   describe("rating settings and default settings exist", () => {
-    it("should return a rating settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.Rating,
-        user: "useruseruser",
-        value: sampleRatingSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(RATING_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        rating: sampleRatingSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return rating settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          rating: RATING_SETTING.value,
+        })
+      );
     });
   });
 
   describe("releaseDate settings and default settings exist", () => {
-    it("should return a releaseDate settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.ReleaseDate,
-        user: "useruseruser",
-        value: sampleReleaseDateSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(RELEASE_DATE_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        releaseDate: sampleReleaseDateSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return releaseDate settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          releaseDate: RELEASE_DATE_SETTING.value,
+        })
+      );
     });
   });
 
   describe("runtime settings and default settings exist", () => {
-    it("should return a runtime settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.Runtime,
-        user: "useruseruser",
-        value: sampleRuntimeSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(RUNTIME_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        runtime: sampleRuntimeSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return runtime settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          runtime: RUNTIME_SETTING.value,
+        })
+      );
     });
   });
 
   describe("stream locations settings and default settings exist", () => {
-    it("should return a stream locations settings alongside default values", async () => {
-      await Setting.build({
-        settingType: SettingType.StreamLocations,
-        user: "useruseruser",
-        value: sampleStreamLocationsSettingValue,
-      }).save();
+    beforeEach(async () => {
+      await Setting.build(STREAM_LOCATIONS_SETTING).save();
+    });
 
-      const result = await listAllSettings("useruseruser", defaultSettings);
-      const expectedResult = Object.assign({}, defaultSettings, {
-        streamLocations: sampleStreamLocationsSettingValue,
-      });
-
-      expect(result).toEqual(expectedResult);
+    it("should return stream locations settings alongside default values", async () => {
+      // has correct data
+      expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
+        Object.assign(ALL_SETTINGS_EMPTY, {
+          streamLocations: STREAM_LOCATIONS_SETTING.value,
+        })
+      );
     });
   });
 });

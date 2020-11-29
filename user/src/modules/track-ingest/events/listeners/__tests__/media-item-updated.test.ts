@@ -1,10 +1,14 @@
-import { iso6391 } from "@flickswipe/common";
-import { Types } from "mongoose";
+import mongoose from "mongoose";
+import cloneDeep from "clone-deep";
 import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../../../nats-wrapper";
+
 import { Country } from "../../../models/country";
 import { Language } from "../../../models/language";
-import { StreamLocation } from "../../../models/stream-location";
+import {
+  StreamLocation,
+  StreamLocationDoc,
+} from "../../../models/stream-location";
 import {
   createCountryIfNotExists,
   createLanguageIfNotExists,
@@ -12,40 +16,70 @@ import {
   parseStreamLocations,
   saveStreamLocation,
 } from "../media-item-updated";
+import { iso6391 } from "@flickswipe/common";
+
+// sample data
+import {
+  MEDIA_ITEM_A,
+  MEDIA_ITEM_A_NEW,
+} from "../../../../../test/sample-data/media-items";
+const LANGUAGE = {
+  language: MEDIA_ITEM_A_NEW.language as iso6391,
+};
+const COUNTRY = {
+  country: Object.keys(MEDIA_ITEM_A_NEW.streamLocations)[0],
+};
+const STREAM_LOCATIONS = [
+  {
+    id: MEDIA_ITEM_A.streamLocations.us[0].id,
+    name: MEDIA_ITEM_A.streamLocations.us[0].name,
+    url: MEDIA_ITEM_A.streamLocations.us[0].url,
+    country: Object.keys(MEDIA_ITEM_A.streamLocations)[0],
+  },
+];
+const STREAM_LOCATIONS_NEW = [
+  {
+    id: MEDIA_ITEM_A_NEW.streamLocations.us[0].id,
+    name: MEDIA_ITEM_A_NEW.streamLocations.us[0].name,
+    url: MEDIA_ITEM_A_NEW.streamLocations.us[0].url,
+    country: Object.keys(MEDIA_ITEM_A_NEW.streamLocations)[0],
+  },
+];
+const EVENT_DATA = {
+  id: MEDIA_ITEM_A_NEW.id,
+  tmdbMovieId: MEDIA_ITEM_A_NEW.tmdbMovieId,
+  imdbId: MEDIA_ITEM_A_NEW.imdbId,
+  title: MEDIA_ITEM_A_NEW.title,
+  genres: cloneDeep(MEDIA_ITEM_A_NEW.genres),
+  images: cloneDeep(MEDIA_ITEM_A_NEW.images),
+  rating: cloneDeep(MEDIA_ITEM_A_NEW.rating),
+  language: MEDIA_ITEM_A_NEW.language as iso6391,
+  releaseDate: MEDIA_ITEM_A_NEW.releaseDate,
+  runtime: MEDIA_ITEM_A_NEW.runtime,
+  plot: MEDIA_ITEM_A_NEW.plot,
+  streamLocations: cloneDeep(MEDIA_ITEM_A_NEW.streamLocations),
+  updatedAt: new Date(),
+};
+const EVENT_DATA_STALE = Object.assign(cloneDeep(EVENT_DATA), {
+  updatedAt: new Date(new Date().getTime() - 86600),
+});
+const EVENT_DATA_INVALID_STREAM_LOCATIONS = Object.assign(
+  cloneDeep(EVENT_DATA),
+  {
+    streamLocations: {
+      us: [
+        {
+          id: mongoose.Types.ObjectId().toHexString(),
+          name: "Netflix",
+          url: "invalid-url",
+        },
+      ],
+    },
+  }
+);
 
 const setup = async () => {
   return {
-    sampleEventData: {
-      id: "ab1234567890ab1234567890",
-      tmdbMovieId: 1,
-      imdbId: "tt1234567",
-      title: "My Movie",
-      genres: [Types.ObjectId().toHexString()],
-      images: {
-        poster: "https://example.com/",
-        backdrop: "https://example.com/",
-      },
-      rating: {
-        average: 100,
-        count: 101,
-        popularity: 102,
-      },
-      language: "en" as iso6391,
-      releaseDate: new Date(),
-      runtime: 103,
-      plot: "My movie plot...",
-      streamLocations: {
-        us: [
-          {
-            id: Types.ObjectId().toHexString(),
-            name: "Netflix",
-            url: "https://netflix.com/w/12345",
-          },
-        ],
-      },
-      updatedAt: new Date(),
-    },
-
     listener: new MediaItemUpdatedListener(natsWrapper.client),
 
     // @ts-ignore
@@ -56,271 +90,177 @@ const setup = async () => {
 };
 
 describe("media item updated listener", () => {
+  /**
+   * createLanguageIfNotExists()
+   */
   describe("create language if not exists", () => {
-    describe("language doesn't exist", () => {
-      it("should add language ", async () => {
-        await createLanguageIfNotExists("en");
+    describe("no language exists", () => {
+      it("should create language ", async () => {
+        await createLanguageIfNotExists(LANGUAGE.language);
 
-        expect(await Language.findOne({ language: "en" })).toEqual(
-          expect.objectContaining({
-            language: "en",
-          })
-        );
+        // has been created
+        expect(await Language.countDocuments(LANGUAGE)).toBe(1);
       });
     });
+
     describe("language exists", () => {
-      it("should not add language", async () => {
-        await Language.build({ language: "en" }).save();
+      beforeEach(async () => {
+        await Language.build(LANGUAGE).save();
+      });
 
-        await createLanguageIfNotExists("en");
+      it("should not create language", async () => {
+        await createLanguageIfNotExists(LANGUAGE.language);
 
-        expect(await Language.countDocuments({ language: "en" })).toBe(1);
+        // has not been created
+        expect(await Language.countDocuments(LANGUAGE)).toBe(1);
       });
     });
   });
 
+  /**
+   * parseStreamLocations()
+   */
   describe("parse stream locations", () => {
-    it("should parse data correctly", async () => {
-      const { sampleEventData } = await setup();
-      const data = Object.assign(sampleEventData, {
-        streamLocations: {
-          us: [
-            {
-              id: Types.ObjectId().toHexString(),
-              name: "Netflix",
-              url: "https://netflix.com/w/12345",
-            },
-          ],
-        },
+    describe("invalid conditions", () => {
+      it("should return empty array", async () => {
+        // has correct data
+        expect(
+          parseStreamLocations(EVENT_DATA_INVALID_STREAM_LOCATIONS)
+        ).toEqual([]);
       });
-
-      expect(parseStreamLocations(data)[0]).toEqual(
-        expect.objectContaining({
-          name: "Netflix",
-          url: "https://netflix.com",
-          country: "us",
-        })
-      );
     });
-    it("should return empty array if data is malformed", async () => {
-      const { sampleEventData } = await setup();
-      const data = Object.assign(sampleEventData, {
-        streamLocations: {
-          us: [
-            {
-              id: Types.ObjectId().toHexString(),
-              name: "Netflix",
-              url: "invalid-url",
-            },
-          ],
-        },
-      });
 
-      expect(parseStreamLocations(data)).toEqual([]);
+    describe("valid conditions", () => {
+      it("should return array of stream locations", async () => {
+        const parsed = parseStreamLocations(EVENT_DATA);
+
+        // has correct data
+        expect(parsed).toBeInstanceOf(Array);
+        expect(parsed).toHaveLength(STREAM_LOCATIONS.length);
+        expect(parsed[0]).toEqual(
+          expect.objectContaining({
+            name: STREAM_LOCATIONS[0].name,
+            url: STREAM_LOCATIONS[0].url,
+            country: STREAM_LOCATIONS[0].country,
+          })
+        );
+      });
     });
   });
 
+  /**
+   * saveStreamLocation()
+   */
   describe("save stream location", () => {
-    describe("create new doc", () => {
-      it("should create a new doc", async () => {
-        const { sampleEventData } = await setup();
+    describe("no doc exists", () => {
+      it("should create doc", async () => {
+        await saveStreamLocation(STREAM_LOCATIONS_NEW[0], EVENT_DATA);
 
-        await saveStreamLocation(
-          {
-            id: Types.ObjectId().toHexString(),
-            name: "Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          sampleEventData
-        );
-
-        expect(await StreamLocation.findOne()).toEqual(
-          expect.objectContaining({
-            name: "Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          })
-        );
+        // has been created
+        expect(
+          await StreamLocation.findById(STREAM_LOCATIONS_NEW[0].id)
+        ).toEqual(expect.objectContaining(STREAM_LOCATIONS_NEW[0]));
       });
     });
 
-    describe("ignore old data", () => {
-      it("shouldn't overwrite existing doc", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, {
-          updatedAt: new Date(new Date().getTime() - 86600),
-        });
-
-        const existingDoc = await StreamLocation.build({
-          id: Types.ObjectId().toHexString(),
-          name: "Netflix",
-          url: "https://netflix.com",
-          country: "us",
-        }).save();
-
-        await saveStreamLocation(
-          {
-            id: existingDoc.id,
-            name: "New Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          data
-        );
-
-        expect(await StreamLocation.findOne()).toEqual(
-          expect.objectContaining({
-            name: "Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          })
-        );
+    describe("doc exists", () => {
+      let existingDoc: StreamLocationDoc;
+      beforeEach(async () => {
+        existingDoc = await StreamLocation.build(STREAM_LOCATIONS[0]).save();
       });
-    });
 
-    describe("create country if not exists", () => {
-      describe("country doesn't exist", () => {
-        it("should add country ", async () => {
-          await createCountryIfNotExists("us");
+      describe("data received out of order", () => {
+        it("should not overwrite doc", async () => {
+          await saveStreamLocation(STREAM_LOCATIONS_NEW[0], EVENT_DATA_STALE);
 
-          expect(await Country.findOne({ country: "us" })).toEqual(
+          // has not been overwritten
+          expect(await StreamLocation.findById(existingDoc.id)).toEqual(
             expect.objectContaining({
-              country: "us",
+              name: STREAM_LOCATIONS[0].name,
+              url: STREAM_LOCATIONS[0].url,
+              country: STREAM_LOCATIONS[0].country,
             })
           );
         });
-      });
-      describe("country exists", () => {
-        it("should not add country", async () => {
-          await createCountryIfNotExists("us");
-
-          await Country.build({ country: "us" }).save();
-
-          expect(await Country.findOne({ country: "us" })).toEqual(
-            expect.objectContaining({
-              country: "us",
-            })
-          );
-        });
-      });
-    });
-
-    describe("update existing doc", () => {
-      it("should overwrite existing doc", async () => {
-        const { sampleEventData } = await setup();
-
-        const data = Object.assign(sampleEventData, {
-          updatedAt: new Date(new Date().getTime() + 86600),
-        });
-
-        const existingDoc = await StreamLocation.build({
-          id: Types.ObjectId().toHexString(),
-          name: "Netflix",
-          url: "https://netflix.com",
-          country: "us",
-        }).save();
-
-        await saveStreamLocation(
-          {
-            id: existingDoc.id,
-            name: "New Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          },
-          data
-        );
-
-        expect(await StreamLocation.findOne()).toEqual(
-          expect.objectContaining({
-            name: "New Netflix",
-            url: "https://netflix.com",
-            country: "us",
-          })
-        );
       });
     });
   });
 
-  describe("on message", () => {
-    describe("with valid data", () => {
-      it("should update language collection", async () => {
-        const { sampleEventData, listener, msg } = await setup();
+  /**
+   * createCountryIfNotExists()
+   */
+  describe("create country if not exists", () => {
+    describe("no country exists", () => {
+      it("should create country ", async () => {
+        await createCountryIfNotExists(COUNTRY.country);
 
-        await listener.onMessage(sampleEventData, msg);
-
-        expect(await Language.countDocuments()).toBe(1);
-      });
-      it("should update stream location collection", async () => {
-        const { sampleEventData, listener, msg } = await setup();
-
-        await listener.onMessage(sampleEventData, msg);
-
-        expect(await StreamLocation.countDocuments()).toBe(1);
-      });
-      it("should acknowledge the message", async () => {
-        const { sampleEventData, listener, msg } = await setup();
-
-        await listener.onMessage(sampleEventData, msg);
-
-        expect(msg.ack).toHaveBeenCalled();
+        // has been created
+        expect(await Country.countDocuments(COUNTRY)).toBe(1);
       });
     });
-    describe("with invalid url data", () => {
-      it("should update language collection", async () => {
-        const { sampleEventData, listener, msg } = await setup();
-        const data = Object.assign(sampleEventData, {
-          streamLocations: {
-            us: [
-              {
-                id: Types.ObjectId().toHexString(),
-                name: "Netflix",
-                url: "invalid-url",
-              },
-            ],
-          },
-        });
+    describe("country exists", () => {
+      beforeEach(async () => {
+        await Country.build(COUNTRY).save();
+      });
+      it("should not create country", async () => {
+        await createCountryIfNotExists("us");
 
-        await listener.onMessage(data, msg);
+        // has not been created
+        expect(await Country.countDocuments(COUNTRY)).toBe(1);
+      });
+    });
+  });
 
+  /**
+   * onMessage()
+   */
+  describe("on message", () => {
+    describe("invalid url", () => {
+      it("should create language", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_INVALID_STREAM_LOCATIONS, msg);
+
+        // has been created
         expect(await Language.countDocuments()).toBe(1);
       });
-      it("should not update stream location collection", async () => {
-        const { sampleEventData, listener, msg } = await setup();
-        const data = Object.assign(sampleEventData, {
-          streamLocations: {
-            us: [
-              {
-                id: Types.ObjectId().toHexString(),
-                name: "Netflix",
-                url: "invalid-url",
-              },
-            ],
-          },
-        });
-        await listener.onMessage(data, msg);
+      it("should not create stream location", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_INVALID_STREAM_LOCATIONS, msg);
 
+        // has been created
         expect(await StreamLocation.countDocuments()).toBe(0);
       });
       it("should acknowledge the message", async () => {
-        const { sampleEventData, listener, msg } = await setup();
-        const data = Object.assign(sampleEventData, {
-          streamLocations: {
-            us: [
-              {
-                id: Types.ObjectId().toHexString(),
-                name: "Netflix",
-                url: "invalid-url",
-              },
-            ],
-          },
-        });
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_INVALID_STREAM_LOCATIONS, msg);
 
-        await listener.onMessage(data, msg);
-
+        // has been acked
         expect(msg.ack).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("valid conditions", () => {
+    it("should create language", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been created
+      expect(await Language.countDocuments()).toBe(1);
+    });
+    it("should create stream location", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been created
+      expect(await StreamLocation.countDocuments()).toBe(1);
+    });
+    it("should acknowledge the message", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been acked
+      expect(msg.ack).toHaveBeenCalled();
     });
   });
 });

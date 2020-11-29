@@ -1,69 +1,81 @@
 import { BadRequestError, RelationshipType } from "@flickswipe/common";
-import { Types } from "mongoose";
 import { natsWrapper } from "../../../../nats-wrapper";
 import { Relationship } from "../../models/relationship";
 import { unblockRelationship } from "../unblock-relationship";
 
+// sample data
+import { USER_A, USER_B } from "../../../../test/sample-data/users";
+
 describe("unblock relationship", () => {
-  const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
-  const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
+  describe("invalid conditions", () => {
+    describe("ids are the same", () => {
+      it("should throw error", async () => {
+        // throws error
+        await expect(async () => {
+          await unblockRelationship(USER_A.id, USER_A.id);
+        }).rejects.toThrowError(BadRequestError);
+      });
+    });
 
-  describe("ids are the same", () => {
-    it("should throw bad request error", async () => {
-      await expect(async () => {
-        await unblockRelationship(A, A);
-      }).rejects.toThrowError(BadRequestError);
+    describe("user is not blocked", () => {
+      it("should throw error", async () => {
+        // throws error
+        await expect(async () => {
+          await unblockRelationship(USER_A.id, USER_B.id);
+        }).rejects.toThrowError(BadRequestError);
+      });
     });
   });
 
-  describe("user is not blocked", () => {
-    it("should throw bad request error", async () => {
-      await expect(async () => {
-        await unblockRelationship(A, B);
-      }).rejects.toThrowError(BadRequestError);
-    });
-  });
+  describe("valid conditions", () => {
+    describe("user is blocked", () => {
+      beforeEach(async () => {
+        await Promise.all([
+          Relationship.build({
+            relationshipType: RelationshipType.Blocked,
+            sourceUser: USER_A.id,
+            targetUser: USER_B.id,
+          }).save(),
 
-  describe("user is blocked", () => {
-    beforeEach(async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Blocked,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
-    });
-    it("should delete relationship", async () => {
-      await unblockRelationship(A, B);
+          Relationship.build({
+            relationshipType: RelationshipType.Blocked,
+            sourceUser: USER_B.id,
+            targetUser: USER_A.id,
+          }).save(),
+        ]);
+      });
 
-      expect(
-        await Relationship.findOne({
-          relationshipType: RelationshipType.Blocked,
-          sourceUser: A,
-          targetUser: B,
-        })
-      ).toBeNull();
-    });
-    it("should ignore opposite blocked relationship", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Blocked,
-        sourceUser: B,
-        targetUser: A,
-      }).save();
+      it("should delete relationship", async () => {
+        await unblockRelationship(USER_A.id, USER_B.id);
 
-      await unblockRelationship(A, B);
+        // has been deleted
+        expect(
+          await Relationship.findOne({
+            relationshipType: RelationshipType.Blocked,
+            sourceUser: USER_A.id,
+            targetUser: USER_B.id,
+          })
+        ).toBeNull();
+      });
+      it("should not delete opposite blocked relationship", async () => {
+        await unblockRelationship(USER_A.id, USER_B.id);
 
-      expect(
-        await Relationship.findOne({
-          relationshipType: RelationshipType.Blocked,
-          sourceUser: B,
-          targetUser: A,
-        })
-      ).not.toBeNull();
-    });
-    it("should publish event", async () => {
-      await unblockRelationship(A, B);
+        // has not been deleted
+        expect(
+          await Relationship.findOne({
+            relationshipType: RelationshipType.Blocked,
+            sourceUser: USER_B.id,
+            targetUser: USER_A.id,
+          })
+        ).not.toBeNull();
+      });
 
-      expect(natsWrapper.client.publish).toHaveBeenCalled();
+      it("should publish event", async () => {
+        await unblockRelationship(USER_A.id, USER_B.id);
+
+        // has been published
+        expect(natsWrapper.client.publish).toHaveBeenCalled();
+      });
     });
   });
 });

@@ -2,13 +2,11 @@ import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../nats-wrapper";
 import { EmailTokenCreatedListener } from "../email-token-created";
 
+// mocks
 import { sendAddEmailLink } from "../../../services/send-add-email-link";
 import { sendMagicLink } from "../../../services/send-magic-link";
 
-// mock sendAddEmailLink
 jest.mock("../../../services/send-add-email-link");
-
-// mock sendMagicLink
 jest.mock("../../../services/send-magic-link");
 
 // sample data

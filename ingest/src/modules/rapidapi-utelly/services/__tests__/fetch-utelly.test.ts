@@ -15,7 +15,7 @@ describe("fetch utelly", () => {
     });
 
     it("should return null if no data provided", async () => {
-      // returns null
+      // has correct data
       expect(
         await fetchUtelly(UTELLY_DOC_A.imdbId, UTELLY_DOC_A.country)
       ).toBeNull();
@@ -31,7 +31,7 @@ describe("fetch utelly", () => {
     });
 
     describe("doc exists", () => {
-      it("should overwrite existing doc", async () => {
+      it("should overwrite doc", async () => {
         const existingDoc = await Utelly.build(UTELLY_DOC_A).save();
 
         await fetchUtelly(UTELLY_DOC_A.imdbId, UTELLY_DOC_A.country);

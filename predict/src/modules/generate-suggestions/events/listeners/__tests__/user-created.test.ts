@@ -19,7 +19,7 @@ const setup = async () => {
 };
 
 describe("user created listener", () => {
-  describe("existing doc", () => {
+  describe("doc exists", () => {
     it("should not overwrite doc", async () => {
       const existingDoc = await User.build({
         id: USER_A.id,

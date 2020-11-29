@@ -30,23 +30,26 @@ const setup = async () => {
 
 describe("media item rated listener", () => {
   beforeEach(async () => {
-    await User.build({
-      id: USER_A.id,
-    }).save();
-
-    await Suggestion.build({
-      user: USER_A.id,
-      mediaItem: MEDIA_ITEM_A.id,
-    }).save();
+    await Promise.all([
+      User.build({
+        id: USER_A.id,
+      }).save(),
+      Suggestion.build({
+        user: USER_A.id,
+        mediaItem: MEDIA_ITEM_A.id,
+      }).save(),
+    ]);
   });
 
-  describe("ignore old data", () => {
-    it("should not add data twice", async () => {
+  describe("data exists", () => {
+    beforeEach(async () => {
       await SurveyResponse.build({
         user: USER_A.id,
         mediaItem: MEDIA_ITEM_A.id,
       }).save();
+    });
 
+    it("should not add data twice", async () => {
       const { listener, msg } = await setup();
       await listener.onMessage(EVENT_DATA, msg);
 
@@ -76,10 +79,9 @@ describe("media item rated listener", () => {
     });
   });
 
-  describe("create new doc", () => {
-    it("should create a new doc", async () => {
+  describe("no data exists", () => {
+    it("should create survey response", async () => {
       const { listener, msg } = await setup();
-
       await listener.onMessage(EVENT_DATA, msg);
 
       // has been created

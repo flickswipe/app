@@ -23,6 +23,8 @@ const languageSchema = new mongoose.Schema(
     language: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
   },
   {

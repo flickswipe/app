@@ -64,8 +64,10 @@ describe("announce", () => {
     describe("irrelevant data", () => {
       describe("no stream locations", () => {
         beforeEach(async () => {
-          await TmdbMovie.build(TMDB_MOVIE_A).save();
-          await Utelly.build(UTELLY_A_NO_LOCATIONS).save();
+          await Promise.all([
+            TmdbMovie.build(TMDB_MOVIE_A).save(),
+            Utelly.build(UTELLY_A_NO_LOCATIONS).save(),
+          ]);
         });
 
         it("should not publish event", async () => {
@@ -79,11 +81,13 @@ describe("announce", () => {
 
     describe("relevant data", () => {
       beforeEach(async () => {
-        await MovieId.build({
-          tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
-        }).save();
-        await TmdbMovie.build(TMDB_MOVIE_A).save();
-        await Utelly.build(UTELLY_A).save();
+        await Promise.all([
+          MovieId.build({
+            tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
+          }).save(),
+          TmdbMovie.build(TMDB_MOVIE_A).save(),
+          Utelly.build(UTELLY_A).save(),
+        ]);
       });
 
       it("should publish an event", async () => {

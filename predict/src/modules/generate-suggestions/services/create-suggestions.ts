@@ -149,15 +149,16 @@ async function getUserSuggestions(
         {
           // process genres into a whitelist/blacklist
           const list = setting.value as GenresSetting["value"];
-          const includeGenres: string[] = [];
-          const ignoreGenres: string[] = [];
-          Object.keys(list).forEach((genre) => {
-            const shouldInclude = list[genre];
+          const includeGenres: number[] = [];
+          const ignoreGenres: number[] = [];
+          Object.keys(list).forEach((key) => {
+            const tmdbGenreId = parseInt(key, 10);
+            const shouldInclude = list[tmdbGenreId];
 
             if (shouldInclude) {
-              includeGenres.push(genre);
+              includeGenres.push(tmdbGenreId);
             } else {
-              ignoreGenres.push(genre);
+              ignoreGenres.push(tmdbGenreId);
             }
           });
 

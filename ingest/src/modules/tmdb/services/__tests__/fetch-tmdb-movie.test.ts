@@ -9,7 +9,7 @@ import { natsWrapper } from "../../../../nats-wrapper";
 import tmdbMovieApiResultSample from "./tmdb-movie.json";
 import {
   TMDB_MOVIE_DOC_A,
-  TMDB_MOVIE_DOC_A_OVERWRITTEN,
+  TMDB_MOVIE_DOC_A_NEW,
 } from "../../../../test/sample-data/tmdb-movie-docs";
 
 describe("fetch tmdb movie", () => {
@@ -20,7 +20,7 @@ describe("fetch tmdb movie", () => {
     });
 
     it("should return null if no data provided", async () => {
-      // returns null
+      // has correct data
       expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
     });
   });
@@ -45,7 +45,7 @@ describe("fetch tmdb movie", () => {
         });
 
         it("should return null", async () => {
-          // returns null
+          // has correct data
           expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
         });
       });
@@ -68,7 +68,7 @@ describe("fetch tmdb movie", () => {
         });
 
         it("should return null", async () => {
-          // returns null
+          // has correct data
           expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
         });
       });
@@ -89,7 +89,7 @@ describe("fetch tmdb movie", () => {
         });
 
         it("should return null", async () => {
-          // returns null
+          // has correct data
           expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
         });
       });
@@ -114,7 +114,7 @@ describe("fetch tmdb movie", () => {
         });
 
         it("should return null", async () => {
-          // returns null
+          // has correct data
           expect(
             await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId, {
               earliestReleaseDate: new Date("1999-10-16"),
@@ -125,11 +125,13 @@ describe("fetch tmdb movie", () => {
 
       describe("doc exists", () => {
         beforeEach(async () => {
-          await MovieId.build({
-            tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
-            emitted: true,
-          }).save();
-          await TmdbMovie.build(TMDB_MOVIE_DOC_A).save();
+          await Promise.all([
+            MovieId.build({
+              tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
+              emitted: true,
+            }).save(),
+            TmdbMovie.build(TMDB_MOVIE_DOC_A).save(),
+          ]);
 
           // @ts-ignore
           axios.mockResolvedValueOnce({
@@ -188,7 +190,7 @@ describe("fetch tmdb movie", () => {
             })
           ).toEqual(
             expect.objectContaining({
-              title: TMDB_MOVIE_DOC_A_OVERWRITTEN.title,
+              title: TMDB_MOVIE_DOC_A_NEW.title,
             })
           );
 

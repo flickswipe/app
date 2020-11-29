@@ -11,7 +11,7 @@ describe("get media item", () => {
   describe("invalid conditions", () => {
     describe("not signed in", () => {
       it("returns a 401", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
           .send()
@@ -21,7 +21,7 @@ describe("get media item", () => {
 
     describe("no media items exist", () => {
       it("returns a 404", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
           .set("Cookie", await global.signIn())
@@ -40,7 +40,7 @@ describe("get media item", () => {
     });
 
     it("returns a 200", async () => {
-      // returns correct status
+      // has correct status
       await request(app)
         .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
         .set("Cookie", await global.signIn())
@@ -54,7 +54,7 @@ describe("get media item", () => {
         .set("Cookie", await global.signIn())
         .send();
 
-      // returns correct data
+      // has correct data
       expect(response.body).toEqual(
         expect.objectContaining({
           id: MEDIA_ITEM_A.id,

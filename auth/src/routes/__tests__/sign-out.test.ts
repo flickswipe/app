@@ -6,7 +6,7 @@ import { USER_A } from "../../test/sample-data/users";
 
 describe("sign out", () => {
   it("returns a 200", async () => {
-    // returns correct status
+    // has correct status
     await request(app)
       .post("/api/en/auth/sign-out")
       .set("Cookie", await global.signIn(USER_A.email))

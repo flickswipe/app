@@ -8,7 +8,7 @@ import { natsWrapper } from "../../../../nats-wrapper";
 import tmdbGenresApiResultSample from "./tmdb-genres.json";
 import {
   TMDB_GENRE_DOC_A,
-  TMDB_GENRE_DOC_A_OVERWRITTEN,
+  TMDB_GENRE_DOC_A_NEW,
 } from "../../../../test/sample-data/tmdb-genre-docs";
 const LANGUAGE = "en";
 const UNUSUAL_LANGUAGE = "en-GB";
@@ -21,7 +21,7 @@ describe("fetch tmdb genres", () => {
     });
 
     it("should return null if no data provided", async () => {
-      // returns null
+      // has correct data
       expect(await fetchTmdbGenres(LANGUAGE)).toBeNull();
     });
   });
@@ -45,7 +45,7 @@ describe("fetch tmdb genres", () => {
 
         // has been overwritten
         expect(await TmdbGenre.findById(existingDoc.id)).toEqual(
-          expect.objectContaining(TMDB_GENRE_DOC_A_OVERWRITTEN)
+          expect.objectContaining(TMDB_GENRE_DOC_A_NEW)
         );
 
         // no extra inserts
@@ -74,7 +74,7 @@ describe("fetch tmdb genres", () => {
     });
 
     describe("no doc exists", () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         // @ts-ignore
         axios.mockResolvedValueOnce({
           data: tmdbGenresApiResultSample,

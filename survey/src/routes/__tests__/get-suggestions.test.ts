@@ -1,4 +1,3 @@
-import { InterestType } from "@flickswipe/common";
 import request from "supertest";
 import { app } from "../../app";
 import { SurveyResponse } from "../../modules/handle-survey-response/models/survey-response";
@@ -17,7 +16,7 @@ describe("get suggestions", () => {
   describe("invalid conditions", () => {
     describe("not signed in", () => {
       it("returns a 401", async () => {
-        // returns correct status
+        // has correct status
         await request(app).get("/api/en/survey/queue").send().expect(401);
       });
     });
@@ -26,7 +25,7 @@ describe("get suggestions", () => {
   describe("valid conditions", () => {
     describe("no suggestions exist", () => {
       it("returns a 200", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get("/api/en/survey/queue")
           .set("Cookie", await global.signIn(USER.id))
@@ -57,7 +56,7 @@ describe("get suggestions", () => {
         });
 
         it("returns a 200", async () => {
-          // returns correct status
+          // has correct status
           await request(app)
             .get("/api/en/survey/queue")
             .set("Cookie", await global.signIn(USER.id))

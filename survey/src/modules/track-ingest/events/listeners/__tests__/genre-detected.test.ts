@@ -5,13 +5,13 @@ import { GenreDetectedListener } from "../genre-detected";
 
 // sample data
 import { GENRE_A } from "../../../../../test/sample-data/genres";
-const GENRE_A_OVERWRITTEN = Object.assign({}, GENRE_A, {
+const GENRE_A_NEW = Object.assign({}, GENRE_A, {
   name: "New Name",
 });
 const EVENT_DATA = {
-  tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
-  name: GENRE_A_OVERWRITTEN.name,
-  language: GENRE_A_OVERWRITTEN.language,
+  tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
+  name: GENRE_A_NEW.name,
+  language: GENRE_A_NEW.language,
   detectedAt: new Date(new Date().getTime() + 86600),
 };
 const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
@@ -70,8 +70,8 @@ describe("genre detected listener", () => {
         // has been overwritten
         expect(await Genre.findById(existingDoc.id)).toEqual(
           expect.objectContaining({
-            tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
-            name: GENRE_A_OVERWRITTEN.name,
+            tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
+            name: GENRE_A_NEW.name,
           })
         );
 
@@ -97,8 +97,8 @@ describe("genre detected listener", () => {
       // has been created
       expect(await Genre.findOne({})).toEqual(
         expect.objectContaining({
-          tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
-          name: GENRE_A_OVERWRITTEN.name,
+          tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
+          name: GENRE_A_NEW.name,
         })
       );
 

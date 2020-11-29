@@ -51,6 +51,7 @@ router.get(
   requireAuth,
   async (req: Request, res: Response) => {
     const { currentUser } = req;
+    const { iso6391: language } = req.params;
 
     const settings = (await listAllSettings(
       currentUser.id,
@@ -58,11 +59,10 @@ router.get(
     )) as SettingsPayload;
 
     // list all genres in settings, set unknown genres to false by default
-    const allGenres = await getGenres("en");
-
-    allGenres.forEach(({ id }) => {
-      if (typeof settings.genres[id] === "undefined") {
-        settings.genres[id] = false;
+    const allGenres = await getGenres(language as iso6391);
+    allGenres.forEach(({ tmdbGenreId }) => {
+      if (typeof settings.genres[tmdbGenreId] === "undefined") {
+        settings.genres[tmdbGenreId] = false;
       }
     });
 

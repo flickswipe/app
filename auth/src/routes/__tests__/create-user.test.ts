@@ -7,7 +7,7 @@ import { USER_A } from "../../test/sample-data/users";
 
 describe("guest user signup", () => {
   it("returns a 201", async () => {
-    // returns correct status
+    // has correct status
     await request(app).post("/api/en/auth/create-user").send().expect(201);
   });
 
@@ -21,14 +21,14 @@ describe("guest user signup", () => {
   it("returns an id", async () => {
     const response = await request(app).post("/api/en/auth/create-user").send();
 
-    // returns any id
+    // has correct data
     expect(response.body?.user?.id).toBeDefined();
   });
 });
 
 describe("normal user signup", () => {
   it("returns a 201", async () => {
-    // returns correct status
+    // has correct status
     await request(app)
       .post("/api/en/auth/create-user")
       .send(USER_A)
@@ -66,7 +66,7 @@ describe("normal user signup", () => {
 
 describe("trying to create user that is authenticated", () => {
   it("returns a 400", async () => {
-    // returns correct status
+    // has correct status
     await request(app)
       .post("/api/en/auth/create-user")
       .set("Cookie", await global.signIn(USER_A.email))
@@ -79,7 +79,7 @@ describe("trying to use same email twice", () => {
   it("returns a 400", async () => {
     await request(app).post("/api/en/auth/create-user").send(USER_A);
 
-    // returns correct status
+    // has correct status
     await request(app)
       .post("/api/en/auth/create-user")
       .send(USER_A)

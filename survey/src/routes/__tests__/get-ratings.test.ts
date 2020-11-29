@@ -1,4 +1,3 @@
-import { InterestType } from "@flickswipe/common";
 import request from "supertest";
 import { app } from "../../app";
 import { SurveyResponse } from "../../modules/handle-survey-response/models/survey-response";
@@ -20,7 +19,7 @@ describe("get survey responses", () => {
   describe("invalid conditions", () => {
     describe("not signed in", () => {
       it("returns a 401", async () => {
-        // returns correct status
+        // has correct status
         await request(app).get("/api/en/survey/ratings").send().expect(401);
       });
     });
@@ -29,7 +28,7 @@ describe("get survey responses", () => {
   describe("valid conditions", () => {
     describe("no survey responses exist", () => {
       it("returns a 200", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get("/api/en/survey/ratings")
           .set("Cookie", await global.signIn("aaabbbcccddd"))
@@ -43,7 +42,7 @@ describe("get survey responses", () => {
           .set("Cookie", await global.signIn("aaabbbcccddd"))
           .send();
 
-        // returns correct data
+        // has correct data
         expect(response.body).toBeInstanceOf(Array);
         expect(response.body).toHaveLength(0);
       });
@@ -61,7 +60,7 @@ describe("get survey responses", () => {
       });
 
       it("returns a 200", async () => {
-        // returns correct status
+        // has correct status
         await request(app)
           .get("/api/en/survey/ratings")
           .set("Cookie", await global.signIn(USER.id))
@@ -75,7 +74,7 @@ describe("get survey responses", () => {
           .set("Cookie", await global.signIn(USER.id))
           .send();
 
-        // returns correct data
+        // has correct data
         expect(response.body).toBeInstanceOf(Array);
         expect(response.body).toHaveLength(1);
         expect(response.body[0]).toEqual({

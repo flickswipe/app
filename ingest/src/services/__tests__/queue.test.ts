@@ -25,7 +25,7 @@ describe("Queue", () => {
   describe("is first import", () => {
     describe("no movie id docs exist", () => {
       it("should return true", async () => {
-        // returns true
+        // has correct data
         expect(await Queue.isFirstImport()).toBe(true);
       });
     });
@@ -35,7 +35,7 @@ describe("Queue", () => {
       });
 
       it("should return false", async () => {
-        // returns false
+        // has correct data
         expect(await Queue.isFirstImport()).toBe(false);
       });
     });
@@ -44,7 +44,7 @@ describe("Queue", () => {
   describe("get next tdmb movie", () => {
     describe("no movie id docs exist", () => {
       it("should return null", async () => {
-        // returns null
+        // has correct data
         expect(await Queue.getNextTmdbMovie()).toBe(null);
       });
     });
@@ -55,7 +55,7 @@ describe("Queue", () => {
       });
 
       it("should return null", async () => {
-        // returns null
+        // has correct data
         expect(await Queue.getNextTmdbMovie()).toBe(null);
       });
     });
@@ -69,7 +69,7 @@ describe("Queue", () => {
       });
 
       it("should return tmdb movie id of least used doc", async () => {
-        // returns correct id
+        // has correct id
         expect(await Queue.getNextTmdbMovie()).toBe(MOVIE_ID_A.tmdbMovieId);
       });
 

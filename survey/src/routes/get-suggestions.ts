@@ -1,5 +1,4 @@
 import {
-  NotFoundError,
   currentUser,
   requireAuth,
   validateRequest,

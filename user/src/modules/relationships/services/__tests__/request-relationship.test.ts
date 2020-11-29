@@ -4,154 +4,150 @@ import {
   RelationshipType,
   TooManyRequestsError,
 } from "@flickswipe/common";
-import { Types } from "mongoose";
 import { natsWrapper } from "../../../../nats-wrapper";
 import { Relationship } from "../../models/relationship";
 import { RelationshipRequest } from "../../models/relationship-request";
 import { requestRelationship } from "../request-relationship";
 
+// sample data
+import { USER_A, USER_B } from "../../../../test/sample-data/users";
+
 describe("request relationship", () => {
-  const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
-  const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
+  describe("invalid conditions", () => {
+    describe("ids are the same", () => {
+      it("should throw error", async () => {
+        // throws error
+        await expect(async () => {
+          await requestRelationship(USER_A.id, USER_A.id);
+        }).rejects.toThrowError(BadRequestError);
+      });
+    });
 
-  describe("ids are the same", () => {
-    it("should throw bad request error", async () => {
-      await expect(async () => {
-        await requestRelationship(A, A);
-      }).rejects.toThrowError(BadRequestError);
+    describe("active relationship exists", () => {
+      beforeEach(async () => {
+        await Relationship.build({
+          relationshipType: RelationshipType.Active,
+          sourceUser: USER_A.id,
+          targetUser: USER_B.id,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(BadRequestError);
+      });
+    });
+
+    describe("requester has blocked receiver", () => {
+      beforeEach(async () => {
+        await Relationship.build({
+          relationshipType: RelationshipType.Blocked,
+          sourceUser: USER_A.id,
+          targetUser: USER_B.id,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(NotAuthorizedError);
+      });
+    });
+
+    describe("receiver has blocked requester", () => {
+      beforeEach(async () => {
+        await Relationship.build({
+          relationshipType: RelationshipType.Blocked,
+          sourceUser: USER_B.id,
+          targetUser: USER_A.id,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(NotAuthorizedError);
+      });
+    });
+
+    describe("incomplete request exists", () => {
+      beforeEach(async () => {
+        await RelationshipRequest.build({
+          sourceUser: USER_A.id,
+          targetUser: USER_B.id,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(BadRequestError);
+      });
+    });
+
+    describe("last completed request too recent", () => {
+      beforeEach(async () => {
+        await RelationshipRequest.build({
+          sourceUser: USER_A.id,
+          targetUser: USER_B.id,
+          complete: true,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(TooManyRequestsError);
+      });
+    });
+
+    describe("incomplete opposite request exists", () => {
+      beforeEach(async () => {
+        await RelationshipRequest.build({
+          sourceUser: USER_B.id,
+          targetUser: USER_A.id,
+        }).save();
+      });
+
+      it("should throw error", async () => {
+        // throws error
+        await expect(
+          async () => await requestRelationship(USER_A.id, USER_B.id)
+        ).rejects.toThrowError(BadRequestError);
+      });
     });
   });
 
-  describe("active relationship exists", () => {
-    it("should throw bad request error", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Active,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
+  describe("valid conditions", () => {
+    describe("can request relationship", () => {
+      it("should create relationship request", async () => {
+        await requestRelationship(USER_A.id, USER_B.id);
 
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(BadRequestError);
-    });
-  });
+        // has been created
+        expect(
+          await RelationshipRequest.findOne({
+            sourceUser: USER_A.id,
+            targetUser: USER_B.id,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            complete: false,
+          })
+        );
+      });
 
-  describe("requester has blocked receiver", () => {
-    it("should throw not authorized error", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Blocked,
-        sourceUser: A,
-        targetUser: B,
-      }).save();
+      it("should publish event", async () => {
+        await requestRelationship(USER_A.id, USER_B.id);
 
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(NotAuthorizedError);
-    });
-  });
-
-  describe("receiver has blocked requester", () => {
-    it("should throw not authorized error", async () => {
-      await Relationship.build({
-        relationshipType: RelationshipType.Blocked,
-        sourceUser: B,
-        targetUser: A,
-      }).save();
-
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(NotAuthorizedError);
-    });
-  });
-
-  describe("incomplete request already exists", () => {
-    it("should throw bad request error", async () => {
-      await RelationshipRequest.build({
-        sourceUser: A,
-        targetUser: B,
-      }).save();
-
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(BadRequestError);
-    });
-  });
-
-  describe("last completed request too recent", () => {
-    it("should throw too many requests error", async () => {
-      await RelationshipRequest.build({
-        sourceUser: A,
-        targetUser: B,
-        complete: true,
-      }).save();
-
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(TooManyRequestsError);
-    });
-  });
-
-  describe("incomplete opposite request already exists", () => {
-    it("should throw bad request error", async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-      }).save();
-
-      await expect(
-        async () => await requestRelationship(A, B)
-      ).rejects.toThrowError(BadRequestError);
-    });
-  });
-
-  describe("last completed opposite request too recent", () => {
-    beforeEach(async () => {
-      await RelationshipRequest.build({
-        sourceUser: B,
-        targetUser: A,
-        complete: true,
-      }).save();
-    });
-    it("should create request document", async () => {
-      await requestRelationship(A, B);
-
-      expect(
-        await RelationshipRequest.findOne({
-          sourceUser: A,
-          targetUser: B,
-        })
-      ).toEqual(
-        expect.objectContaining({
-          complete: false,
-        })
-      );
-    });
-    it("should publish event", async () => {
-      await requestRelationship(A, B);
-
-      expect(natsWrapper.client.publish).toHaveBeenCalled();
-    });
-  });
-
-  describe("can request relationship", () => {
-    it("should create request document", async () => {
-      await requestRelationship(A, B);
-
-      expect(
-        await RelationshipRequest.findOne({
-          sourceUser: A,
-          targetUser: B,
-        })
-      ).toEqual(
-        expect.objectContaining({
-          complete: false,
-        })
-      );
-    });
-    it("should publish event", async () => {
-      await requestRelationship(A, B);
-
-      expect(natsWrapper.client.publish).toHaveBeenCalled();
+        // has been published
+        expect(natsWrapper.client.publish).toHaveBeenCalled();
+      });
     });
   });
 });

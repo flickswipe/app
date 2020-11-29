@@ -1,6 +1,6 @@
 import { Ingestion, StartOptions } from "../ingestion";
 
-// Mocked imports
+// mocks
 import { Queue } from "../queue";
 import { fetchTmdbFileExport } from "../../modules/tmdb-file-export/services/fetch-tmdb-file-export";
 import { fetchTmdbMovie } from "../../modules/tmdb/services/fetch-tmdb-movie";
@@ -8,29 +8,16 @@ import { fetchTmdbGenres } from "../../modules/tmdb/services/fetch-tmdb-genres";
 import { announceMovie } from "../announce";
 import { fetchUtelly } from "../../modules/rapidapi-utelly/services/fetch-utelly";
 
-// Sample Data
-const TMDB_MOVIE_ID = 1;
-const IMDB_ID = "tt1234567";
-
-// Mock Queue
 jest.mock("../queue");
-
-// Mock fetchTmdbFileExport
 jest.mock("../../modules/tmdb-file-export/services/fetch-tmdb-file-export");
-
-// Mock fetchTmdbMovie
 jest.mock("../../modules/tmdb/services/fetch-tmdb-movie");
-
-// Mock fetchTmdbGenres
 jest.mock("../../modules/tmdb/services/fetch-tmdb-genres");
-
-// Mock announceMovie
 jest.mock("../announce");
-
-// Mock fetchUtelly
 jest.mock("../../modules/rapidapi-utelly/services/fetch-utelly");
 
-// options
+// sample data
+const TMDB_MOVIE_ID = 1;
+const IMDB_ID = "tt1234567";
 const START_OPTIONS = {
   countries: ["us"],
   languages: ["en"],
@@ -38,13 +25,12 @@ const START_OPTIONS = {
   earliestReleaseDate: new Date("1970-01-01"),
   minTmdbPopularity: 0,
 } as StartOptions;
-
 const IMPORT_OPTIONS = {
   countries: ["us"],
   languages: ["en"],
 };
 
-// Handle async functions inside setTimeout and setInterval
+// handle async functions inside setTimeout and setInterval
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }

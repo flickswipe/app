@@ -3,7 +3,7 @@ import {
   GenresSetting,
   SettingType,
 } from "@flickswipe/common";
-import { Types } from "mongoose";
+import mongoose from "mongoose";
 import { natsWrapper } from "../../../nats-wrapper";
 import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
@@ -13,13 +13,20 @@ export async function updateGenres(
   value: GenresSetting["value"]
 ): Promise<void> {
   // validate
-  if (!Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
     throw new BadRequestError(`Invalid user id "${userId}"`);
   }
 
-  Object.keys(value).forEach((genreId) => {
-    if (!Types.ObjectId.isValid(genreId)) {
-      throw new BadRequestError(`Invalid genre id "${genreId}"`);
+  Object.keys(value).forEach((tmdbGenreId) => {
+    let result = null;
+    try {
+      result = parseInt(tmdbGenreId, 10);
+    } catch (err) {
+      result = null;
+    }
+
+    if (typeof result !== "number" || isNaN(result)) {
+      throw new BadRequestError(`Invalid genre id "${tmdbGenreId}"`);
     }
   });
 

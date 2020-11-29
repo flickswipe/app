@@ -31,70 +31,83 @@ const setup = async () => {
 };
 
 describe("user updated setting listener", () => {
-  describe("existing doc", () => {
+  describe("setting exists", () => {
     beforeEach(async () => {
-      await User.build({
-        id: USER_A.id,
-      }).save();
-
-      await Setting.build({
-        settingType: SettingType.Country,
-        user: USER_A.id,
-        value: COUNTRY_A,
-      }).save();
-    });
-
-    it("should ignore old data", async () => {
-      const { listener, msg } = await setup();
-      await listener.onMessage(STALE_EVENT_DATA, msg);
-
-      // has not been updated
-      expect(
-        await Setting.findOne({
+      await Promise.all([
+        User.build({
+          id: USER_A.id,
+        }).save(),
+        Setting.build({
           settingType: SettingType.Country,
           user: USER_A.id,
-        })
-      ).toEqual(
-        expect.objectContaining({
           value: COUNTRY_A,
-        })
-      );
+        }).save(),
+      ]);
     });
 
-    it("should overwrite doc", async () => {
-      const { listener, msg } = await setup();
-      await listener.onMessage(EVENT_DATA, msg);
+    describe("data received out of order", () => {
+      it("should not update", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(STALE_EVENT_DATA, msg);
 
-      // has been updated
-      expect(
-        await Setting.findOne({
-          settingType: SettingType.Country,
-          user: USER_A.id,
-        })
-      ).toEqual(
-        expect.objectContaining({
-          value: COUNTRY_B,
-        })
-      );
+        // has not been updated
+        expect(
+          await Setting.findOne({
+            settingType: SettingType.Country,
+            user: USER_A.id,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            value: COUNTRY_A,
+          })
+        );
+      });
+
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(STALE_EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
     });
 
-    it("should acknowledge the message", async () => {
-      const { listener, msg } = await setup();
-      await listener.onMessage(EVENT_DATA, msg);
+    describe("data received in order", () => {
+      it("should overwrite doc", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
 
-      // has been acked
-      expect(msg.ack).toHaveBeenCalled();
+        // has been updated
+        expect(
+          await Setting.findOne({
+            settingType: SettingType.Country,
+            user: USER_A.id,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            value: COUNTRY_B,
+          })
+        );
+      });
+
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
     });
   });
 
-  describe("create new doc", () => {
+  describe("no setting exists", () => {
     beforeEach(async () => {
       await User.build({
         id: USER_A.id,
       }).save();
     });
 
-    it("should create a new doc", async () => {
+    it("should create setting", async () => {
       const { listener, msg } = await setup();
       await listener.onMessage(EVENT_DATA, msg);
 

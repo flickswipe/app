@@ -19,7 +19,7 @@ export const TMDB_MOVIE_DOC_A: TmdbMovieAttrs = {
   neverUse: false,
 };
 
-export const TMDB_MOVIE_DOC_A_OVERWRITTEN: TmdbMovieAttrs = {
+export const TMDB_MOVIE_DOC_A_NEW: TmdbMovieAttrs = {
   tmdbMovieId: 550,
   imdbId: "tt0137523",
   title: "Fight Club",

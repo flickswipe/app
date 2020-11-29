@@ -8,8 +8,8 @@ export const MEDIA_ITEM_A = {
   imdbId: "tt1234567",
   title: "My Movie",
   images: {
-    poster: "https://example.com/",
-    backdrop: "https://example.com/",
+    poster: "https://example.com",
+    backdrop: "https://example.com",
   },
   genres: [GENRE_A.tmdbGenreId],
   rating: {
@@ -26,7 +26,7 @@ export const MEDIA_ITEM_A = {
       {
         id: mongoose.Types.ObjectId("netflixnetfl").toHexString(),
         name: "Netflix",
-        url: "https://example.com/",
+        url: "https://example.com",
       },
     ],
   },
@@ -38,8 +38,8 @@ export const MEDIA_ITEM_A_NEW = {
   imdbId: "tt1234567",
   title: "New Name",
   images: {
-    poster: "https://example.com/",
-    backdrop: "https://example.com/",
+    poster: "https://example.com",
+    backdrop: "https://example.com",
   },
   genres: [GENRE_A.tmdbGenreId],
   rating: {
@@ -56,7 +56,7 @@ export const MEDIA_ITEM_A_NEW = {
       {
         id: mongoose.Types.ObjectId("netflixnetfl").toHexString(),
         name: "Netflix",
-        url: "https://example.com/",
+        url: "https://example.com",
       },
     ],
   },
@@ -68,8 +68,8 @@ export const MEDIA_ITEM_B = {
   imdbId: "tt7654321",
   title: "My Movie Two",
   images: {
-    poster: "https://example.com/",
-    backdrop: "https://example.com/",
+    poster: "https://example.com",
+    backdrop: "https://example.com",
   },
   genres: [69],
   rating: {
@@ -86,7 +86,7 @@ export const MEDIA_ITEM_B = {
       {
         id: mongoose.Types.ObjectId("netflixnetfl").toHexString(),
         name: "Netflix",
-        url: "https://example.com/",
+        url: "https://example.com",
       },
     ],
   },

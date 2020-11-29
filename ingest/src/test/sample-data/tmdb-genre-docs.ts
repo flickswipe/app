@@ -6,7 +6,7 @@ export const TMDB_GENRE_DOC_A: TmdbGenreAttrs = {
   language: "en",
 };
 
-export const TMDB_GENRE_DOC_A_OVERWRITTEN: TmdbGenreAttrs = {
+export const TMDB_GENRE_DOC_A_NEW: TmdbGenreAttrs = {
   tmdbGenreId: 28,
   name: "Action",
   language: "en",

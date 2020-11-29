@@ -9,6 +9,7 @@ import {
 } from "@flickswipe/common";
 import { Setting, SettingDoc } from "../models/setting";
 import camelCase from "camelcase";
+import cloneDeep from "clone-deep";
 
 export type SettingsPayload = {
   [key: string]: any;
@@ -56,7 +57,7 @@ export async function listAllSettings(
       runtime: {},
       streamLocations: {},
     },
-    defaultSettings,
+    cloneDeep(defaultSettings),
     settingsPayload
   );
 

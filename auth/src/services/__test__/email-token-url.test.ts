@@ -12,18 +12,15 @@ import { EmailTokenUrl } from "../../services/email-token-url";
 // sample data
 import { USER_A } from "../../test/sample-data/users";
 
-// helpers
-const generateSignInTokenFromEmail = () =>
-  EmailTokenUrl.generateFromEmail(EmailTokenType.SignIn, USER_A.email);
-const generateSignInTokenFromUserId = (userId: string) =>
-  EmailTokenUrl.generateFromUserId(EmailTokenType.SignIn, userId);
-
 describe("EmailTokenUrl", () => {
   describe("generate from email", () => {
     describe("sign in token", () => {
       describe("user doesn't exist", () => {
         it("creates token", async () => {
-          const url = await generateSignInTokenFromEmail();
+          const url = await EmailTokenUrl.generateFromEmail(
+            EmailTokenType.SignIn,
+            USER_A.email
+          );
 
           // has created
           expect(await EmailToken.findOne({ url })).toEqual(
@@ -38,7 +35,10 @@ describe("EmailTokenUrl", () => {
         });
 
         it("creates user", async () => {
-          await generateSignInTokenFromEmail();
+          await EmailTokenUrl.generateFromEmail(
+            EmailTokenType.SignIn,
+            USER_A.email
+          );
 
           // has created
           expect(await User.countDocuments({ email: USER_A.email })).toEqual(1);
@@ -51,10 +51,22 @@ describe("EmailTokenUrl", () => {
           // throws error
           await expect(
             (async () => {
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
             })()
           ).rejects.toThrow(TooManyRequestsError);
         });
@@ -67,7 +79,10 @@ describe("EmailTokenUrl", () => {
         });
 
         it("creates token", async () => {
-          const url = await generateSignInTokenFromEmail();
+          const url = await EmailTokenUrl.generateFromEmail(
+            EmailTokenType.SignIn,
+            USER_A.email
+          );
 
           // has created
           expect(await EmailToken.findOne({ url })).toEqual(
@@ -86,10 +101,22 @@ describe("EmailTokenUrl", () => {
           // throws error
           await expect(
             (async () => {
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
-              await generateSignInTokenFromEmail();
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
+              await EmailTokenUrl.generateFromEmail(
+                EmailTokenType.SignIn,
+                USER_A.email
+              );
             })()
           ).rejects.toThrow(TooManyRequestsError);
         });
@@ -104,7 +131,8 @@ describe("EmailTokenUrl", () => {
           // throws error
           await expect(
             (async () => {
-              await generateSignInTokenFromUserId(
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
                 mongoose.Types.ObjectId().toHexString()
               );
             })()
@@ -119,7 +147,10 @@ describe("EmailTokenUrl", () => {
         });
 
         it("creates token", async () => {
-          const url = await generateSignInTokenFromUserId(user.id);
+          const url = await EmailTokenUrl.generateFromUserId(
+            EmailTokenType.SignIn,
+            user.id
+          );
 
           // has created
           expect(await EmailToken.findOne({ url })).toEqual(
@@ -138,10 +169,22 @@ describe("EmailTokenUrl", () => {
           // throw error
           await expect(
             (async () => {
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
             })()
           ).rejects.toThrow(TooManyRequestsError);
         });
@@ -200,10 +243,22 @@ describe("EmailTokenUrl", () => {
           // throws error
           await expect(
             (async () => {
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
-              await generateSignInTokenFromUserId(user.id);
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
+              await EmailTokenUrl.generateFromUserId(
+                EmailTokenType.SignIn,
+                user.id
+              );
             })()
           ).rejects.toThrow(TooManyRequestsError);
         });
