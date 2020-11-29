@@ -3,7 +3,6 @@
  */
 
 import { unifyISO6391 } from "../../../../services/unify-iso6391";
-import { TmdbGenre } from "../../models/tmdb-genre";
 
 // raw data received by parser
 export interface TmdbMovieApiResultRaw {

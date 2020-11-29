@@ -46,7 +46,7 @@ export async function announceMovie({
     .map((tmdbGenreId) => docIdByTmdbGenreId.get(tmdbGenreId))
     .filter((n) => n);
 
-  if (!tmdbGenres.length || genreDocIds.length < tmdbGenres.length) {
+  if (!tmdbGenres.length || genreDocIds.length < tmdbMovieDoc.genres.length) {
     throw new Error("Couldn't fetch complete genre data");
   }
 
