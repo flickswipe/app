@@ -7,6 +7,8 @@ import { announceMovie } from "../announce";
 // sample data
 import { TMDB_MOVIE_A } from "../../test/sample-data/tmdb-movies";
 import { UTELLY_A } from "../../test/sample-data/utellys";
+import { TMDB_GENRE_A } from "../../test/sample-data/tmdb-genres";
+import { TmdbGenre } from "../../modules/tmdb/models/tmdb-genre";
 const UTELLY_A_NO_LOCATIONS = Object.assign({}, UTELLY_A, { locations: [] });
 
 describe("announce", () => {
@@ -38,9 +40,11 @@ describe("announce", () => {
       });
 
       describe("`imdbId` doesn't match any `Utelly` doc", () => {
-        it("should throw error", async () => {
+        beforeEach(async () => {
           await TmdbMovie.build(TMDB_MOVIE_A).save();
+        });
 
+        it("should throw error", async () => {
           // throws error
           await expect(() =>
             announceMovie({ tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId })
@@ -49,9 +53,26 @@ describe("announce", () => {
       });
 
       describe("`Utelly` doc exists but `TmdbMovie` doc doesn't", () => {
-        it("should throw error", async () => {
+        beforeEach(async () => {
           await Utelly.build(UTELLY_A).save();
+        });
 
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ imdbId: UTELLY_A.imdbId })
+          ).rejects.toThrow();
+        });
+      });
+
+      describe("`TmdbMovie` and `Utelly` docs exist, but not `Genres`", () => {
+        beforeEach(async () => {
+          await Promise.all([
+            await TmdbMovie.build(TMDB_MOVIE_A).save(),
+            await Utelly.build(UTELLY_A).save(),
+          ]);
+        });
+        it("should throw error", async () => {
           // throws error
           await expect(() =>
             announceMovie({ imdbId: UTELLY_A.imdbId })
@@ -65,6 +86,7 @@ describe("announce", () => {
         beforeEach(async () => {
           await Promise.all([
             TmdbMovie.build(TMDB_MOVIE_A).save(),
+            TmdbGenre.build(TMDB_GENRE_A).save(),
             Utelly.build(UTELLY_A_NO_LOCATIONS).save(),
           ]);
         });
@@ -85,6 +107,7 @@ describe("announce", () => {
             tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
           }).save(),
           TmdbMovie.build(TMDB_MOVIE_A).save(),
+          TmdbGenre.build(TMDB_GENRE_A).save(),
           Utelly.build(UTELLY_A).save(),
         ]);
       });

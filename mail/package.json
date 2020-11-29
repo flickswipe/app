@@ -57,7 +57,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.75",
+    "@flickswipe/common": "0.0.77",
     "@types/jsdom": "^16.2.4",
     "@types/nodemailer": "^6.4.0",
     "jsdom": "^16.4.0",

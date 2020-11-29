@@ -93,11 +93,6 @@ const parser = async (
     return null;
   }
 
-  // get genre ids
-  const genres = await Promise.all(
-    raw.genres.map(({ id }) => TmdbGenre.findOne({ tmdbGenreId: id }, "_id"))
-  );
-
   // parse
   return {
     tmdbMovieId: raw.id,
@@ -107,9 +102,7 @@ const parser = async (
       poster: raw.poster_path,
       backdrop: raw.backdrop_path,
     },
-    genres: genres
-      .filter((genre) => genre && typeof genre.id === "string")
-      .map(({ id }) => id),
+    genres: raw.genres.map(({ id }) => id),
     rating: {
       average: raw.vote_average,
       count: raw.vote_count,

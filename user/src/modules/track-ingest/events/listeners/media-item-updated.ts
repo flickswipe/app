@@ -1,9 +1,4 @@
-import {
-  Subjects,
-  Listener,
-  MediaItemUpdatedEvent,
-  iso6391,
-} from "@flickswipe/common";
+import { Subjects, Listener, MediaItemUpdatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
 import {
@@ -56,7 +51,7 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
  * @returns {boolean} true if message should be acked
  */
 export async function createAudioLanguageIfNotExists(
-  audioLanguage: iso6391
+  audioLanguage: string
 ): Promise<void> {
   // create doc if not exists
   let audioLanguageDoc = await Language.findOne({

@@ -4,7 +4,7 @@ import { natsWrapper } from "../nats-wrapper";
 import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
 import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
 import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
-import { iso6391 } from "@flickswipe/common";
+import { TmdbGenre } from "../modules/tmdb/models/tmdb-genre";
 
 export async function announceMovie({
   imdbId,
@@ -34,6 +34,20 @@ export async function announceMovie({
 
   if (!utellyDocs.length) {
     throw new Error("Couldn't fetch utelly data");
+  }
+
+  // get genres data
+  const tmdbGenres = await TmdbGenre.find();
+  const docIdByTmdbGenreId = new Map();
+  tmdbGenres.forEach(({ id, tmdbGenreId }) => {
+    docIdByTmdbGenreId.set(tmdbGenreId, id);
+  });
+  const genreDocIds = tmdbMovieDoc.genres
+    .map((tmdbGenreId) => docIdByTmdbGenreId.get(tmdbGenreId))
+    .filter((n) => n);
+
+  if (!tmdbGenres.length || genreDocIds.length < tmdbGenres.length) {
+    throw new Error("Couldn't fetch complete genre data");
   }
 
   // merge data
@@ -86,10 +100,10 @@ export async function announceMovie({
     tmdbMovieId: tmdbMovieDoc.tmdbMovieId,
     imdbId: tmdbMovieDoc.imdbId,
     title: tmdbMovieDoc.title,
-    genres: tmdbMovieDoc.genres,
+    genres: genreDocIds,
     images: tmdbMovieDoc.images,
     rating: tmdbMovieDoc.rating,
-    audioLanguage: tmdbMovieDoc.audioLanguage as iso6391,
+    audioLanguage: tmdbMovieDoc.audioLanguage,
     releaseDate: tmdbMovieDoc.releaseDate,
     runtime: tmdbMovieDoc.runtime,
     plot: tmdbMovieDoc.plot || "",

@@ -16,7 +16,6 @@ import {
   parseStreamLocations,
   saveStreamLocation,
 } from "../media-item-updated";
-import { iso6391 } from "@flickswipe/common";
 
 // sample data
 import {
@@ -24,7 +23,7 @@ import {
   MEDIA_ITEM_A_NEW,
 } from "../../../../../test/sample-data/media-items";
 const AUDIO_LANGUAGE = {
-  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage as iso6391,
+  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage,
 };
 const COUNTRY = {
   country: Object.keys(MEDIA_ITEM_A_NEW.streamLocations)[0],
@@ -53,7 +52,7 @@ const EVENT_DATA = {
   genres: cloneDeep(MEDIA_ITEM_A_NEW.genres),
   images: cloneDeep(MEDIA_ITEM_A_NEW.images),
   rating: cloneDeep(MEDIA_ITEM_A_NEW.rating),
-  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage as iso6391,
+  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage,
   releaseDate: MEDIA_ITEM_A_NEW.releaseDate,
   runtime: MEDIA_ITEM_A_NEW.runtime,
   plot: MEDIA_ITEM_A_NEW.plot,

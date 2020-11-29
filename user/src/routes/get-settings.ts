@@ -1,6 +1,5 @@
 import {
   currentUser,
-  iso6391,
   requireAuth,
   validateIso6391Param,
   validateRequest,
@@ -68,10 +67,8 @@ router.get(
     // list all audioLanguages in settings, set unknown genres to false by default
     const allAudioLanguages = await getAudioLanguages();
     allAudioLanguages.forEach(({ audioLanguage }) => {
-      if (
-        typeof settings.audioLanguages[audioLanguage as iso6391] === "undefined"
-      ) {
-        settings.audioLanguages[audioLanguage as iso6391] = false;
+      if (typeof settings.audioLanguages[audioLanguage] === "undefined") {
+        settings.audioLanguages[audioLanguage] = false;
       }
     });
 

@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
-import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Language
  */
 interface LanguageAttrs {
-  audioLanguage: iso6391;
+  audioLanguage: string;
 }
 
 /**
  * Properties that a Language document has
  */
 interface LanguageDoc extends mongoose.Document {
-  audioLanguage: iso6391;
+  audioLanguage: string;
 }
 
 /**

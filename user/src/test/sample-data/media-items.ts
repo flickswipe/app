@@ -1,4 +1,3 @@
-import { iso6391 } from "@flickswipe/common";
 import mongoose from "mongoose";
 import { GENRE_A, GENRE_B } from "./genres";
 
@@ -17,7 +16,7 @@ export const MEDIA_ITEM_A = {
     count: 101,
     popularity: 102,
   },
-  audioLanguage: "en" as iso6391,
+  audioLanguage: "en",
   releaseDate: new Date("1990-01-01"),
   runtime: 103,
   plot: "My movie plot...",
@@ -47,7 +46,7 @@ export const MEDIA_ITEM_A_NEW = {
     count: 101,
     popularity: 102,
   },
-  audioLanguage: "en" as iso6391,
+  audioLanguage: "en",
   releaseDate: new Date("1990-01-01"),
   runtime: 103,
   plot: "My movie plot...",
@@ -77,7 +76,7 @@ export const MEDIA_ITEM_B = {
     count: 101,
     popularity: 102,
   },
-  audioLanguage: "en" as iso6391,
+  audioLanguage: "en",
   releaseDate: new Date("2020-01-01"),
   runtime: 103,
   plot: "My movie plot...",

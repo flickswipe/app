@@ -3,7 +3,6 @@ import {
   BadRequestError,
   CountrySetting,
   GenresSetting,
-  iso6391,
   AudioLanguagesSetting,
   RatingSetting,
   ReleaseDateSetting,
@@ -178,10 +177,9 @@ async function getUserSuggestions(
         {
           // process into a whitelist/blacklist
           const list = setting.value as AudioLanguagesSetting["value"];
-          const includeAudioLanguages: iso6391[] = [];
-          const ignoreAudioLanguages: iso6391[] = [];
-          Object.keys(list).forEach((lang) => {
-            const audioLanguage = lang as iso6391;
+          const includeAudioLanguages: string[] = [];
+          const ignoreAudioLanguages: string[] = [];
+          Object.keys(list).forEach((audioLanguage) => {
             const shouldInclude = list[audioLanguage];
 
             if (shouldInclude) {

@@ -12,6 +12,7 @@ interface TmdbGenreAttrs {
  * Properties that a MovieId document has
  */
 interface TmdbGenreDoc extends mongoose.Document {
+  id: string;
   tmdbGenreId: number;
   name: string;
   createdAt: Date;
@@ -36,6 +37,7 @@ const tmdbGenreSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(doc, ret) {
+        ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
       },
@@ -48,7 +50,6 @@ const tmdbGenreSchema = new mongoose.Schema(
  */
 interface TmdbGenreModel extends mongoose.Model<TmdbGenreDoc> {
   build(attrs: TmdbGenreAttrs): TmdbGenreDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 tmdbGenreSchema.statics.build = (attrs: TmdbGenreAttrs) => {
