@@ -91,8 +91,8 @@ if (!TMDB_KEY) {
       // "se", // Sweden
       // "sg", // Singapore
     ],
-    // Languages to fetch data in
-    languages: [
+    // AudioLanguages to fetch data in
+    audioLanguages: [
       "en", // English
     ],
     // Whether to include adult media

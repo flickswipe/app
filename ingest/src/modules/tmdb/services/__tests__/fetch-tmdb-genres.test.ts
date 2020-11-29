@@ -10,8 +10,6 @@ import {
   TMDB_GENRE_DOC_A,
   TMDB_GENRE_DOC_A_NEW,
 } from "../../../../test/sample-data/tmdb-genre-docs";
-const LANGUAGE = "en";
-const UNUSUAL_LANGUAGE = "en-GB";
 
 describe("fetch tmdb genres", () => {
   describe("no data provided", () => {
@@ -22,7 +20,7 @@ describe("fetch tmdb genres", () => {
 
     it("should return null if no data provided", async () => {
       // has correct data
-      expect(await fetchTmdbGenres(LANGUAGE)).toBeNull();
+      expect(await fetchTmdbGenres()).toBeNull();
     });
   });
 
@@ -41,7 +39,7 @@ describe("fetch tmdb genres", () => {
       });
 
       it("should overwrite", async () => {
-        await fetchTmdbGenres(LANGUAGE);
+        await fetchTmdbGenres();
 
         // has been overwritten
         expect(await TmdbGenre.findById(existingDoc.id)).toEqual(
@@ -55,21 +53,10 @@ describe("fetch tmdb genres", () => {
       });
 
       it("should publish event", async () => {
-        await fetchTmdbGenres(LANGUAGE);
+        await fetchTmdbGenres();
 
         // has been published
         expect(natsWrapper.client.publish).toHaveBeenCalled();
-      });
-
-      it("should normalize language attribute in published event", async () => {
-        await fetchTmdbGenres(UNUSUAL_LANGUAGE);
-
-        // has been normalized
-        expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-          "genre:updated",
-          expect.stringContaining(`"language":"${LANGUAGE}"`),
-          expect.any(Function)
-        );
       });
     });
 
@@ -82,7 +69,7 @@ describe("fetch tmdb genres", () => {
       });
 
       it("should create docs", async () => {
-        await fetchTmdbGenres(LANGUAGE);
+        await fetchTmdbGenres();
 
         // has been created
         const count = await TmdbGenre.countDocuments({});
@@ -95,21 +82,10 @@ describe("fetch tmdb genres", () => {
       });
 
       it("should publish event for each created doc", async () => {
-        await fetchTmdbGenres(LANGUAGE);
+        await fetchTmdbGenres();
 
         // has been published
         expect(natsWrapper.client.publish).toHaveBeenCalledTimes(19);
-      });
-
-      it("should normalize language attribute in published event when creating doc", async () => {
-        await fetchTmdbGenres(UNUSUAL_LANGUAGE);
-
-        // has been normalised
-        expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-          "genre:updated",
-          expect.stringContaining(`"language":"${LANGUAGE}"`),
-          expect.any(Function)
-        );
       });
     });
   });

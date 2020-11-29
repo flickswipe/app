@@ -4,7 +4,7 @@ import { natsWrapper } from "../nats-wrapper";
 import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
 import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
 import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
-import { unifyISO6391 } from "./unify-iso6391";
+import { iso6391 } from "@flickswipe/common";
 
 export async function announceMovie({
   imdbId,
@@ -89,7 +89,7 @@ export async function announceMovie({
     genres: tmdbMovieDoc.genres,
     images: tmdbMovieDoc.images,
     rating: tmdbMovieDoc.rating,
-    language: unifyISO6391(tmdbMovieDoc.language),
+    audioLanguage: tmdbMovieDoc.audioLanguage as iso6391,
     releaseDate: tmdbMovieDoc.releaseDate,
     runtime: tmdbMovieDoc.runtime,
     plot: tmdbMovieDoc.plot || "",

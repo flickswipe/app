@@ -4,7 +4,16 @@ import { natsWrapper } from "../../../../../nats-wrapper";
 import { GenreUpdatedListener } from "../genre-updated";
 
 // sample data
-import { GENRE_A } from "../../../../../test/sample-data/genres";
+import { GENRE_A, GENRE_A_NEW } from "../../../../../test/sample-data/genres";
+const EVENT_DATA = {
+  id: GENRE_A_NEW.id,
+  tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
+  name: GENRE_A_NEW.name,
+  updatedAt: new Date(new Date().getTime() + 86600),
+};
+const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
+  updatedAt: new Date(new Date().getTime() - 86600),
+});
 
 const setup = async () => {
   return {
@@ -25,15 +34,7 @@ describe("genre detected listener", () => {
 
         const { listener, msg } = await setup();
 
-        await listener.onMessage(
-          {
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            name: "New Name",
-            language: GENRE_A.language,
-            updatedAt: new Date(new Date().getTime() - 86600),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA_STALE, msg);
 
         // has not been overwritten
         expect(await Genre.findById(existingDoc.id)).toEqual(
@@ -52,15 +53,7 @@ describe("genre detected listener", () => {
 
         const { listener, msg } = await setup();
 
-        await listener.onMessage(
-          {
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            name: "New Name",
-            language: GENRE_A.language,
-            updatedAt: new Date(new Date().getTime() - 86600),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA_STALE, msg);
 
         // has been acked
         expect(msg.ack).toHaveBeenCalled();
@@ -73,15 +66,7 @@ describe("genre detected listener", () => {
 
         const { listener, msg } = await setup();
 
-        await listener.onMessage(
-          {
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            name: "New Name",
-            language: GENRE_A.language,
-            updatedAt: new Date(new Date().getTime() + 86600),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA, msg);
 
         // has been overwritten
         expect(await Genre.findById(existingDoc.id)).toEqual(
@@ -99,15 +84,7 @@ describe("genre detected listener", () => {
 
         const { listener, msg } = await setup();
 
-        await listener.onMessage(
-          {
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            name: "New Name",
-            language: GENRE_A.language,
-            updatedAt: new Date(new Date().getTime() + 86600),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA, msg);
 
         // has been acked
         expect(msg.ack).toHaveBeenCalled();
@@ -118,26 +95,11 @@ describe("genre detected listener", () => {
       it("should create genre", async () => {
         const { listener, msg } = await setup();
 
-        await listener.onMessage(
-          {
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            name: GENRE_A.name,
-            language: GENRE_A.language,
-            updatedAt: new Date(),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA, msg);
 
         // has been created
-        expect(
-          await Genre.findOne({
-            tmdbGenreId: GENRE_A.tmdbGenreId,
-            language: GENRE_A.language,
-          })
-        ).toEqual(
-          expect.objectContaining({
-            name: GENRE_A.name,
-          })
+        expect(await Genre.findById(EVENT_DATA.id)).toEqual(
+          expect.objectContaining(GENRE_A_NEW)
         );
       });
     });
@@ -145,15 +107,7 @@ describe("genre detected listener", () => {
     it("should acknowledge the message", async () => {
       const { listener, msg } = await setup();
 
-      await listener.onMessage(
-        {
-          tmdbGenreId: GENRE_A.tmdbGenreId,
-          name: GENRE_A.name,
-          language: GENRE_A.language,
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
+      await listener.onMessage(EVENT_DATA, msg);
 
       // has been acked
       expect(msg.ack).toHaveBeenCalled();

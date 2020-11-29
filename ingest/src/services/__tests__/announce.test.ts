@@ -8,7 +8,6 @@ import { announceMovie } from "../announce";
 import { TMDB_MOVIE_A } from "../../test/sample-data/tmdb-movies";
 import { UTELLY_A } from "../../test/sample-data/utellys";
 const UTELLY_A_NO_LOCATIONS = Object.assign({}, UTELLY_A, { locations: [] });
-const TMDB_MOVIE_A_NORMALISZED_LANGUAGE = "en";
 
 describe("announce", () => {
   describe("announce movie", () => {
@@ -95,19 +94,6 @@ describe("announce", () => {
 
         // has been published
         expect(natsWrapper.client.publish).toHaveBeenCalled();
-      });
-
-      it("should normalize language attribute in published event", async () => {
-        await announceMovie({ imdbId: TMDB_MOVIE_A.imdbId });
-
-        expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-          "media-item:updated",
-          // @ts-ignore
-          expect.stringContaining(
-            `"language":"${TMDB_MOVIE_A_NORMALISZED_LANGUAGE}"`
-          ),
-          expect.any(Function)
-        );
       });
 
       it("should update `emitted` to `true`", async () => {

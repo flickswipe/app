@@ -10,7 +10,7 @@ export const TMDB_MOVIE_DOC_A: TmdbMovieAttrs = {
   },
   genres: [],
   rating: { average: 8.4, count: 20243, popularity: 43.831 },
-  language: "en",
+  audioLanguage: "en",
   releaseDate: new Date("1999-10-15"),
   runtime: 139,
   plot:
@@ -29,7 +29,7 @@ export const TMDB_MOVIE_DOC_A_NEW: TmdbMovieAttrs = {
   },
   genres: [],
   rating: { average: 8.4, count: 20243, popularity: 43.831 },
-  language: "en",
+  audioLanguage: "en",
   releaseDate: new Date("1999-10-15"),
   runtime: 139,
   plot:

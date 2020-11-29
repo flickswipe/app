@@ -13,7 +13,7 @@ export interface TmdbGenresApiResultRaw {
 // output data
 export interface TmdbGenresApiResult {
   genres: {
-    id: number;
+    tmdbGenreId: number;
     name: string;
   }[];
 }
@@ -26,8 +26,12 @@ export interface TmdbGenresApiResult {
 const parser = async (
   raw: TmdbGenresApiResultRaw
 ): Promise<TmdbGenresApiResult> => {
-  // No parsing!
-  return raw as TmdbGenresApiResult;
+  return {
+    genres: raw.genres.map((genre) => ({
+      tmdbGenreId: genre.id,
+      name: genre.name,
+    })),
+  } as TmdbGenresApiResult;
 };
 
 /**

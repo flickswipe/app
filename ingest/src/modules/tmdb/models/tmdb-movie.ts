@@ -17,7 +17,7 @@ interface TmdbMovieAttrs {
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -42,7 +42,7 @@ interface TmdbMovieDoc extends mongoose.Document {
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -86,7 +86,7 @@ const tmdbMovieSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    language: {
+    audioLanguage: {
       type: String,
       required: true,
     },

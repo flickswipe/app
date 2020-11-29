@@ -159,12 +159,12 @@ describe("create suggestions", () => {
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
-  it("should filter out media items by whitelist languages setting", async () => {
+  it("should filter out media items by whitelist audioLanguages setting", async () => {
     await Setting.build({
-      settingType: SettingType.Languages,
+      settingType: SettingType.AudioLanguages,
       user: USER_A.id,
       value: {
-        [MEDIA_ITEM_A.language]: true,
+        [MEDIA_ITEM_A.audioLanguage]: true,
       },
     }).save();
 
@@ -173,12 +173,12 @@ describe("create suggestions", () => {
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
-  it("should filter out media items by blacklist languages setting", async () => {
+  it("should filter out media items by blacklist audioLanguages setting", async () => {
     await Setting.build({
-      settingType: SettingType.Languages,
+      settingType: SettingType.AudioLanguages,
       user: USER_A.id,
       value: {
-        [MEDIA_ITEM_B.language]: false,
+        [MEDIA_ITEM_B.audioLanguage]: false,
       },
     }).save();
 
@@ -187,13 +187,13 @@ describe("create suggestions", () => {
     await expectOnlyOneCorrectSuggestionDocToExist();
   });
 
-  it("should filter out media items by whitelist/blacklist languages setting", async () => {
+  it("should filter out media items by whitelist/blacklist audioLanguages setting", async () => {
     await Setting.build({
-      settingType: SettingType.Languages,
+      settingType: SettingType.AudioLanguages,
       user: USER_A.id,
       value: {
-        [MEDIA_ITEM_A.language]: true,
-        [MEDIA_ITEM_B.language]: false,
+        [MEDIA_ITEM_A.audioLanguage]: true,
+        [MEDIA_ITEM_B.audioLanguage]: false,
       },
     }).save();
 

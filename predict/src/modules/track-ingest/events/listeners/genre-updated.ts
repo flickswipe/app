@@ -23,13 +23,10 @@ export class GenreUpdatedListener extends Listener<GenreUpdatedEvent> {
     data: GenreUpdatedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const { tmdbGenreId, language } = data;
+    const { id } = data;
 
     // update doc
-    const existingDoc = await Genre.findOne({
-      tmdbGenreId: tmdbGenreId,
-      language,
-    });
+    const existingDoc = await Genre.findById(id);
     if (existingDoc) {
       await updateGenreDoc(existingDoc, data);
       msg.ack();
@@ -59,6 +56,7 @@ async function updateGenreDoc(
   }
 
   // update
+  existingDoc.tmdbGenreId = tmdbGenreId;
   existingDoc.name = name;
   await existingDoc.save();
 
@@ -69,11 +67,9 @@ async function updateGenreDoc(
  * @param data data to create with
  */
 async function createGenreDoc(data: GenreUpdatedEvent["data"]): Promise<void> {
-  const { tmdbGenreId, name, language } = data;
+  const { id, tmdbGenreId, name } = data;
 
-  await Genre.build({ tmdbGenreId, name, language }).save();
+  await Genre.build({ id, tmdbGenreId, name }).save();
 
-  console.log(
-    `Created genre #${tmdbGenreId} with name "${name}" (${language})`
-  );
+  console.log(`Created genre #${tmdbGenreId} with name "${name}"`);
 }

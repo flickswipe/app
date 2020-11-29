@@ -4,27 +4,23 @@ import { tmdbGenresParser } from "./queries/tmdb-genres-parser";
 
 import { GenreUpdatedPublisher } from "../../../events/publishers/genre-updated";
 import { natsWrapper } from "../../../nats-wrapper";
-import { unifyISO6391 } from "../../../services/unify-iso6391";
 
 /**
  * Fetch genre data from the TMDB RESTful API
  *
- * @param language ISO 639-1 language to fetch results in
- *
  * @returns {TmdbGenreDoc[]} array of api results
  */
 export async function fetchTmdbGenres(
-  language: string,
   options: Record<string, unknown> = {}
 ): Promise<TmdbGenreDoc[]> {
   options;
 
-  console.log(`Fetching tmdb genres in ${language}...`);
+  console.log(`Fetching tmdb genres...`);
 
   // get new data
-  const raw = await tmdbGenresQuery(language);
+  const raw = await tmdbGenresQuery();
   if (!raw) {
-    console.log(`No tmdb genres data for ${language}`);
+    console.log(`No tmdb genres data`);
     return null;
   }
 
@@ -38,8 +34,7 @@ export async function fetchTmdbGenres(
   const promises = result.genres.map(async (genre) => {
     // get existing data
     const existingDoc = await TmdbGenre.findOne({
-      tmdbGenreId: genre.id,
-      language,
+      tmdbGenreId: genre.tmdbGenreId,
     });
 
     // update existing doc
@@ -47,15 +42,13 @@ export async function fetchTmdbGenres(
       existingDoc.name = genre.name;
 
       await existingDoc.save();
-      console.log(
-        `Detected tmdb genre data for ${existingDoc.name} (${language})`
-      );
+      console.log(`Detected tmdb genre data for ${existingDoc.name}`);
 
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({
+        id: existingDoc.id,
         tmdbGenreId: existingDoc.tmdbGenreId,
         name: existingDoc.name,
-        language: unifyISO6391(existingDoc.language),
         updatedAt: new Date(),
       });
 
@@ -64,22 +57,19 @@ export async function fetchTmdbGenres(
 
     // save new doc
     const insertedDoc = await TmdbGenre.build({
-      tmdbGenreId: genre.id,
+      tmdbGenreId: genre.tmdbGenreId,
       name: genre.name,
-      language: language,
     }).save();
 
     if (insertedDoc) {
-      console.log(
-        `Detected tmdb genre data for ${insertedDoc.name} (${language})`
-      );
+      console.log(`Detected tmdb genre data for ${insertedDoc.name}`);
 
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({
-        tmdbGenreId: insertedDoc.id,
+        id: insertedDoc.id,
+        tmdbGenreId: insertedDoc.tmdbGenreId,
         name: insertedDoc.name,
-        language: unifyISO6391(insertedDoc.language),
-        updatedAt: new Date(),
+        updatedAt: insertedDoc.updatedAt,
       });
     }
 

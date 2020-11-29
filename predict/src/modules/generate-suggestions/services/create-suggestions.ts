@@ -4,7 +4,7 @@ import {
   CountrySetting,
   GenresSetting,
   iso6391,
-  LanguagesSetting,
+  AudioLanguagesSetting,
   RatingSetting,
   ReleaseDateSetting,
   RuntimeSetting,
@@ -138,7 +138,7 @@ async function getUserSuggestions(
       case SettingType.Country:
         {
           const country = setting.value as CountrySetting["value"];
-          // limit query with country
+          // limit query with value
           Object.assign(query, {
             [`streamLocations.${country}`]: { $exists: true },
           });
@@ -147,22 +147,21 @@ async function getUserSuggestions(
 
       case SettingType.Genres:
         {
-          // process genres into a whitelist/blacklist
+          // process into a whitelist/blacklist
           const list = setting.value as GenresSetting["value"];
-          const includeGenres: number[] = [];
-          const ignoreGenres: number[] = [];
-          Object.keys(list).forEach((key) => {
-            const tmdbGenreId = parseInt(key, 10);
-            const shouldInclude = list[tmdbGenreId];
+          const includeGenres: string[] = [];
+          const ignoreGenres: string[] = [];
+          Object.keys(list).forEach((id) => {
+            const shouldInclude = list[id];
 
             if (shouldInclude) {
-              includeGenres.push(tmdbGenreId);
+              includeGenres.push(id);
             } else {
-              ignoreGenres.push(tmdbGenreId);
+              ignoreGenres.push(id);
             }
           });
 
-          // limit query with genre lists
+          // limit query with lists
           Object.assign(query, {
             genres: {
               $elemMatch: Object.assign(
@@ -175,29 +174,31 @@ async function getUserSuggestions(
         }
         break;
 
-      case SettingType.Languages:
+      case SettingType.AudioLanguages:
         {
-          // process languages into a whitelist/blacklist
-          const list = setting.value as LanguagesSetting["value"];
-          const includeLanguages: iso6391[] = [];
-          const ignoreLanguages: iso6391[] = [];
+          // process into a whitelist/blacklist
+          const list = setting.value as AudioLanguagesSetting["value"];
+          const includeAudioLanguages: iso6391[] = [];
+          const ignoreAudioLanguages: iso6391[] = [];
           Object.keys(list).forEach((lang) => {
-            const language = lang as iso6391;
-            const shouldInclude = list[language];
+            const audioLanguage = lang as iso6391;
+            const shouldInclude = list[audioLanguage];
 
             if (shouldInclude) {
-              includeLanguages.push(language);
+              includeAudioLanguages.push(audioLanguage);
             } else {
-              ignoreLanguages.push(language);
+              ignoreAudioLanguages.push(audioLanguage);
             }
           });
 
-          // limit query with language lists
+          // limit query with lists
           Object.assign(query, {
-            language: Object.assign(
+            audioLanguage: Object.assign(
               {},
-              includeLanguages.length ? { $in: includeLanguages } : {},
-              ignoreLanguages.length ? { $nin: ignoreLanguages } : {}
+              includeAudioLanguages.length
+                ? { $in: includeAudioLanguages }
+                : {},
+              ignoreAudioLanguages.length ? { $nin: ignoreAudioLanguages } : {}
             ),
           });
         }
@@ -205,7 +206,7 @@ async function getUserSuggestions(
 
       case SettingType.StreamLocations:
         {
-          // process streamLocations into a whitelist/blacklist
+          // process into a whitelist/blacklist
           const list = setting.value as StreamLocationsSetting["value"];
           const includeStreamLocations: string[] = [];
           const ignoreStreamLocations: string[] = [];
@@ -218,7 +219,7 @@ async function getUserSuggestions(
               ignoreStreamLocations.push(streamLocation);
             }
           });
-          // limit query with streamLocations
+          // limit query with lists
           Object.assign(query, {
             streamLocationIds: Object.assign(
               {},
@@ -244,7 +245,7 @@ async function getUserSuggestions(
             max = null;
           }
 
-          // limit query with rating range
+          // limit query with range
           Object.assign(query, {
             "rating.average": Object.assign(
               {},
@@ -266,7 +267,7 @@ async function getUserSuggestions(
             max = null;
           }
 
-          // limit query with releaseDate range
+          // limit query with range
           Object.assign(query, {
             releaseDate: Object.assign(
               {},
@@ -288,7 +289,7 @@ async function getUserSuggestions(
             max = null;
           }
 
-          // limit query with runtime range
+          // limit query with range
           Object.assign(query, {
             runtime: Object.assign(
               {},

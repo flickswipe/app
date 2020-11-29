@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 interface TmdbGenreAttrs {
   tmdbGenreId: number;
   name: string;
-  language: string;
 }
 
 /**
@@ -15,7 +14,6 @@ interface TmdbGenreAttrs {
 interface TmdbGenreDoc extends mongoose.Document {
   tmdbGenreId: number;
   name: string;
-  language: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,10 +28,6 @@ const tmdbGenreSchema = new mongoose.Schema(
       required: true,
     },
     name: {
-      type: String,
-      required: true,
-    },
-    language: {
       type: String,
       required: true,
     },

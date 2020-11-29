@@ -20,14 +20,14 @@ const TMDB_MOVIE_ID = 1;
 const IMDB_ID = "tt1234567";
 const START_OPTIONS = {
   countries: ["us"],
-  languages: ["en"],
+  audioLanguages: ["en"],
   includeAdultContent: false,
   earliestReleaseDate: new Date("1970-01-01"),
   minTmdbPopularity: 0,
 } as StartOptions;
 const IMPORT_OPTIONS = {
   countries: ["us"],
-  languages: ["en"],
+  audioLanguages: ["en"],
 };
 
 // handle async functions inside setTimeout and setInterval
@@ -348,16 +348,14 @@ describe("ingestion", () => {
    * Run regular TMDB genres data fetch
    */
   describe("run TMDB genres fetch", () => {
-    it("should fetch TMDB genres for each language", async () => {
+    it("should fetch TMDB genres", async () => {
       // @ts-ignore
       fetchTmdbGenres.mockImplementation(() => {
         // do nothing
       });
 
-      await Ingestion.runTmdbGenresFetch(
-        Object.assign({}, START_OPTIONS, { languages: ["en", "es", "fr"] })
-      );
-      expect(fetchTmdbGenres).toHaveBeenCalledTimes(3);
+      await Ingestion.runTmdbGenresFetch(START_OPTIONS);
+      expect(fetchTmdbGenres).toHaveBeenCalledTimes(1);
     });
   });
 

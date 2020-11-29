@@ -57,7 +57,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.73",
+    "@flickswipe/common": "0.0.75",
     "@types/mongoose": "^5.7.36",
     "@types/split2": "^2.1.6",
     "axios": "^0.20.0",

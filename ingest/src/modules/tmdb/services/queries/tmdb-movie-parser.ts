@@ -2,6 +2,7 @@
  * Types
  */
 
+import { unifyISO6391 } from "../../../../services/unify-iso6391";
 import { TmdbGenre } from "../../models/tmdb-genre";
 
 // raw data received by parser
@@ -65,7 +66,7 @@ export interface TmdbMovieApiResult {
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -114,7 +115,7 @@ const parser = async (
       count: raw.vote_count,
       popularity: raw.popularity,
     },
-    language: raw.original_language,
+    audioLanguage: unifyISO6391(raw.original_language),
     releaseDate: new Date(raw.release_date),
     runtime: raw.runtime,
     plot: raw.overview,
