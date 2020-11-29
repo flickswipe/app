@@ -7,14 +7,14 @@ import {
   ALL_SETTINGS,
   COUNTRY_SETTING,
   GENRES_SETTING,
-  LANGUAGES_SETTING,
+  AUDIO_LANGUAGES_SETTING,
   RATING_SETTING,
   RELEASE_DATE_SETTING,
   RUNTIME_SETTING,
   STREAM_LOCATIONS_SETTING,
   COUNTRY_SETTING_EMPTY,
   GENRES_SETTING_EMPTY,
-  LANGUAGES_SETTING_EMPTY,
+  AUDIO_LANGUAGES_SETTING_EMPTY,
   RATING_SETTING_EMPTY,
   RELEASE_DATE_SETTING_EMPTY,
   RUNTIME_SETTING_EMPTY,
@@ -44,7 +44,7 @@ describe("get settings", () => {
       await Promise.all([
         Setting.build(COUNTRY_SETTING_EMPTY).save(),
         Setting.build(GENRES_SETTING_EMPTY).save(),
-        Setting.build(LANGUAGES_SETTING_EMPTY).save(),
+        Setting.build(AUDIO_LANGUAGES_SETTING_EMPTY).save(),
         Setting.build(RATING_SETTING_EMPTY).save(),
         Setting.build(RELEASE_DATE_SETTING_EMPTY).save(),
         Setting.build(RUNTIME_SETTING_EMPTY).save(),
@@ -90,16 +90,16 @@ describe("get settings", () => {
     });
   });
 
-  describe("languages settings and default settings exist", () => {
+  describe("audioLanguages settings and default settings exist", () => {
     beforeEach(async () => {
-      await Setting.build(LANGUAGES_SETTING).save();
+      await Setting.build(AUDIO_LANGUAGES_SETTING).save();
     });
 
-    it("should return languages settings alongside default values", async () => {
+    it("should return audioLanguages settings alongside default values", async () => {
       // has correct data
       expect(await listAllSettings(USER_A.id, ALL_SETTINGS_EMPTY)).toEqual(
         Object.assign(ALL_SETTINGS_EMPTY, {
-          languages: LANGUAGES_SETTING.value,
+          audioLanguages: AUDIO_LANGUAGES_SETTING.value,
         })
       );
     });

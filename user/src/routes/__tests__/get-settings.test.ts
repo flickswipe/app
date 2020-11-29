@@ -4,14 +4,14 @@ import { app } from "../../app";
 import { listAllSettings } from "../../modules/settings/settings";
 import {
   getGenres,
-  getLanguages,
+  getAudioLanguages,
   getStreamLocations,
 } from "../../modules/track-ingest/track-ingest";
 import { GENRE_A, GENRE_B, GENRE_C } from "../../test/sample-data/genres";
 import {
   ALL_SETTINGS_EMPTY,
   GENRES_SETTING,
-  LANGUAGES_SETTING,
+  AUDIO_LANGUAGES_SETTING,
   STREAM_LOCATIONS_SETTING,
 } from "../../test/sample-data/settings";
 import { USER_A } from "../../test/sample-data/users";
@@ -87,19 +87,19 @@ describe("get settings", () => {
       );
     });
 
-    it("aggregates value of listAllSettings with getLanguages", async () => {
+    it("aggregates value of listAllSettings with getAudioLanguages", async () => {
       // @ts-ignore
       listAllSettings.mockResolvedValue(
         Object.assign({}, ALL_SETTINGS_EMPTY, {
-          languages: LANGUAGES_SETTING.value,
+          audioLanguages: AUDIO_LANGUAGES_SETTING.value,
         })
       );
 
       // @ts-ignore
-      getLanguages.mockResolvedValueOnce([
-        { language: "en" },
-        { language: "es" },
-        { language: "de" },
+      getAudioLanguages.mockResolvedValueOnce([
+        { audioLanguage: "en" },
+        { audioLanguage: "es" },
+        { audioLanguage: "de" },
       ]);
 
       const response = await request(app)
@@ -110,7 +110,7 @@ describe("get settings", () => {
       // has correct data
       expect(response.body).toEqual(
         expect.objectContaining({
-          languages: {
+          audioLanguages: {
             en: true, // @todo make this dynamic
             es: false,
             de: false,

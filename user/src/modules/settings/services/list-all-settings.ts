@@ -1,7 +1,7 @@
 import {
   CountrySetting,
   GenresSetting,
-  LanguagesSetting,
+  AudioLanguagesSetting,
   RatingSetting,
   ReleaseDateSetting,
   RuntimeSetting,
@@ -15,7 +15,7 @@ export type SettingsPayload = {
   [key: string]: any;
   country: CountrySetting["value"];
   genres: GenresSetting["value"];
-  languages: LanguagesSetting["value"];
+  audioLanguages: AudioLanguagesSetting["value"];
   rating: RatingSetting["value"];
   releaseDate: ReleaseDateSetting["value"];
   runtime: RuntimeSetting["value"];
@@ -51,7 +51,7 @@ export async function listAllSettings(
     {
       country: "",
       genres: {},
-      languages: {},
+      audioLanguages: {},
       rating: {},
       releaseDate: {},
       runtime: {},

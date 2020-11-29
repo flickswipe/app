@@ -11,7 +11,7 @@ import { defaultSettings } from "../default-settings";
 import { listAllSettings, SettingsPayload } from "../modules/settings/settings";
 import {
   getGenres,
-  getLanguages,
+  getAudioLanguages,
   getStreamLocations,
 } from "../modules/track-ingest/track-ingest";
 
@@ -36,7 +36,7 @@ const router = express.Router();
  * {
  *   "country": "",
  *   "genres": {...},
- *   "languages": {...},
+ *   "audioLanguages": {...},
  *   "rating": {...},
  *   "releaseDate": {...},
  *   "runtime": {...},
@@ -51,7 +51,6 @@ router.get(
   requireAuth,
   async (req: Request, res: Response) => {
     const { currentUser } = req;
-    const { iso6391: language } = req.params;
 
     const settings = (await listAllSettings(
       currentUser.id,
@@ -59,18 +58,20 @@ router.get(
     )) as SettingsPayload;
 
     // list all genres in settings, set unknown genres to false by default
-    const allGenres = await getGenres(language as iso6391);
+    const allGenres = await getGenres();
     allGenres.forEach(({ tmdbGenreId }) => {
       if (typeof settings.genres[tmdbGenreId] === "undefined") {
         settings.genres[tmdbGenreId] = false;
       }
     });
 
-    // list all languages in settings, set unknown genres to false by default
-    const allLanguages = await getLanguages();
-    allLanguages.forEach(({ language }) => {
-      if (typeof settings.languages[language as iso6391] === "undefined") {
-        settings.languages[language as iso6391] = false;
+    // list all audioLanguages in settings, set unknown genres to false by default
+    const allAudioLanguages = await getAudioLanguages();
+    allAudioLanguages.forEach(({ audioLanguage }) => {
+      if (
+        typeof settings.audioLanguages[audioLanguage as iso6391] === "undefined"
+      ) {
+        settings.audioLanguages[audioLanguage as iso6391] = false;
       }
     });
 

@@ -1,6 +1,6 @@
 import { iso6391 } from "@flickswipe/common";
 import mongoose from "mongoose";
-import { GENRE_A } from "./genres";
+import { GENRE_A, GENRE_B } from "./genres";
 
 export const MEDIA_ITEM_A = {
   id: mongoose.Types.ObjectId("mediaitemaaa").toHexString(),
@@ -11,13 +11,13 @@ export const MEDIA_ITEM_A = {
     poster: "https://example.com",
     backdrop: "https://example.com",
   },
-  genres: [GENRE_A.tmdbGenreId],
+  genres: [GENRE_A.id],
   rating: {
     average: 100,
     count: 101,
     popularity: 102,
   },
-  language: "en" as iso6391,
+  audioLanguage: "en" as iso6391,
   releaseDate: new Date("1990-01-01"),
   runtime: 103,
   plot: "My movie plot...",
@@ -41,13 +41,13 @@ export const MEDIA_ITEM_A_NEW = {
     poster: "https://example.com",
     backdrop: "https://example.com",
   },
-  genres: [GENRE_A.tmdbGenreId],
+  genres: [GENRE_A.id],
   rating: {
     average: 100,
     count: 101,
     popularity: 102,
   },
-  language: "en" as iso6391,
+  audioLanguage: "en" as iso6391,
   releaseDate: new Date("1990-01-01"),
   runtime: 103,
   plot: "My movie plot...",
@@ -71,13 +71,13 @@ export const MEDIA_ITEM_B = {
     poster: "https://example.com",
     backdrop: "https://example.com",
   },
-  genres: [69],
+  genres: [GENRE_B.id],
   rating: {
     average: 100,
     count: 101,
     popularity: 102,
   },
-  language: "en" as iso6391,
+  audioLanguage: "en" as iso6391,
   releaseDate: new Date("2020-01-01"),
   runtime: 103,
   plot: "My movie plot...",

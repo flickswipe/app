@@ -3,7 +3,7 @@ import { app } from "../../app";
 import {
   updateCountry,
   updateGenres,
-  updateLanguages,
+  updateAudioLanguages,
   updateRating,
   updateReleaseDate,
   updateRuntime,
@@ -86,18 +86,18 @@ describe("update settings", () => {
       );
     });
 
-    it("should call updateLanguages correctly", async () => {
+    it("should call updateAudioLanguages correctly", async () => {
       await request(app)
         .post(`/api/en/user/settings/update`)
         .set("Cookie", await global.signIn(USER_A.id))
         .send({
-          languages: ALL_SETTINGS_EMPTY.languages,
+          audioLanguages: ALL_SETTINGS_EMPTY.audioLanguages,
         });
 
       // has correct data
-      expect(updateLanguages).toHaveBeenCalledWith(
+      expect(updateAudioLanguages).toHaveBeenCalledWith(
         expect.any(String),
-        ALL_SETTINGS_EMPTY.languages
+        ALL_SETTINGS_EMPTY.audioLanguages
       );
     });
 

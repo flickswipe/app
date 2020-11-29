@@ -11,7 +11,7 @@ import {
 } from "../../../models/stream-location";
 import {
   createCountryIfNotExists,
-  createLanguageIfNotExists,
+  createAudioLanguageIfNotExists,
   MediaItemUpdatedListener,
   parseStreamLocations,
   saveStreamLocation,
@@ -23,8 +23,8 @@ import {
   MEDIA_ITEM_A,
   MEDIA_ITEM_A_NEW,
 } from "../../../../../test/sample-data/media-items";
-const LANGUAGE = {
-  language: MEDIA_ITEM_A_NEW.language as iso6391,
+const AUDIO_LANGUAGE = {
+  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage as iso6391,
 };
 const COUNTRY = {
   country: Object.keys(MEDIA_ITEM_A_NEW.streamLocations)[0],
@@ -53,7 +53,7 @@ const EVENT_DATA = {
   genres: cloneDeep(MEDIA_ITEM_A_NEW.genres),
   images: cloneDeep(MEDIA_ITEM_A_NEW.images),
   rating: cloneDeep(MEDIA_ITEM_A_NEW.rating),
-  language: MEDIA_ITEM_A_NEW.language as iso6391,
+  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage as iso6391,
   releaseDate: MEDIA_ITEM_A_NEW.releaseDate,
   runtime: MEDIA_ITEM_A_NEW.runtime,
   plot: MEDIA_ITEM_A_NEW.plot,
@@ -91,28 +91,28 @@ const setup = async () => {
 
 describe("media item updated listener", () => {
   /**
-   * createLanguageIfNotExists()
+   * createAudioLanguageIfNotExists()
    */
-  describe("create language if not exists", () => {
-    describe("no language exists", () => {
-      it("should create language ", async () => {
-        await createLanguageIfNotExists(LANGUAGE.language);
+  describe("create audioLanguage if not exists", () => {
+    describe("no audioLanguage exists", () => {
+      it("should create audioLanguage ", async () => {
+        await createAudioLanguageIfNotExists(AUDIO_LANGUAGE.audioLanguage);
 
         // has been created
-        expect(await Language.countDocuments(LANGUAGE)).toBe(1);
+        expect(await Language.countDocuments(AUDIO_LANGUAGE)).toBe(1);
       });
     });
 
-    describe("language exists", () => {
+    describe("audioLanguage exists", () => {
       beforeEach(async () => {
-        await Language.build(LANGUAGE).save();
+        await Language.build(AUDIO_LANGUAGE).save();
       });
 
-      it("should not create language", async () => {
-        await createLanguageIfNotExists(LANGUAGE.language);
+      it("should not create audioLanguage", async () => {
+        await createAudioLanguageIfNotExists(AUDIO_LANGUAGE.audioLanguage);
 
         // has not been created
-        expect(await Language.countDocuments(LANGUAGE)).toBe(1);
+        expect(await Language.countDocuments(AUDIO_LANGUAGE)).toBe(1);
       });
     });
   });
@@ -216,7 +216,7 @@ describe("media item updated listener", () => {
    */
   describe("on message", () => {
     describe("invalid url", () => {
-      it("should create language", async () => {
+      it("should create audioLanguage", async () => {
         const { listener, msg } = await setup();
         await listener.onMessage(EVENT_DATA_INVALID_STREAM_LOCATIONS, msg);
 
@@ -241,7 +241,7 @@ describe("media item updated listener", () => {
   });
 
   describe("valid conditions", () => {
-    it("should create language", async () => {
+    it("should create audioLanguage", async () => {
       const { listener, msg } = await setup();
       await listener.onMessage(EVENT_DATA, msg);
 

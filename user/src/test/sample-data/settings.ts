@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {
   CountrySetting,
   GenresSetting,
-  LanguagesSetting,
+  AudioLanguagesSetting,
   RatingSetting,
   ReleaseDateSetting,
   RuntimeSetting,
@@ -40,19 +40,22 @@ export const GENRES_SETTING_EMPTY: Omit<
   value: {},
 });
 
-export const LANGUAGES_SETTING: Omit<LanguagesSetting, "updatedAt"> = {
-  settingType: SettingType.Languages,
+export const AUDIO_LANGUAGES_SETTING: Omit<
+  AudioLanguagesSetting,
+  "updatedAt"
+> = {
+  settingType: SettingType.AudioLanguages,
   user: USER_A.id,
   value: {
     en: true,
     es: false,
-  } as LanguagesSetting["value"],
+  } as AudioLanguagesSetting["value"],
 };
 
-export const LANGUAGES_SETTING_EMPTY: Omit<
-  LanguagesSetting,
+export const AUDIO_LANGUAGES_SETTING_EMPTY: Omit<
+  AudioLanguagesSetting,
   "updatedAt"
-> = Object.assign({}, LANGUAGES_SETTING, { value: {} });
+> = Object.assign({}, AUDIO_LANGUAGES_SETTING, { value: {} });
 
 export const RATING_SETTING: Omit<RatingSetting, "updatedAt"> = {
   settingType: SettingType.Rating,
@@ -115,7 +118,7 @@ export const STREAM_LOCATIONS_SETTING_EMPTY: Omit<
 export const ALL_SETTINGS: SettingsPayload = {
   country: COUNTRY_SETTING.value,
   genres: GENRES_SETTING.value,
-  languages: LANGUAGES_SETTING.value,
+  audioLanguages: AUDIO_LANGUAGES_SETTING.value,
   rating: RATING_SETTING.value,
   releaseDate: RELEASE_DATE_SETTING.value,
   runtime: RUNTIME_SETTING.value,
@@ -125,7 +128,7 @@ export const ALL_SETTINGS: SettingsPayload = {
 export const ALL_SETTINGS_EMPTY: SettingsPayload = {
   country: COUNTRY_SETTING_EMPTY.value,
   genres: GENRES_SETTING_EMPTY.value,
-  languages: LANGUAGES_SETTING_EMPTY.value,
+  audioLanguages: AUDIO_LANGUAGES_SETTING_EMPTY.value,
   rating: RATING_SETTING_EMPTY.value,
   releaseDate: RELEASE_DATE_SETTING_EMPTY.value,
   runtime: RUNTIME_SETTING_EMPTY.value,

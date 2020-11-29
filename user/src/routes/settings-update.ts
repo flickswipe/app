@@ -11,7 +11,7 @@ import express, { Request, Response } from "express";
 import {
   updateCountry,
   updateGenres,
-  updateLanguages,
+  updateAudioLanguages,
   updateRating,
   updateReleaseDate,
   updateRuntime,
@@ -33,7 +33,7 @@ const router = express.Router();
  * {
  *   "country": "us",
  *   "genres": {"genre-id": true, "genre-id": false },
- *   "languages": {"en": true, "es": false },
+ *   "audioLanguages": {"en": true, "es": false },
  *   "rating": {"min": 0, "max": 999 },
  *   "releaseDate": {"min": Date, "max": Date },
  *   "runtime": {"min": 0, "max": 999 },
@@ -80,8 +80,10 @@ router.post(
       promises.push(updateGenres(currentUser.id, req.body.genres));
     }
 
-    if (typeof req.body.languages === "object") {
-      promises.push(updateLanguages(currentUser.id, req.body.languages));
+    if (typeof req.body.audioLanguages === "object") {
+      promises.push(
+        updateAudioLanguages(currentUser.id, req.body.audioLanguages)
+      );
     }
 
     if (typeof req.body.rating === "object") {

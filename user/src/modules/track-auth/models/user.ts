@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
-        delete ret.language;
         delete ret.createdAt;
         delete ret.updatedAt;
       },
@@ -50,6 +49,7 @@ const userSchema = new mongoose.Schema(
  */
 interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc;
+  id(value: string): mongoose.Types.ObjectId;
 }
 
 userSchema.statics.build = (attrs: UserAttrs) => {

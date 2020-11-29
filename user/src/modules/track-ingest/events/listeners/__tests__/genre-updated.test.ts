@@ -6,9 +6,9 @@ import { GenreUpdatedListener } from "../genre-updated";
 // sample data
 import { GENRE_A, GENRE_A_NEW } from "../../../../../test/sample-data/genres";
 const EVENT_DATA = {
+  id: GENRE_A_NEW.id,
   tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
   name: GENRE_A_NEW.name,
-  language: GENRE_A_NEW.language,
   updatedAt: new Date(new Date().getTime() + 86600),
 };
 const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
@@ -79,12 +79,9 @@ describe("genre detected listener", () => {
         await listener.onMessage(EVENT_DATA, msg);
 
         // has been created
-        expect(
-          await Genre.findOne({
-            tmdbGenreId: EVENT_DATA.tmdbGenreId,
-            language: EVENT_DATA.language,
-          })
-        ).toEqual(expect.objectContaining(GENRE_A_NEW));
+        expect(await Genre.findById(EVENT_DATA.id)).toEqual(
+          expect.objectContaining(GENRE_A_NEW)
+        );
       });
     });
 

@@ -1,6 +1,6 @@
 import {
   BadRequestError,
-  LanguagesSetting,
+  AudioLanguagesSetting,
   SettingType,
 } from "@flickswipe/common";
 import mongoose from "mongoose";
@@ -8,24 +8,24 @@ import { natsWrapper } from "../../../nats-wrapper";
 import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
 
-export async function updateLanguages(
+export async function updateAudioLanguages(
   userId: string,
-  value: LanguagesSetting["value"]
+  value: AudioLanguagesSetting["value"]
 ): Promise<void> {
   // validate
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     throw new BadRequestError(`Invalid user id "${userId}"`);
   }
 
-  Object.keys(value).forEach((language) => {
-    if (!`${language}`.match(/^[a-z]{2}$/)) {
-      throw new BadRequestError(`Invalid language "${language}"`);
+  Object.keys(value).forEach((audioLanguage) => {
+    if (!`${audioLanguage}`.match(/^[a-z]{2}$/)) {
+      throw new BadRequestError(`Invalid audioLanguage "${audioLanguage}"`);
     }
   });
 
   // update
   const existingDoc = await Setting.findOne({
-    settingType: SettingType.Languages,
+    settingType: SettingType.AudioLanguages,
     user: userId,
   });
 
@@ -35,7 +35,7 @@ export async function updateLanguages(
   } else {
     // create
     await Setting.build({
-      settingType: SettingType.Languages,
+      settingType: SettingType.AudioLanguages,
       user: userId,
       value: value,
     }).save();
@@ -43,7 +43,7 @@ export async function updateLanguages(
 
   // publish event
   new UserUpdatedSettingPublisher(natsWrapper.client).publish({
-    settingType: SettingType.Languages,
+    settingType: SettingType.AudioLanguages,
     user: userId,
     value: value,
     updatedAt: new Date(),
