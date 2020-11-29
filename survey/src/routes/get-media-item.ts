@@ -5,7 +5,6 @@ import {
   validateIso6391Param,
   validateObjectIdParam,
   validateRequest,
-  iso6391,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
@@ -45,7 +44,7 @@ const router = express.Router();
  *  genres: [ { tmdbGenreId: "...", name: "Comedy" } ],
  *  images: { poster: "...", backdrop: "..." },
  *  rating: { average: 100, count: 100, popularity: 100 },
- *  language: "en",
+ *  audioLanguage: "en",
  *  releaseDate: "01-09-1990",
  *  runtime: 160,
  *  plot: "A description of the plot...",
@@ -66,7 +65,7 @@ router.get(
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
-    const { id, iso6391: language } = req.params;
+    const { id } = req.params;
 
     // get media item
     const mediaItem = await getMediaItem(id);
@@ -77,7 +76,7 @@ router.get(
     }
 
     // get genres
-    const genres = await getGenres(language as iso6391);
+    const genres = await getGenres();
 
     // output
     res.status(200).send({
@@ -85,12 +84,12 @@ router.get(
       tmdbMovieId: mediaItem.tmdbMovieId,
       imdbId: mediaItem.imdbId,
       title: mediaItem.title,
-      genres: mediaItem.genres.map((tmdbGenreId) =>
-        genres.find((genre) => genre.tmdbGenreId === tmdbGenreId)
+      genres: mediaItem.genres.map((id) =>
+        genres.find((genre) => genre.id === id)
       ),
       images: mediaItem.images,
       rating: mediaItem.rating,
-      language: mediaItem.language,
+      audioLanguage: mediaItem.audioLanguage,
       releaseDate: mediaItem.releaseDate,
       runtime: mediaItem.runtime,
       plot: mediaItem.plot,

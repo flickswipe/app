@@ -13,13 +13,13 @@ interface MediaItemAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;
     popularity: number;
   };
-  language: iso6391;
+  audioLanguage: iso6391;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -44,13 +44,13 @@ interface MediaItemDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: number[];
+  genres: string[];
   rating: {
     average: number;
     count: number;
     popularity: number;
   };
-  language: iso6391;
+  audioLanguage: iso6391;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -90,12 +90,12 @@ const mediaItem = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: [{ type: Number }],
+    genres: [{ type: String }],
     rating: {
       type: Object,
       required: true,
     },
-    language: {
+    audioLanguage: {
       type: String,
       required: true,
     },

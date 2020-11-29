@@ -2,7 +2,6 @@ import {
   NotFoundError,
   currentUser,
   requireAuth,
-  iso6391,
   validateIso6391Param,
   validateRequest,
 } from "@flickswipe/common";
@@ -55,9 +54,8 @@ router.get(
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
-    const { iso6391: language } = req.params;
     // get genres
-    const genres = await getGenres(language as iso6391);
+    const genres = await getGenres();
 
     // throw error if not found
     if (!genres.length) {
@@ -67,6 +65,7 @@ router.get(
     // output
     res.status(200).send(
       genres.map((genre) => ({
+        id: genre.id,
         tmdbGenreId: genre.tmdbGenreId,
         name: genre.name,
       }))

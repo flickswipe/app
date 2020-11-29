@@ -57,7 +57,7 @@ async function updateMediaItem(
   existingDoc.genres = data.genres;
   existingDoc.images = data.images;
   existingDoc.rating = data.rating;
-  existingDoc.language = data.language;
+  existingDoc.audioLanguage = data.audioLanguage;
   existingDoc.releaseDate = data.releaseDate;
   existingDoc.runtime = data.runtime;
   existingDoc.plot = data.plot;

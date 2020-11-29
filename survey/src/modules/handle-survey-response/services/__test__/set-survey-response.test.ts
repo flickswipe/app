@@ -1,4 +1,4 @@
-import { BadRequestError, InterestType } from "@flickswipe/common";
+import { BadRequestError } from "@flickswipe/common";
 import { MEDIA_ITEM_A } from "../../../../test/sample-data/media-items";
 import {
   SURVEY_RESPONSE_CONSUMED_A,

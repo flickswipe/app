@@ -18,7 +18,7 @@ const EVENT_DATA = {
   images: MEDIA_ITEM_A_NEW.images,
   genres: MEDIA_ITEM_A_NEW.genres,
   rating: MEDIA_ITEM_A_NEW.rating,
-  language: MEDIA_ITEM_A_NEW.language,
+  audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage,
   releaseDate: MEDIA_ITEM_A_NEW.releaseDate,
   runtime: MEDIA_ITEM_A_NEW.runtime,
   plot: MEDIA_ITEM_A_NEW.plot,

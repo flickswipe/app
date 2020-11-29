@@ -4,14 +4,11 @@ import { natsWrapper } from "../../../../../nats-wrapper";
 import { GenreUpdatedListener } from "../genre-updated";
 
 // sample data
-import { GENRE_A } from "../../../../../test/sample-data/genres";
-const GENRE_A_NEW = Object.assign({}, GENRE_A, {
-  name: "New Name",
-});
+import { GENRE_A, GENRE_A_NEW } from "../../../../../test/sample-data/genres";
 const EVENT_DATA = {
+  id: GENRE_A_NEW.id,
   tmdbGenreId: GENRE_A_NEW.tmdbGenreId,
   name: GENRE_A_NEW.name,
-  language: GENRE_A_NEW.language,
   updatedAt: new Date(new Date().getTime() + 86600),
 };
 const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
