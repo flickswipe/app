@@ -13,7 +13,7 @@ interface MediaItemAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
@@ -44,7 +44,7 @@ interface MediaItemDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: string[] | { id: string; name: string }[];
+  genres: number[] | { id: string; name: string }[];
   rating: {
     average: number;
     count: number;
@@ -91,7 +91,7 @@ const mediaItemSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: [{ type: String }],
+    genres: [{ type: Number }],
     rating: {
       type: Object,
       required: true,

@@ -39,12 +39,12 @@ const router = express.Router();
  * @apiSuccessExample {json} 200 OK
  * [
  *  {
- *    id: "abcdef1234567890abcd",
- *    name: "Comedy"
+ *    tmdbGenreId: 19,
+ *    name: "Action"
  *  },
  *  {
- *    id: "feddef1234567890abcd",
- *    name: "Science Fiction"
+ *    tmdbGenreId: "69",
+ *    name: "Drama"
  *  }
  * ]
  */
@@ -67,7 +67,7 @@ router.get(
     // output
     res.status(200).send(
       genres.map((genre) => ({
-        id: genre.id,
+        tmdbGenreId: genre.tmdbGenreId,
         name: genre.name,
       }))
     );

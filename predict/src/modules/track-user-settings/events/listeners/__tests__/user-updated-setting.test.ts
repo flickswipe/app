@@ -1,9 +1,4 @@
-import {
-  CountrySetting,
-  Listener,
-  SettingType,
-  UserUpdatedSettingEvent,
-} from "@flickswipe/common";
+import { CountrySetting, SettingType } from "@flickswipe/common";
 import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { User } from "../../../../generate-suggestions/models/user";

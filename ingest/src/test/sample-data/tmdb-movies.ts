@@ -9,7 +9,7 @@ export const TMDB_MOVIE_A: TmdbMovieAttrs = {
     poster: "/poster.jpg",
     backdrop: "/backdrop.jpg",
   },
-  genres: [TMDB_GENRE_A.id],
+  genres: [TMDB_GENRE_A.tmdbGenreId],
   rating: {
     average: 10,
     count: 1,
@@ -31,7 +31,7 @@ export const TMDB_MOVIE_B: TmdbMovieAttrs = {
     poster: "/poster.jpg",
     backdrop: "/backdrop.jpg",
   },
-  genres: [TMDB_GENRE_A.id],
+  genres: [TMDB_GENRE_A.tmdbGenreId],
   rating: {
     average: 10,
     count: 1,

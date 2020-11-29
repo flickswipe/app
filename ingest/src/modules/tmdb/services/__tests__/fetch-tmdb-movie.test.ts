@@ -123,7 +123,7 @@ describe("fetch tmdb movie", () => {
         });
       });
 
-      describe("doc already exists", () => {
+      describe("doc exists", () => {
         beforeEach(async () => {
           await MovieId.build({
             tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
@@ -168,7 +168,7 @@ describe("fetch tmdb movie", () => {
     });
 
     describe("relevant data", () => {
-      describe("doc already exists", () => {
+      describe("doc exists", () => {
         beforeEach(async () => {
           await TmdbMovie.build(TMDB_MOVIE_DOC_A).save();
 
@@ -197,7 +197,7 @@ describe("fetch tmdb movie", () => {
         });
       });
 
-      describe("no doc already exists", () => {
+      describe("no doc exists", () => {
         it("should create doc", async () => {
           // @ts-ignore
           axios.mockResolvedValueOnce({

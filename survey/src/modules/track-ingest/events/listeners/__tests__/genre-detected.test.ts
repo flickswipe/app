@@ -1,7 +1,22 @@
 import { Message } from "node-nats-streaming";
-import { Genre } from "../../../models/genre";
+import { Genre, GenreDoc } from "../../../models/genre";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { GenreDetectedListener } from "../genre-detected";
+
+// sample data
+import { GENRE_A } from "../../../../../test/sample-data/genres";
+const GENRE_A_OVERWRITTEN = Object.assign({}, GENRE_A, {
+  name: "New Name",
+});
+const EVENT_DATA = {
+  tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
+  name: GENRE_A_OVERWRITTEN.name,
+  language: GENRE_A_OVERWRITTEN.language,
+  detectedAt: new Date(new Date().getTime() + 86600),
+};
+const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
+  detectedAt: new Date(new Date().getTime() - 86600),
+});
 
 const setup = async () => {
   return {
@@ -15,159 +30,88 @@ const setup = async () => {
 };
 
 describe("genre detected listener", () => {
-  describe("ignore old data", () => {
-    it("should not overwrite a more recent doc", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
-          detectedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
-      // has not been overwritten
-      expect(
-        await Genre.findOne({
-          _id: "ab1234567890ab1234567890",
-          language: "en",
-        })
-      ).toEqual(
-        expect.objectContaining({
-          name: "My Genre",
-        })
-      );
+  describe("genre exists", () => {
+    let existingDoc: GenreDoc;
+    beforeEach(async () => {
+      existingDoc = await Genre.build(GENRE_A).save();
     });
 
-    it("should acknowledge the message", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
-          detectedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
-      expect(msg.ack).toHaveBeenCalled();
-    });
-  });
-
-  describe("update existing doc", () => {
-    it("should overwrite existing doc", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
-          detectedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
-
-      // has been overwritten
-      expect(
-        await Genre.findOne({
-          _id: "ab1234567890ab1234567890",
-          language: "en",
-        })
-      ).toEqual(
-        expect.objectContaining({
-          name: "My New Genre",
-        })
-      );
-    });
-
-    it("should acknowledge the message", async () => {
-      await Genre.build({
-        id: "ab1234567890ab1234567890",
-        name: "My Genre",
-        language: "en",
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          name: "My New Genre",
-          language: "en",
-          detectedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
-
-      expect(msg.ack).toHaveBeenCalled();
-    });
-
-    describe("create new doc", () => {
-      it("should create a new doc", async () => {
+    describe("data received out of order", () => {
+      it("should not overwrite", async () => {
         const { listener, msg } = await setup();
-
-        await listener.onMessage(
-          {
-            id: "ab1234567890ab1234567890",
-            name: "My Genre",
-            language: "en",
-            detectedAt: new Date(),
-          },
-          msg
-        );
+        await listener.onMessage(EVENT_DATA_STALE, msg);
 
         // has not been overwritten
-        expect(
-          await Genre.findOne({
-            _id: "ab1234567890ab1234567890",
-            language: "en",
-          })
-        ).toEqual(
+        expect(await Genre.findById(existingDoc.id)).toEqual(
           expect.objectContaining({
-            name: "My Genre",
+            tmdbGenreId: GENRE_A.tmdbGenreId,
+            name: GENRE_A.name,
           })
         );
+
+        // no extra inserts
+        expect(await Genre.countDocuments()).toBe(1);
+      });
+
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_STALE, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
       });
     });
 
-    it("should acknowledge the message", async () => {
-      const { listener, msg } = await setup();
+    describe("data recieved in order", () => {
+      it("should overwrite", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          name: "My Genre",
-          language: "en",
-          detectedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
+        // has been overwritten
+        expect(await Genre.findById(existingDoc.id)).toEqual(
+          expect.objectContaining({
+            tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
+            name: GENRE_A_OVERWRITTEN.name,
+          })
+        );
+
+        // no extra inserts
+        expect(await Genre.countDocuments()).toBe(1);
+      });
+
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("no genre exists", () => {
+    it("should create genre", async () => {
+      const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
+
+      // has been created
+      expect(await Genre.findOne({})).toEqual(
+        expect.objectContaining({
+          tmdbGenreId: GENRE_A_OVERWRITTEN.tmdbGenreId,
+          name: GENRE_A_OVERWRITTEN.name,
+        })
       );
 
-      expect(msg.ack).toHaveBeenCalled();
+      // no extra inserts
+      expect(await Genre.countDocuments()).toBe(1);
     });
+  });
+
+  it("should acknowledge the message", async () => {
+    const { listener, msg } = await setup();
+    await listener.onMessage(EVENT_DATA, msg);
+
+    // has been acked
+    expect(msg.ack).toHaveBeenCalled();
   });
 });

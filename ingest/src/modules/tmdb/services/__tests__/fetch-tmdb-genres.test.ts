@@ -34,7 +34,7 @@ describe("fetch tmdb genres", () => {
       });
     });
 
-    describe("doc already exists", () => {
+    describe("doc exists", () => {
       let existingDoc: TmdbGenreDoc;
       beforeEach(async () => {
         existingDoc = await TmdbGenre.build(TMDB_GENRE_DOC_A).save();
@@ -73,7 +73,7 @@ describe("fetch tmdb genres", () => {
       });
     });
 
-    describe("no doc already exists", () => {
+    describe("no doc exists", () => {
       beforeEach(async () => {
         // @ts-ignore
         axios.mockResolvedValueOnce({

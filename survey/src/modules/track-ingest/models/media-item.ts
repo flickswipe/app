@@ -13,7 +13,7 @@ interface MediaItemAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
@@ -44,7 +44,7 @@ interface MediaItemDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: string[] | { id: string; name: string }[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
@@ -73,10 +73,14 @@ const mediaItem = new mongoose.Schema(
     tmdbMovieId: {
       type: Number,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     imdbId: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     title: {
       type: String,
@@ -86,7 +90,7 @@ const mediaItem = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: [{ type: mongoose.Schema.Types.ObjectId, ref: "Genre" }],
+    genres: [{ type: Number }],
     rating: {
       type: Object,
       required: true,
@@ -137,10 +141,8 @@ mediaItem.statics.build = (attrs: MediaItemAttrs) => {
   );
 };
 
-mediaItem.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
-    : mongoose.Types.ObjectId();
+mediaItem.statics.id = (value: string) => {
+  return mongoose.Types.ObjectId(value);
 };
 
 /**

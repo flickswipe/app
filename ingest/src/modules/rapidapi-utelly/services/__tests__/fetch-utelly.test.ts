@@ -30,7 +30,7 @@ describe("fetch utelly", () => {
       });
     });
 
-    describe("doc already exists", () => {
+    describe("doc exists", () => {
       it("should overwrite existing doc", async () => {
         const existingDoc = await Utelly.build(UTELLY_DOC_A).save();
 
@@ -43,7 +43,7 @@ describe("fetch utelly", () => {
       });
     });
 
-    describe("no doc already exists", () => {
+    describe("no doc exists", () => {
       it("should create doc", async () => {
         await fetchUtelly(UTELLY_DOC_A.imdbId, UTELLY_DOC_A.country);
 

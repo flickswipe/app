@@ -196,7 +196,7 @@ describe("consume token", () => {
 });
 
 describe("add email", () => {
-  it("returns a 400 if user already has email", async () => {
+  it("returns a 400 if user has email", async () => {
     const userDoc = await User.build(USER_A).save();
 
     const url = await EmailTokenUrl.generateFromUserId(

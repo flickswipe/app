@@ -70,11 +70,6 @@ router.get(
         images: mediaItem.images,
       }));
 
-    // throw error if not found
-    if (!suggestions.length) {
-      throw new NotFoundError();
-    }
-
     // output
     res.status(200).send(queue);
   }

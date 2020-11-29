@@ -6,11 +6,11 @@ import {
   BadRequestError,
   validateRequest,
   validateIso6391Param,
+  validateObjectIdParam,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
-import { body, param } from "express-validator";
-import { Types } from "mongoose";
+import { body } from "express-validator";
 import { setSurveyResponse } from "../modules/handle-survey-response/handle-survey-response";
 import { getMediaItem } from "../modules/track-ingest/track-ingest";
 
@@ -63,6 +63,7 @@ router.post(
   "/api/:iso6391/survey/:id/respond",
   [
     validateIso6391Param("iso6391"),
+    validateObjectIdParam("id"),
     body("interestType")
       .notEmpty()
       .isIn(Object.values(InterestType))

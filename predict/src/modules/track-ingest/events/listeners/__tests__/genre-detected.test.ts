@@ -26,7 +26,7 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          genreId: GENRE_A.genreId,
+          tmdbGenreId: GENRE_A.tmdbGenreId,
           name: "New Name",
           language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() - 86600),
@@ -53,7 +53,7 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          genreId: GENRE_A.genreId,
+          tmdbGenreId: GENRE_A.tmdbGenreId,
           name: "New Name",
           language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() - 86600),
@@ -74,7 +74,7 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          genreId: GENRE_A.genreId,
+          tmdbGenreId: GENRE_A.tmdbGenreId,
           name: "New Name",
           language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),
@@ -100,7 +100,7 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          genreId: GENRE_A.genreId,
+          tmdbGenreId: GENRE_A.tmdbGenreId,
           name: "New Name",
           language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),
@@ -118,7 +118,7 @@ describe("genre detected listener", () => {
 
         await listener.onMessage(
           {
-            genreId: GENRE_A.genreId,
+            tmdbGenreId: GENRE_A.tmdbGenreId,
             name: GENRE_A.name,
             language: GENRE_A.language,
             detectedAt: new Date(),
@@ -129,7 +129,7 @@ describe("genre detected listener", () => {
         // has not been overwritten
         expect(
           await Genre.findOne({
-            genreId: GENRE_A.genreId,
+            tmdbGenreId: GENRE_A.tmdbGenreId,
             language: GENRE_A.language,
           })
         ).toEqual(
@@ -145,7 +145,7 @@ describe("genre detected listener", () => {
 
       await listener.onMessage(
         {
-          genreId: GENRE_A.genreId,
+          tmdbGenreId: GENRE_A.tmdbGenreId,
           name: GENRE_A.name,
           language: GENRE_A.language,
           detectedAt: new Date(new Date().getTime() + 86600),

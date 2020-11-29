@@ -11,7 +11,7 @@ export const MEDIA_ITEM_A = {
     poster: "https://example.com/",
     backdrop: "https://example.com/",
   },
-  genres: [GENRE_A.genreId],
+  genres: [GENRE_A.tmdbGenreId],
   rating: {
     average: 100,
     count: 101,
@@ -41,7 +41,7 @@ export const MEDIA_ITEM_B = {
     poster: "https://example.com/",
     backdrop: "https://example.com/",
   },
-  genres: [GENRE_B.genreId],
+  genres: [GENRE_B.tmdbGenreId],
   rating: {
     average: 50,
     count: 51,

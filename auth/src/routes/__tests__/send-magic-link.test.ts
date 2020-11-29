@@ -5,7 +5,7 @@ import { app } from "../../app";
 import { USER_A } from "../../test/sample-data/users";
 
 describe("send magic link", () => {
-  it("returns a 400 when user already authenticated", async () => {
+  it("returns a 400 when user authenticated", async () => {
     // has correct status
     await request(app)
       .post("/api/en/auth/send-magic-link")

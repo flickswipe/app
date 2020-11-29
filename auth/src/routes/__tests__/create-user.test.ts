@@ -64,7 +64,7 @@ describe("normal user signup", () => {
   });
 });
 
-describe("trying to create user that is already authenticated", () => {
+describe("trying to create user that is authenticated", () => {
   it("returns a 400", async () => {
     // returns correct status
     await request(app)

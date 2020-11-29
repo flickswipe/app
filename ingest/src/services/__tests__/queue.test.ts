@@ -23,13 +23,13 @@ const MOVIE_ID_B = {
 
 describe("Queue", () => {
   describe("is first import", () => {
-    describe("no movie id docs already exist", () => {
+    describe("no movie id docs exist", () => {
       it("should return true", async () => {
         // returns true
         expect(await Queue.isFirstImport()).toBe(true);
       });
     });
-    describe("movie id docs already exist", () => {
+    describe("movie id docs exist", () => {
       beforeEach(async () => {
         await MovieId.build(MOVIE_ID_A).save();
       });
@@ -42,14 +42,14 @@ describe("Queue", () => {
   });
 
   describe("get next tdmb movie", () => {
-    describe("no movie id docs already exist", () => {
+    describe("no movie id docs exist", () => {
       it("should return null", async () => {
         // returns null
         expect(await Queue.getNextTmdbMovie()).toBe(null);
       });
     });
 
-    describe("movie id docs already exist but are not valid", () => {
+    describe("movie id docs exist but are not valid", () => {
       beforeEach(async () => {
         await MovieId.build(MOVIE_ID_A_NEVER_USE).save();
       });
@@ -60,7 +60,7 @@ describe("Queue", () => {
       });
     });
 
-    describe("movie id docs already exist", () => {
+    describe("movie id docs exist", () => {
       beforeEach(async () => {
         await Promise.all([
           MovieId.build(MOVIE_ID_A).save(),
@@ -87,13 +87,13 @@ describe("Queue", () => {
   });
 
   describe("get next utelly", () => {
-    describe("no tmdb movie docs already exist", () => {
+    describe("no tmdb movie docs exist", () => {
       it("should return null", async () => {
         expect(await Queue.getNextUtelly()).toBe(null);
       });
     });
 
-    describe("tmdb movie docs already exist but are not valid", () => {
+    describe("tmdb movie docs exist but are not valid", () => {
       beforeEach(async () => {
         await TmdbMovie.build(TMDB_MOVIE_A_NEVER_USE).save();
       });
@@ -103,7 +103,7 @@ describe("Queue", () => {
       });
     });
 
-    describe("tmdb movie docs already exist", () => {
+    describe("tmdb movie docs exist", () => {
       beforeEach(async () => {
         await Promise.all([
           TmdbMovie.build(TMDB_MOVIE_A).save(),

@@ -60,7 +60,7 @@ describe("EmailTokenUrl", () => {
         });
       });
 
-      describe("user already exists", () => {
+      describe("user exists", () => {
         let user: UserDoc;
         beforeEach(async () => {
           user = await User.build(USER_A).save();
@@ -112,7 +112,7 @@ describe("EmailTokenUrl", () => {
         });
       });
 
-      describe("user already exists", () => {
+      describe("user exists", () => {
         let user: UserDoc;
         beforeEach(async () => {
           user = await User.build(USER_A).save();
@@ -165,7 +165,7 @@ describe("EmailTokenUrl", () => {
         });
       });
 
-      describe("user already exists", () => {
+      describe("user exists", () => {
         let user: UserDoc;
         beforeEach(async () => {
           user = await User.build(USER_A).save();

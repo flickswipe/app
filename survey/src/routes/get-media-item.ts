@@ -5,11 +5,12 @@ import {
   validateIso6391Param,
   validateObjectIdParam,
   validateRequest,
+  iso6391,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
-import { getMediaItem } from "../modules/track-ingest/track-ingest";
+import { getGenres, getMediaItem } from "../modules/track-ingest/track-ingest";
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ const router = express.Router();
  *  tmdbMovieId: 1,
  *  imdbId: "tt1234567",
  *  title: "Example Title",
- *  genres: [ { id: "...", name: "Comedy" } ],
+ *  genres: [ { tmdbGenreId: "...", name: "Comedy" } ],
  *  images: { poster: "...", backdrop: "..." },
  *  rating: { average: 100, count: 100, popularity: 100 },
  *  language: "en",
@@ -65,7 +66,7 @@ router.get(
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id, iso6391: language } = req.params;
 
     // get media item
     const mediaItem = await getMediaItem(id);
@@ -75,13 +76,18 @@ router.get(
       throw new NotFoundError();
     }
 
+    // get genres
+    const genres = await getGenres(language as iso6391);
+
     // output
     res.status(200).send({
       id: mediaItem.id,
       tmdbMovieId: mediaItem.tmdbMovieId,
       imdbId: mediaItem.imdbId,
       title: mediaItem.title,
-      genres: mediaItem.genres,
+      genres: mediaItem.genres.map((tmdbGenreId) =>
+        genres.find((genre) => genre.tmdbGenreId === tmdbGenreId)
+      ),
       images: mediaItem.images,
       rating: mediaItem.rating,
       language: mediaItem.language,

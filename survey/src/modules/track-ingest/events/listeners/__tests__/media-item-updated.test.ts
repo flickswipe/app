@@ -2,6 +2,32 @@ import { Message } from "node-nats-streaming";
 import { MediaItem } from "../../../models/media-item";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { MediaItemUpdatedListener } from "../media-item-updated";
+import cloneDeep from "clone-deep";
+
+// sample data
+import {
+  MEDIA_ITEM_A,
+  MEDIA_ITEM_A_OVERWRITTEN,
+} from "../../../../../test/sample-data/media-items";
+
+const EVENT_DATA = {
+  id: MEDIA_ITEM_A_OVERWRITTEN.id,
+  tmdbMovieId: MEDIA_ITEM_A_OVERWRITTEN.tmdbMovieId,
+  imdbId: MEDIA_ITEM_A_OVERWRITTEN.imdbId,
+  title: MEDIA_ITEM_A_OVERWRITTEN.title,
+  images: MEDIA_ITEM_A_OVERWRITTEN.images,
+  genres: MEDIA_ITEM_A_OVERWRITTEN.genres,
+  rating: MEDIA_ITEM_A_OVERWRITTEN.rating,
+  language: MEDIA_ITEM_A_OVERWRITTEN.language,
+  releaseDate: MEDIA_ITEM_A_OVERWRITTEN.releaseDate,
+  runtime: MEDIA_ITEM_A_OVERWRITTEN.runtime,
+  plot: MEDIA_ITEM_A_OVERWRITTEN.plot,
+  streamLocations: MEDIA_ITEM_A_OVERWRITTEN.streamLocations,
+  updatedAt: new Date(new Date().getTime() + 86600),
+};
+const EVENT_DATA_STALE = Object.assign({}, EVENT_DATA, {
+  updatedAt: new Date(new Date().getTime() - 86600),
+});
 
 const setup = async () => {
   return {
@@ -15,394 +41,68 @@ const setup = async () => {
 };
 
 describe("media item updated listener", () => {
-  describe("ignore old data", () => {
-    it("should not overwrite a more recent doc", async () => {
-      await MediaItem.build({
-        id: "ab1234567890ab1234567890",
-        tmdbMovieId: 123,
-        imdbId: "tt1234567",
-        title: "My Movie",
-        images: {
-          poster: "https://example.com/",
-          backdrop: "https://example.com/",
-        },
-        genres: ["bc1234567890ab1234567890"],
-        rating: {
-          average: 100,
-          count: 101,
-          popularity: 102,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 103,
-        plot: "My movie plit...",
-        streamLocations: {
-          us: [
-            {
-              id: "0987654321234567890",
-              name: "Netflix",
-              url: "https://example.com/",
-            },
-          ],
-        },
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My New Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
-
-      // has not been overwritten
-      expect(
-        await MediaItem.findOne({
-          _id: "ab1234567890ab1234567890",
-        })
-      ).toEqual(
-        expect.objectContaining({
-          title: "My Movie",
-        })
-      );
+  describe("media item exists", () => {
+    beforeEach(async () => {
+      await MediaItem.build(MEDIA_ITEM_A).save();
     });
 
-    it("should acknowledge the message", async () => {
-      await MediaItem.build({
-        id: "ab1234567890ab1234567890",
-        tmdbMovieId: 123,
-        imdbId: "tt1234567",
-        title: "My Movie",
-        images: {
-          poster: "https://example.com/",
-          backdrop: "https://example.com/",
-        },
-        genres: ["bc1234567890ab1234567890"],
-        rating: {
-          average: 100,
-          count: 101,
-          popularity: 102,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 103,
-        plot: "My movie plit...",
-        streamLocations: {
-          us: [
-            {
-              id: "0987654321234567890",
-              name: "Netflix",
-              url: "https://example.com/",
-            },
-          ],
-        },
-      }).save();
+    describe("data received out of order", () => {
+      it("should not update media item", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_STALE, msg);
 
-      const { listener, msg } = await setup();
+        // has not been updated
+        expect(await MediaItem.findById(EVENT_DATA_STALE.id)).toEqual(
+          expect.objectContaining(cloneDeep(MEDIA_ITEM_A))
+        );
+      });
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My New Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() - 86600),
-        },
-        msg
-      );
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA_STALE, msg);
 
-      expect(msg.ack).toHaveBeenCalled();
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
+    });
+
+    describe("data received in order", () => {
+      it("should update media item", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
+
+        // has been updated
+        expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
+          expect.objectContaining(cloneDeep(MEDIA_ITEM_A_OVERWRITTEN))
+        );
+      });
+
+      it("should acknowledge the message", async () => {
+        const { listener, msg } = await setup();
+        await listener.onMessage(EVENT_DATA, msg);
+
+        // has been acked
+        expect(msg.ack).toHaveBeenCalled();
+      });
     });
   });
 
-  describe("update existing doc", () => {
-    it("should overwrite existing doc", async () => {
-      await MediaItem.build({
-        id: "ab1234567890ab1234567890",
-        tmdbMovieId: 123,
-        imdbId: "tt1234567",
-        title: "My Movie",
-        images: {
-          poster: "https://example.com/",
-          backdrop: "https://example.com/",
-        },
-        genres: ["bc1234567890ab1234567890"],
-        rating: {
-          average: 100,
-          count: 101,
-          popularity: 102,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 103,
-        plot: "My movie plit...",
-        streamLocations: {
-          us: [
-            {
-              id: "0987654321234567890",
-              name: "Netflix",
-              url: "https://example.com/",
-            },
-          ],
-        },
-      }).save();
-
+  describe("no media item exists", () => {
+    it("should create media item", async () => {
       const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My New Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
-
-      // has been overwritten
-      expect(
-        await MediaItem.findOne({
-          _id: "ab1234567890ab1234567890",
-        })
-      ).toEqual(
-        expect.objectContaining({
-          title: "My New Movie",
-        })
-      );
-    });
-
-    it("should acknowledge the message", async () => {
-      await MediaItem.build({
-        id: "ab1234567890ab1234567890",
-        tmdbMovieId: 123,
-        imdbId: "tt1234567",
-        title: "My Movie",
-        images: {
-          poster: "https://example.com/",
-          backdrop: "https://example.com/",
-        },
-        genres: ["bc1234567890ab1234567890"],
-        rating: {
-          average: 100,
-          count: 101,
-          popularity: 102,
-        },
-        language: "en",
-        releaseDate: new Date(),
-        runtime: 103,
-        plot: "My movie plit...",
-        streamLocations: {
-          us: [
-            {
-              id: "0987654321234567890",
-              name: "Netflix",
-              url: "https://example.com/",
-            },
-          ],
-        },
-      }).save();
-
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My New Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
-
-      expect(msg.ack).toHaveBeenCalled();
-    });
-  });
-
-  describe("create new doc", () => {
-    it("should create a new doc", async () => {
-      const { listener, msg } = await setup();
-
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
+      await listener.onMessage(EVENT_DATA, msg);
 
       // has been created
-      expect(
-        await MediaItem.findOne({
-          _id: "ab1234567890ab1234567890",
-        })
-      ).toEqual(
-        expect.objectContaining({
-          title: "My Movie",
-        })
+      expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
+        expect.objectContaining(cloneDeep(MEDIA_ITEM_A_OVERWRITTEN))
       );
     });
+
     it("should acknowledge the message", async () => {
       const { listener, msg } = await setup();
+      await listener.onMessage(EVENT_DATA, msg);
 
-      await listener.onMessage(
-        {
-          id: "ab1234567890ab1234567890",
-          tmdbMovieId: 123,
-          imdbId: "tt1234567",
-          title: "My Movie",
-          images: {
-            poster: "https://example.com/",
-            backdrop: "https://example.com/",
-          },
-          genres: ["bc1234567890ab1234567890"],
-          rating: {
-            average: 100,
-            count: 101,
-            popularity: 102,
-          },
-          language: "en",
-          releaseDate: new Date(),
-          runtime: 103,
-          plot: "My movie plit...",
-          streamLocations: {
-            us: [
-              {
-                id: "0987654321234567890",
-                name: "Netflix",
-                url: "https://example.com/",
-              },
-            ],
-          },
-          updatedAt: new Date(new Date().getTime() + 86600),
-        },
-        msg
-      );
-
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });

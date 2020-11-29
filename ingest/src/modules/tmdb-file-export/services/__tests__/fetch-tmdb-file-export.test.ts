@@ -55,7 +55,7 @@ describe("fetch tmdb file export", () => {
       });
     });
 
-    describe("doc already exists", () => {
+    describe("doc exists", () => {
       let existingDocCount: number;
       beforeEach(async () => {
         await fetchTmdbFileExport(new Date());
@@ -74,7 +74,7 @@ describe("fetch tmdb file export", () => {
       });
     });
 
-    describe("no doc already exists", () => {
+    describe("no doc exists", () => {
       it("should create movie id docs", async () => {
         await fetchTmdbFileExport(new Date());
 

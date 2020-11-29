@@ -37,18 +37,23 @@ export async function fetchTmdbGenres(
 
   const promises = result.genres.map(async (genre) => {
     // get existing data
-    const existingDoc = await TmdbGenre.findOne({ tmdbGenreId: genre.id });
+    const existingDoc = await TmdbGenre.findOne({
+      tmdbGenreId: genre.id,
+      language,
+    });
 
     // update existing doc
     if (existingDoc) {
       existingDoc.name = genre.name;
 
       await existingDoc.save();
-      console.log(`Detected tmdb genre data for ${existingDoc.name}`);
+      console.log(
+        `Detected tmdb genre data for ${existingDoc.name} (${language})`
+      );
 
       // publish event
       await new GenreDetectedPublisher(natsWrapper.client).publish({
-        id: existingDoc.id,
+        tmdbGenreId: existingDoc.tmdbGenreId,
         name: existingDoc.name,
         language: unifyISO6391(existingDoc.language),
         detectedAt: new Date(),
@@ -61,15 +66,17 @@ export async function fetchTmdbGenres(
     const insertedDoc = await TmdbGenre.build({
       tmdbGenreId: genre.id,
       name: genre.name,
-      language,
+      language: language,
     }).save();
 
     if (insertedDoc) {
-      console.log(`Detected tmdb genre data for ${insertedDoc.name}`);
+      console.log(
+        `Detected tmdb genre data for ${insertedDoc.name} (${language})`
+      );
 
       // publish event
       await new GenreDetectedPublisher(natsWrapper.client).publish({
-        id: insertedDoc.id,
+        tmdbGenreId: insertedDoc.id,
         name: insertedDoc.name,
         language: unifyISO6391(insertedDoc.language),
         detectedAt: new Date(),

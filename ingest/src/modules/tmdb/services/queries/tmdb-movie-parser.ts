@@ -59,7 +59,7 @@ export interface TmdbMovieApiResult {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
