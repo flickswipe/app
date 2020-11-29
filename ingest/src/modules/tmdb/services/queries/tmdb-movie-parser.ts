@@ -2,7 +2,7 @@
  * Types
  */
 
-import { TmdbGenre } from "../../models/tmdb-genre";
+import { unifyISO6391 } from "../../../../services/unify-iso6391";
 
 // raw data received by parser
 export interface TmdbMovieApiResultRaw {
@@ -59,13 +59,13 @@ export interface TmdbMovieApiResult {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -92,11 +92,6 @@ const parser = async (
     return null;
   }
 
-  // get genre ids
-  const genres = await Promise.all(
-    raw.genres.map(({ id }) => TmdbGenre.findOne({ tmdbGenreId: id }, "_id"))
-  );
-
   // parse
   return {
     tmdbMovieId: raw.id,
@@ -106,15 +101,13 @@ const parser = async (
       poster: raw.poster_path,
       backdrop: raw.backdrop_path,
     },
-    genres: genres
-      .filter((genre) => genre && typeof genre.id === "string")
-      .map(({ id }) => id),
+    genres: raw.genres.map(({ id }) => id),
     rating: {
       average: raw.vote_average,
       count: raw.vote_count,
       popularity: raw.popularity,
     },
-    language: raw.original_language,
+    audioLanguage: unifyISO6391(raw.original_language),
     releaseDate: new Date(raw.release_date),
     runtime: raw.runtime,
     plot: raw.overview,

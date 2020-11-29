@@ -1,9 +1,11 @@
 import { BadRequestError } from "@flickswipe/common";
-import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
 import { natsWrapper } from "../../../../../nats-wrapper";
 import { User } from "../../../models/user";
 import { UserCreatedListener } from "../user-created";
+
+// sample data
+import { USER_A } from "../../../../../test/sample-data/users";
 
 const setup = async () => {
   return {
@@ -17,12 +19,10 @@ const setup = async () => {
 };
 
 describe("user created listener", () => {
-  describe("existing doc", () => {
+  describe("doc exists", () => {
     it("should not overwrite doc", async () => {
-      const id = mongoose.Types.ObjectId().toHexString();
-
-      await User.build({
-        id,
+      const existingDoc = await User.build({
+        id: USER_A.id,
       }).save();
 
       const { listener, msg } = await setup();
@@ -30,46 +30,49 @@ describe("user created listener", () => {
       try {
         await listener.onMessage(
           {
-            id,
-            email: "new@user.com",
+            id: USER_A.id,
+            email: USER_A.email,
             createdAt: new Date(new Date().getTime() + 86600),
           },
           msg
         );
       } catch (err) {
-        // ignore
+        // ignore thrown error
+        // (tested seperately)
       }
 
-      const existingDoc = await User.findOne({ _id: id });
+      // has not been overwritten
+      expect(await User.findById(USER_A.id)).toEqual(
+        expect.objectContaining({ updatedAt: existingDoc.updatedAt })
+      );
 
-      expect(existingDoc).toEqual(expect.objectContaining({ id }));
+      // no extra records
+      expect(await User.countDocuments()).toBe(1);
     });
 
     it("should throw an error", async () => {
-      const id = mongoose.Types.ObjectId().toHexString();
-
       await User.build({
-        id,
+        id: USER_A.id,
       }).save();
 
       const { listener, msg } = await setup();
 
+      // throws error
       await expect(() =>
         listener.onMessage(
           {
-            id,
-            email: "new@user.com",
+            id: USER_A.id,
+            email: USER_A.email,
             createdAt: new Date(new Date().getTime() + 86600),
           },
           msg
         )
       ).rejects.toThrowError(BadRequestError);
     });
-    it("should acknowledge the message", async () => {
-      const id = mongoose.Types.ObjectId().toHexString();
 
+    it("should acknowledge the message", async () => {
       await User.build({
-        id,
+        id: USER_A.id,
       }).save();
 
       const { listener, msg } = await setup();
@@ -77,8 +80,8 @@ describe("user created listener", () => {
       try {
         await listener.onMessage(
           {
-            id,
-            email: "new@user.com",
+            id: USER_A.id,
+            email: USER_A.email,
             createdAt: new Date(new Date().getTime() + 86600),
           },
           msg
@@ -87,6 +90,7 @@ describe("user created listener", () => {
         // ignore
       }
 
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });
@@ -94,20 +98,20 @@ describe("user created listener", () => {
   describe("create new doc", () => {
     it("should create a new doc", async () => {
       const { listener, msg } = await setup();
-      const id = mongoose.Types.ObjectId().toHexString();
 
       await listener.onMessage(
         {
-          id: id,
-          email: "test@user.com",
+          id: USER_A.id,
+          email: USER_A.email,
           createdAt: new Date(),
         },
         msg
       );
 
-      const newDoc = await User.findOne({ id });
-
-      expect(newDoc).toEqual(expect.objectContaining({ id }));
+      // has been created
+      expect(await User.findById(USER_A.id)).toEqual(
+        expect.objectContaining({ id: USER_A.id })
+      );
     });
 
     it("should acknowledge the message", async () => {
@@ -115,13 +119,14 @@ describe("user created listener", () => {
 
       await listener.onMessage(
         {
-          id: mongoose.Types.ObjectId().toHexString(),
-          email: "test@user.com",
+          id: USER_A.id,
+          email: USER_A.email,
           createdAt: new Date(),
         },
         msg
       );
 
+      // has been acked
       expect(msg.ack).toHaveBeenCalled();
     });
   });

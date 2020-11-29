@@ -1,10 +1,11 @@
 import { Token } from "../../services/token";
 
 describe("Token", () => {
-  describe("#generate", () => {
-    it("generates a token of expected length", async () => {
+  describe("generate", () => {
+    it("generates token", async () => {
       const token = await Token.generate(6);
 
+      // has correct format
       expect(token).toEqual(expect.stringMatching(/[A-Z0-9]{6}/));
     });
   });

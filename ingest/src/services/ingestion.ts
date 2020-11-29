@@ -8,7 +8,7 @@ import { fetchTmdbGenres } from "../modules/tmdb/services/fetch-tmdb-genres";
 export interface StartOptions {
   [key: string]: unknown;
   countries: string[];
-  languages: string[];
+  audioLanguages: string[];
   includeAdultContent?: boolean;
   earliestReleaseDate?: Date;
   minTmdbPopularity?: number;
@@ -149,10 +149,7 @@ export class Ingestion {
    * @param options
    */
   static async runTmdbGenresFetch(options: StartOptions): Promise<void> {
-    const { languages } = options;
-    await Promise.all(
-      languages.map((language) => fetchTmdbGenres(language, options))
-    );
+    fetchTmdbGenres(options);
   }
 
   /**

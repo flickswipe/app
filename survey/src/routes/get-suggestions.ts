@@ -1,4 +1,9 @@
-import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
+import {
+  currentUser,
+  requireAuth,
+  validateRequest,
+  validateIso6391Param,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { listAllSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
@@ -35,6 +40,8 @@ const router = express.Router();
  */
 router.get(
   "/api/:iso6391/survey/queue",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
@@ -61,11 +68,6 @@ router.get(
         title: mediaItem.title,
         images: mediaItem.images,
       }));
-
-    // throw error if not found
-    if (!suggestions.length) {
-      throw new NotFoundError();
-    }
 
     // output
     res.status(200).send(queue);

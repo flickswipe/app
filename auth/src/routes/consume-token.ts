@@ -1,6 +1,7 @@
 import {
   BadRequestError,
   EmailTokenType,
+  validateIso6391Param,
   validateRequest,
 } from "@flickswipe/common";
 
@@ -56,8 +57,9 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/auth/consume-token",
+  "/api/:iso6391/auth/consume-token",
   [
+    validateIso6391Param("iso6391"),
     body("userId").trim().notEmpty().withMessage(`You must supply a user id`),
     body("token").trim().notEmpty().withMessage(`You must supply a token`),
   ],

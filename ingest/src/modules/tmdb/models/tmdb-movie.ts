@@ -11,13 +11,13 @@ interface TmdbMovieAttrs {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -36,13 +36,13 @@ interface TmdbMovieDoc extends mongoose.Document {
     poster: string;
     backdrop: string;
   };
-  genres: string[];
+  genres: number[];
   rating: {
     average: number;
     count: number;
     popularity: number;
   };
-  language: string;
+  audioLanguage: string;
   releaseDate: Date;
   runtime: number;
   plot: string | null;
@@ -60,10 +60,14 @@ const tmdbMovieSchema = new mongoose.Schema(
     tmdbMovieId: {
       type: Number,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     imdbId: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
     title: {
       type: String,
@@ -73,15 +77,16 @@ const tmdbMovieSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    genres: {
-      type: Array,
-      required: true,
-    },
+    genres: [
+      {
+        type: Number,
+      },
+    ],
     rating: {
       type: Object,
       required: true,
     },
-    language: {
+    audioLanguage: {
       type: String,
       required: true,
     },
@@ -121,19 +126,10 @@ const tmdbMovieSchema = new mongoose.Schema(
  */
 interface TmdbMovieModel extends mongoose.Model<TmdbMovieDoc> {
   build(attrs: TmdbMovieAttrs): TmdbMovieDoc;
-  id(string: string): mongoose.Types.ObjectId;
 }
 
 tmdbMovieSchema.statics.build = (attrs: TmdbMovieAttrs) => {
-  return new TmdbMovie(
-    Object.assign({ _id: tmdbMovieSchema.statics.id(attrs.imdbId) }, attrs)
-  );
-};
-
-tmdbMovieSchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(12, "0").slice(-12))
-    : mongoose.Types.ObjectId();
+  return new TmdbMovie(attrs);
 };
 
 /**

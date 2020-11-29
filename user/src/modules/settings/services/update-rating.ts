@@ -3,7 +3,7 @@ import {
   RatingSetting,
   SettingType,
 } from "@flickswipe/common";
-import { Types } from "mongoose";
+import mongoose from "mongoose";
 import { natsWrapper } from "../../../nats-wrapper";
 import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
@@ -13,11 +13,23 @@ export async function updateRating(
   value: RatingSetting["value"]
 ): Promise<void> {
   // validate
-  if (!Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
     throw new BadRequestError(`Invalid user id "${userId}"`);
   }
 
-  if (value.min && value.max && value.min > value.max) {
+  if (value.min && typeof value.min !== "number") {
+    throw new BadRequestError(`Min must be a number"`);
+  }
+
+  if (value.max && typeof value.max !== "number") {
+    throw new BadRequestError(`Max must be a number"`);
+  }
+
+  if (
+    typeof value.min !== "undefined" &&
+    typeof value.max !== "undefined" &&
+    value.min > value.max
+  ) {
     throw new BadRequestError(`Min must be lower or equal to max"`);
   }
 

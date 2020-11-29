@@ -1,28 +1,29 @@
 import mongoose from "mongoose";
-import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Language
  */
 interface LanguageAttrs {
-  language: iso6391;
+  audioLanguage: string;
 }
 
 /**
  * Properties that a Language document has
  */
 interface LanguageDoc extends mongoose.Document {
-  language: iso6391;
+  audioLanguage: string;
 }
 
 /**
  * Language mongoose schema
  */
-const languageSchema = new mongoose.Schema(
+const audioLanguageSchema = new mongoose.Schema(
   {
-    language: {
+    audioLanguage: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
   },
   {
@@ -44,7 +45,7 @@ interface LanguageModel extends mongoose.Model<LanguageDoc> {
   build(attrs: LanguageAttrs): LanguageDoc;
 }
 
-languageSchema.statics.build = (attrs: LanguageAttrs) => {
+audioLanguageSchema.statics.build = (attrs: LanguageAttrs) => {
   return new Language(attrs);
 };
 
@@ -53,7 +54,7 @@ languageSchema.statics.build = (attrs: LanguageAttrs) => {
  */
 const Language = mongoose.model<LanguageDoc, LanguageModel>(
   "Language",
-  languageSchema
+  audioLanguageSchema
 );
 
 /**

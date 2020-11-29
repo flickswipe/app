@@ -1,4 +1,11 @@
-import { currentUser, NotFoundError, requireAuth } from "@flickswipe/common";
+import {
+  currentUser,
+  NotFoundError,
+  requireAuth,
+  validateIso6391Param,
+  validateObjectIdParam,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { requestRelationship } from "../modules/relationships/relationships";
@@ -52,7 +59,9 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/user/relationships/:id/request",
+  "/api/:iso6391/user/relationships/:id/request",
+  [validateIso6391Param("iso6391"), validateObjectIdParam("id")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

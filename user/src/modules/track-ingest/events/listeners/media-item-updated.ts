@@ -1,9 +1,4 @@
-import {
-  Subjects,
-  Listener,
-  MediaItemUpdatedEvent,
-  iso6391,
-} from "@flickswipe/common";
+import { Subjects, Listener, MediaItemUpdatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
 import {
@@ -35,8 +30,8 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
   ): Promise<void> {
     const promises = [];
 
-    // track languages
-    promises.push(createLanguageIfNotExists(data.language));
+    // track audioLanguages
+    promises.push(createAudioLanguageIfNotExists(data.audioLanguage));
 
     // track stream locations
     parseStreamLocations(data).forEach((location) => {
@@ -55,16 +50,16 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
  * @param data
  * @returns {boolean} true if message should be acked
  */
-export async function createLanguageIfNotExists(
-  language: iso6391
+export async function createAudioLanguageIfNotExists(
+  audioLanguage: string
 ): Promise<void> {
   // create doc if not exists
-  let languageDoc = await Language.findOne({
-    language,
+  let audioLanguageDoc = await Language.findOne({
+    audioLanguage,
   });
 
-  if (!languageDoc) {
-    languageDoc = await Language.build({ language }).save();
+  if (!audioLanguageDoc) {
+    audioLanguageDoc = await Language.build({ audioLanguage }).save();
   }
 }
 

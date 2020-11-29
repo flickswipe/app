@@ -77,7 +77,7 @@ export async function fetchTmdbMovie(
     existingDoc.images = result.images;
     existingDoc.genres = result.genres;
     existingDoc.rating = result.rating;
-    existingDoc.language = result.language;
+    existingDoc.audioLanguage = result.audioLanguage;
     existingDoc.releaseDate = result.releaseDate;
     existingDoc.runtime = result.runtime;
     existingDoc.plot = result.plot;
@@ -96,7 +96,7 @@ export async function fetchTmdbMovie(
     images: result.images,
     genres: result.genres,
     rating: result.rating,
-    language: result.language,
+    audioLanguage: result.audioLanguage,
     releaseDate: result.releaseDate,
     runtime: result.runtime,
     plot: result.plot,
@@ -129,6 +129,14 @@ function shouldSkip(
     return true;
   }
 
+  // filter condition: must be recent
+  if (
+    options.earliestReleaseDate instanceof Date &&
+    result.releaseDate < options.earliestReleaseDate
+  ) {
+    return true;
+  }
+
   return false;
 }
 
@@ -145,14 +153,6 @@ function shouldNeverUse(
 ): boolean {
   // filter condition: no adult content
   if (!options.includeAdultContent && result.adult) {
-    return true;
-  }
-
-  // filter condition: must be recent
-  if (
-    options.earliestReleaseDate instanceof Date &&
-    result.releaseDate < options.earliestReleaseDate
-  ) {
     return true;
   }
 

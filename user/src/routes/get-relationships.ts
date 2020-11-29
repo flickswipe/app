@@ -1,4 +1,9 @@
-import { currentUser, requireAuth } from "@flickswipe/common";
+import {
+  currentUser,
+  requireAuth,
+  validateIso6391Param,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { listAllRelationships } from "../modules/relationships/relationships";
@@ -38,7 +43,9 @@ type RelationshipsPayload = {
  * }
  */
 router.get(
-  "/api/en/user/relationships",
+  "/api/:iso6391/user/relationships",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

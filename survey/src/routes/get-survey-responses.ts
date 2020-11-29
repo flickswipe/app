@@ -1,4 +1,10 @@
-import { currentUser, requireAuth, InterestType } from "@flickswipe/common";
+import {
+  currentUser,
+  requireAuth,
+  InterestType,
+  validateRequest,
+  validateIso6391Param,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 import { listAllSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
@@ -29,6 +35,8 @@ const router = express.Router();
  */
 router.get(
   "/api/:iso6391/survey/responses/interested",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

@@ -1,27 +1,40 @@
+import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
 import { listAllSettings } from "../../modules/settings/settings";
 import {
   getGenres,
-  getLanguages,
+  getAudioLanguages,
   getStreamLocations,
 } from "../../modules/track-ingest/track-ingest";
+import { GENRE_A, GENRE_B, GENRE_C } from "../../test/sample-data/genres";
+import {
+  ALL_SETTINGS_EMPTY,
+  GENRES_SETTING,
+  AUDIO_LANGUAGES_SETTING,
+  STREAM_LOCATIONS_SETTING,
+} from "../../test/sample-data/settings";
+import { USER_A } from "../../test/sample-data/users";
 
 jest.mock("../../modules/settings/settings");
 jest.mock("../../modules/track-ingest/track-ingest");
 
 describe("get settings", () => {
-  describe("user not signed in", () => {
-    it("returns a 400", async () => {
-      await request(app).get("/api/en/user/settings").send().expect(401);
+  describe("invalid conditions", () => {
+    describe("not signed in", () => {
+      it("returns a 400", async () => {
+        // has correct status
+        await request(app).get("/api/en/user/settings").send().expect(401);
+      });
     });
   });
 
-  describe("user signed in", () => {
+  describe("valid conditions", () => {
     it("returns a 200", async () => {
+      // has correct status
       await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send()
         .expect(200);
     });
@@ -29,81 +42,78 @@ describe("get settings", () => {
     it("calls listAllSettings", async () => {
       await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
+      // has been called
       expect(listAllSettings).toHaveBeenCalled();
     });
 
     it("returns value of listAllSettings", async () => {
       const response = await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
-      expect(response.body).toEqual(await listAllSettings("sourcesource"));
+      // has correct data
+      expect(response.body).toEqual(await listAllSettings(USER_A.id));
     });
 
     it("aggregates value of listAllSettings with getGenres", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue({
-        genres: { customcustom: true },
-        languages: {},
-        rating: {},
-        releaseDate: {},
-        runtime: {},
-        streamLocations: {},
-      });
+      listAllSettings.mockResolvedValue(
+        Object.assign({}, ALL_SETTINGS_EMPTY, {
+          genres: GENRES_SETTING.value,
+        })
+      );
 
       // @ts-ignore
-      getGenres.mockResolvedValueOnce([
-        { id: "scifiscifisc" },
-        { id: "horrorhorror" },
-      ]);
+      getGenres.mockResolvedValueOnce([GENRE_A, GENRE_B, GENRE_C]);
 
       const response = await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
+      // has correct data
       expect(response.body).toEqual(
         expect.objectContaining({
           genres: {
-            customcustom: true,
-            scifiscifisc: false,
-            horrorhorror: false,
+            [GENRE_A.tmdbGenreId]: true,
+            [GENRE_B.tmdbGenreId]: false,
+            [GENRE_C.tmdbGenreId]: false,
           },
         })
       );
     });
-    it("aggregates value of listAllSettings with getLanguages", async () => {
+
+    it("aggregates value of listAllSettings with getAudioLanguages", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue({
-        genres: {},
-        languages: { en: true },
-        rating: {},
-        releaseDate: {},
-        runtime: {},
-        streamLocations: {},
-      });
+      listAllSettings.mockResolvedValue(
+        Object.assign({}, ALL_SETTINGS_EMPTY, {
+          audioLanguages: AUDIO_LANGUAGES_SETTING.value,
+        })
+      );
 
       // @ts-ignore
-      getLanguages.mockResolvedValueOnce([
-        { language: "de" },
-        { language: "es" },
+      getAudioLanguages.mockResolvedValueOnce([
+        { audioLanguage: "en" },
+        { audioLanguage: "es" },
+        { audioLanguage: "de" },
       ]);
 
       const response = await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
+      // has correct data
       expect(response.body).toEqual(
         expect.objectContaining({
-          languages: {
-            en: true,
-            de: false,
+          audioLanguages: {
+            en: true, // @todo make this dynamic
             es: false,
+            de: false,
           },
         })
       );
@@ -111,32 +121,31 @@ describe("get settings", () => {
 
     it("aggregates value of listAllSettings with getStreamLocations", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue({
-        genres: {},
-        languages: {},
-        rating: {},
-        releaseDate: {},
-        runtime: {},
-        streamLocations: { netflixnetfl: true },
-      });
+      listAllSettings.mockResolvedValue(
+        Object.assign({}, ALL_SETTINGS_EMPTY, {
+          streamLocations: STREAM_LOCATIONS_SETTING.value,
+        })
+      );
 
       // @ts-ignore
       getStreamLocations.mockResolvedValueOnce([
-        { id: "amazonamazon" },
-        { id: "disneydisney" },
+        { id: mongoose.Types.ObjectId("netflixnetfl").toHexString() },
+        { id: mongoose.Types.ObjectId("amazonamazon").toHexString() },
+        { id: mongoose.Types.ObjectId("disneydisney").toHexString() },
       ]);
 
       const response = await request(app)
         .get("/api/en/user/settings")
-        .set("Cookie", await global.signIn())
+        .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
+      // has correct data
       expect(response.body).toEqual(
         expect.objectContaining({
           streamLocations: {
-            netflixnetfl: true,
-            amazonamazon: true,
-            disneydisney: true,
+            [mongoose.Types.ObjectId("netflixnetfl").toHexString()]: true, // @todo make dynamic
+            [mongoose.Types.ObjectId("amazonamazon").toHexString()]: false,
+            [mongoose.Types.ObjectId("disneydisney").toHexString()]: true,
           },
         })
       );

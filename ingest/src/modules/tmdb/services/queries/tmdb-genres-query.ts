@@ -4,13 +4,9 @@ import { TmdbGenresApiResultRaw } from "./tmdb-genres-parser";
 /**
  * @see https://developers.themoviedb.org/3/genres/get-movie-list
  *
- * @param language language to fetch
- *
  * @returns {TmdbGenresApiResultRaw} raw api result
  */
-export async function tmdbGenresQuery(
-  language: string
-): Promise<TmdbGenresApiResultRaw | void> {
+export async function tmdbGenresQuery(): Promise<TmdbGenresApiResultRaw | void> {
   let response;
 
   try {
@@ -22,7 +18,7 @@ export async function tmdbGenresQuery(
         "Content-Type": "application/json;charset=utf-8",
       },
       params: {
-        language,
+        language: "en",
       },
     });
   } catch (error) {

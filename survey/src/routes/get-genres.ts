@@ -2,7 +2,8 @@ import {
   NotFoundError,
   currentUser,
   requireAuth,
-  iso6391,
+  validateIso6391Param,
+  validateRequest,
 } from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
@@ -37,23 +38,24 @@ const router = express.Router();
  * @apiSuccessExample {json} 200 OK
  * [
  *  {
- *    id: "abcdef1234567890abcd",
- *    name: "Comedy"
+ *    tmdbGenreId: 19,
+ *    name: "Action"
  *  },
  *  {
- *    id: "feddef1234567890abcd",
- *    name: "Science Fiction"
+ *    tmdbGenreId: "69",
+ *    name: "Drama"
  *  }
  * ]
  */
 router.get(
   "/api/:iso6391/survey/genres",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
-    const { iso6391: language } = req.params;
     // get genres
-    const genres = await getGenres(language as iso6391);
+    const genres = await getGenres();
 
     // throw error if not found
     if (!genres.length) {
@@ -64,6 +66,7 @@ router.get(
     res.status(200).send(
       genres.map((genre) => ({
         id: genre.id,
+        tmdbGenreId: genre.tmdbGenreId,
         name: genre.name,
       }))
     );

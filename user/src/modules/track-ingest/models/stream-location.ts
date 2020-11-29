@@ -66,10 +66,8 @@ streamLocationSchema.statics.build = (attrs: StreamLocationAttrs) => {
   );
 };
 
-streamLocationSchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
-    : mongoose.Types.ObjectId();
+streamLocationSchema.statics.id = (value: string) => {
+  return mongoose.Types.ObjectId(value);
 };
 
 /**

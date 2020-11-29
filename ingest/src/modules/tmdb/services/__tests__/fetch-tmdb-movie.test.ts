@@ -1,161 +1,224 @@
 import axios from "axios";
 
 import { fetchTmdbMovie } from "../fetch-tmdb-movie";
-import { TmdbMovie, TmdbMovieDoc } from "../../models/tmdb-movie";
-import tmdbMovieApiResultSample from "./tmdb-movie.json";
+import { TmdbMovie } from "../../models/tmdb-movie";
 import { MovieId } from "../../../tmdb-file-export/models/movie-id";
 import { natsWrapper } from "../../../../nats-wrapper";
 
+// sample data
+import tmdbMovieApiResultSample from "./tmdb-movie.json";
+import {
+  TMDB_MOVIE_DOC_A,
+  TMDB_MOVIE_DOC_A_NEW,
+} from "../../../../test/sample-data/tmdb-movie-docs";
+
 describe("fetch tmdb movie", () => {
-  it("should call axios", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: tmdbMovieApiResultSample,
+  describe("no data provided", () => {
+    beforeEach(() => {
+      // @ts-ignore
+      axios.mockResolvedValueOnce({});
     });
 
-    await fetchTmdbMovie(550);
-    expect(axios).toHaveBeenCalled();
+    it("should return null if no data provided", async () => {
+      // has correct data
+      expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
+    });
   });
 
-  it("should return null if no data provided", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({});
+  describe("data provided", () => {
+    describe("irrelevant data", () => {
+      describe("media not yet released", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: Object.assign({}, tmdbMovieApiResultSample, {
+              status: "Rumored",
+            }),
+          });
+        });
 
-    const result = await fetchTmdbMovie(550);
+        it("shouldn't create docs", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId);
 
-    expect(result).toBeNull();
-  });
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(0);
+        });
 
-  it("should skip if media is not yet released", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { status: "Rumored" }),
+        it("should return null", async () => {
+          // has correct data
+          expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
+        });
+      });
+
+      describe("media not on imdb", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: Object.assign({}, tmdbMovieApiResultSample, {
+              imdb_id: null,
+            }),
+          });
+        });
+
+        it("shouldn't create docs", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId);
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(0);
+        });
+
+        it("should return null", async () => {
+          // has correct data
+          expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
+        });
+      });
+
+      describe("adult content", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: Object.assign({}, tmdbMovieApiResultSample, { adult: true }),
+          });
+        });
+
+        it("shouldn't create docs", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId);
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(0);
+        });
+
+        it("should return null", async () => {
+          // has correct data
+          expect(await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId)).toBeNull();
+        });
+      });
+
+      describe("release date out of range", () => {
+        beforeEach(() => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: Object.assign({}, tmdbMovieApiResultSample, {
+              release_date: "1999-10-15",
+            }),
+          });
+        });
+
+        it("shouldn't create docs", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId, {
+            earliestReleaseDate: new Date("1999-10-16"),
+          });
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(0);
+        });
+
+        it("should return null", async () => {
+          // has correct data
+          expect(
+            await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId, {
+              earliestReleaseDate: new Date("1999-10-16"),
+            })
+          ).toBeNull();
+        });
+      });
+
+      describe("doc exists", () => {
+        beforeEach(async () => {
+          await Promise.all([
+            MovieId.build({
+              tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
+              emitted: true,
+            }).save(),
+            TmdbMovie.build(TMDB_MOVIE_DOC_A).save(),
+          ]);
+
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: Object.assign({}, tmdbMovieApiResultSample, { adult: true }),
+          });
+        });
+        it("should set `neverUse` field to `true`", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId, {
+            includeAdultContent: false,
+          });
+
+          // has been updated
+          expect(
+            await TmdbMovie.findOne({
+              tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
+            })
+          ).toEqual(
+            expect.objectContaining({
+              neverUse: true,
+            })
+          );
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(1);
+        });
+
+        it("should publish an event", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId, {
+            includeAdultContent: false,
+          });
+
+          // has been published
+          expect(natsWrapper.client.publish).toHaveBeenCalled();
+        });
+      });
     });
 
-    const result = await fetchTmdbMovie(550);
+    describe("relevant data", () => {
+      describe("doc exists", () => {
+        beforeEach(async () => {
+          await TmdbMovie.build(TMDB_MOVIE_DOC_A).save();
 
-    expect(result).toBeNull();
-  });
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: tmdbMovieApiResultSample,
+          });
+        });
 
-  it("should skip if media is not on imdb", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { imdb_id: null }),
+        it("should overwrite", async () => {
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId);
+
+          // has been overwritten
+          expect(
+            await TmdbMovie.findOne({
+              tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
+            })
+          ).toEqual(
+            expect.objectContaining({
+              title: TMDB_MOVIE_DOC_A_NEW.title,
+            })
+          );
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(1);
+        });
+      });
+
+      describe("no doc exists", () => {
+        it("should create doc", async () => {
+          // @ts-ignore
+          axios.mockResolvedValueOnce({
+            data: tmdbMovieApiResultSample,
+          });
+
+          await fetchTmdbMovie(TMDB_MOVIE_DOC_A.tmdbMovieId);
+
+          // has created doc
+          expect(await TmdbMovie.findOne({})).toEqual(
+            expect.objectContaining({
+              tmdbMovieId: TMDB_MOVIE_DOC_A.tmdbMovieId,
+            })
+          );
+
+          // no extra inserts
+          expect(await TmdbMovie.countDocuments()).toBe(1);
+        });
+      });
     });
-
-    const result = await fetchTmdbMovie(550);
-
-    expect(result).toBeNull();
-  });
-
-  it("should skip if data is irrelevant forever because of adult content", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { adult: true }),
-    });
-
-    const result = await fetchTmdbMovie(550, { includeAdultContent: false });
-
-    expect(result).toBeNull();
-  });
-
-  it("should skip if data is irrelevant forever because of release date", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, {
-        release_date: "1999-10-15",
-      }),
-    });
-
-    const result = await fetchTmdbMovie(550, {
-      earliestReleaseDate: new Date("1999-10-16"),
-    });
-
-    expect(result).toBeNull();
-  });
-
-  it("should set `neverUse=true` if exising doc becomes irrelevant forever because of adult content", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { adult: false }),
-    });
-
-    await fetchTmdbMovie(550);
-
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { adult: true }),
-    });
-
-    await fetchTmdbMovie(550, { includeAdultContent: false });
-
-    const doc = await TmdbMovie.findOne({ tmdbMovieId: 550 });
-
-    expect(doc.neverUse).toBe(true);
-  });
-
-  it("should publish an event for movies that were previously emitted but are now irrelevant forever", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { adult: false }),
-    });
-
-    await MovieId.build({ tmdbMovieId: 550, emitted: true }).save();
-    await fetchTmdbMovie(550);
-
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { adult: true }),
-    });
-
-    await fetchTmdbMovie(550, { includeAdultContent: false });
-
-    await TmdbMovie.findOne({ tmdbMovieId: 550 });
-
-    expect(natsWrapper.client.publish).toHaveBeenCalled();
-  });
-
-  it("should overwrite existing doc and return", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, { title: "My Title" }),
-    });
-
-    await fetchTmdbMovie(550);
-
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: Object.assign({}, tmdbMovieApiResultSample, {
-        title: "My Overwritten Title",
-      }),
-    });
-
-    const result = await fetchTmdbMovie(550);
-
-    const overwrittenDoc = await TmdbMovie.findOne({
-      tmdbMovieId: 550,
-    });
-
-    // has been overwritten
-    expect(overwrittenDoc.title).toBe("My Overwritten Title");
-
-    // has been returned
-    expect(overwrittenDoc.id).toEqual(result && result.id);
-  });
-
-  it("should create single doc and return", async () => {
-    // @ts-ignore
-    axios.mockResolvedValueOnce({
-      data: tmdbMovieApiResultSample,
-    });
-
-    const newDoc = (await fetchTmdbMovie(550)) as TmdbMovieDoc;
-
-    // has returned doc
-    expect(newDoc.tmdbMovieId).toBe(550);
-
-    // has created doc
-    const doc = (await TmdbMovie.findOne({})) as TmdbMovieDoc;
-    expect(doc.tmdbMovieId).toBe(550);
   });
 });

@@ -1,10 +1,10 @@
-import { Types } from "mongoose";
+import mongoose from "mongoose";
 import { MediaItemUpdatedPublisher } from "../events/publishers/media-item-updated";
 import { natsWrapper } from "../nats-wrapper";
 import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
 import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
 import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
-import { unifyISO6391 } from "./unify-iso6391";
+import { TmdbGenre } from "../modules/tmdb/models/tmdb-genre";
 
 export async function announceMovie({
   imdbId,
@@ -36,6 +36,20 @@ export async function announceMovie({
     throw new Error("Couldn't fetch utelly data");
   }
 
+  // get genres data
+  const tmdbGenres = await TmdbGenre.find();
+  const docIdByTmdbGenreId = new Map();
+  tmdbGenres.forEach(({ id, tmdbGenreId }) => {
+    docIdByTmdbGenreId.set(tmdbGenreId, id);
+  });
+  const genreDocIds = tmdbMovieDoc.genres
+    .map((tmdbGenreId) => docIdByTmdbGenreId.get(tmdbGenreId))
+    .filter((n) => n);
+
+  if (!tmdbGenres.length || genreDocIds.length < tmdbMovieDoc.genres.length) {
+    throw new Error("Couldn't fetch complete genre data");
+  }
+
   // merge data
   const streamLocations: {
     [key: string]: {
@@ -51,7 +65,7 @@ export async function announceMovie({
 
     const result = locations.map(
       (location: { id: string; displayName: string; url: string }) => ({
-        id: Types.ObjectId(
+        id: mongoose.Types.ObjectId(
           location.id.padStart(24, "0").slice(-24)
         ).toHexString(),
         name: location.displayName,
@@ -86,10 +100,10 @@ export async function announceMovie({
     tmdbMovieId: tmdbMovieDoc.tmdbMovieId,
     imdbId: tmdbMovieDoc.imdbId,
     title: tmdbMovieDoc.title,
-    genres: tmdbMovieDoc.genres,
+    genres: genreDocIds,
     images: tmdbMovieDoc.images,
     rating: tmdbMovieDoc.rating,
-    language: unifyISO6391(tmdbMovieDoc.language),
+    audioLanguage: tmdbMovieDoc.audioLanguage,
     releaseDate: tmdbMovieDoc.releaseDate,
     runtime: tmdbMovieDoc.runtime,
     plot: tmdbMovieDoc.plot || "",

@@ -1,8 +1,15 @@
-import { NotFoundError, currentUser, requireAuth } from "@flickswipe/common";
+import {
+  NotFoundError,
+  currentUser,
+  requireAuth,
+  validateIso6391Param,
+  validateObjectIdParam,
+  validateRequest,
+} from "@flickswipe/common";
 
 import express, { Request, Response } from "express";
 
-import { getMediaItem } from "../modules/track-ingest/track-ingest";
+import { getGenres, getMediaItem } from "../modules/track-ingest/track-ingest";
 
 const router = express.Router();
 
@@ -34,10 +41,10 @@ const router = express.Router();
  *  tmdbMovieId: 1,
  *  imdbId: "tt1234567",
  *  title: "Example Title",
- *  genres: [ { id: "...", name: "Comedy" } ],
+ *  genres: [ { tmdbGenreId: "...", name: "Comedy" } ],
  *  images: { poster: "...", backdrop: "..." },
  *  rating: { average: 100, count: 100, popularity: 100 },
- *  language: "en",
+ *  audioLanguage: "en",
  *  releaseDate: "01-09-1990",
  *  runtime: 160,
  *  plot: "A description of the plot...",
@@ -52,7 +59,9 @@ const router = express.Router();
  * }
  */
 router.get(
-  "/api/en/survey/media-item/:id",
+  "/api/:iso6391/survey/media-item/:id",
+  [validateIso6391Param("iso6391"), validateObjectIdParam("id")],
+  validateRequest,
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
@@ -66,16 +75,21 @@ router.get(
       throw new NotFoundError();
     }
 
+    // get genres
+    const genres = await getGenres();
+
     // output
     res.status(200).send({
       id: mediaItem.id,
       tmdbMovieId: mediaItem.tmdbMovieId,
       imdbId: mediaItem.imdbId,
       title: mediaItem.title,
-      genres: mediaItem.genres,
+      genres: mediaItem.genres.map((id) =>
+        genres.find((genre) => genre.id === id)
+      ),
       images: mediaItem.images,
       rating: mediaItem.rating,
-      language: mediaItem.language,
+      audioLanguage: mediaItem.audioLanguage,
       releaseDate: mediaItem.releaseDate,
       runtime: mediaItem.runtime,
       plot: mediaItem.plot,

@@ -1,4 +1,4 @@
-import { Subjects, Listener, GenreDetectedEvent } from "@flickswipe/common";
+import { Subjects, Listener, GenreUpdatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
 import { Genre, GenreDoc } from "../../models/genre";
@@ -6,11 +6,11 @@ import { Genre, GenreDoc } from "../../models/genre";
 const { QUEUE_GROUP_NAME } = process.env;
 
 /**
- * Listen to `GenreDetected` events
+ * Listen to `GenreUpdated` events
  */
-export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
+export class GenreUpdatedListener extends Listener<GenreUpdatedEvent> {
   // set listener subject
-  subject: Subjects.GenreDetected = Subjects.GenreDetected;
+  subject: Subjects.GenreUpdated = Subjects.GenreUpdated;
 
   // set queue group name
   queueGroupName = QUEUE_GROUP_NAME;
@@ -20,13 +20,13 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
    * @param msg message handler
    */
   async onMessage(
-    data: GenreDetectedEvent["data"],
+    data: GenreUpdatedEvent["data"],
     msg: Message
   ): Promise<void> {
-    const { id, language } = data;
+    const { id } = data;
 
     // update doc
-    const existingDoc = await Genre.findOne({ _id: id, language });
+    const existingDoc = await Genre.findById(id);
     if (existingDoc) {
       await updateGenreDoc(existingDoc, data);
       msg.ack();
@@ -45,30 +45,31 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
  */
 async function updateGenreDoc(
   existingDoc: GenreDoc,
-  data: GenreDetectedEvent["data"]
+  data: GenreUpdatedEvent["data"]
 ): Promise<void> {
-  const { id, name } = data;
+  const { tmdbGenreId, name } = data;
 
   // don't update if current data more recent
-  if (existingDoc.updatedAt > data.detectedAt) {
+  if (existingDoc.updatedAt > data.updatedAt) {
     console.log(`Skipping genre update: current data is more recent`);
     return;
   }
 
   // update
+  existingDoc.tmdbGenreId = tmdbGenreId;
   existingDoc.name = name;
   await existingDoc.save();
 
-  console.log(`Updated genre #${id}'s name to ${existingDoc.name}`);
+  console.log(`Updated genre #${tmdbGenreId}'s name to ${existingDoc.name}`);
 }
 
 /**
  * @param data data to create with
  */
-async function createGenreDoc(data: GenreDetectedEvent["data"]): Promise<void> {
-  const { id, name, language } = data;
+async function createGenreDoc(data: GenreUpdatedEvent["data"]): Promise<void> {
+  const { id, tmdbGenreId, name } = data;
 
-  await Genre.build({ id, name, language }).save();
+  await Genre.build({ id, tmdbGenreId, name }).save();
 
-  console.log(`Created genre #${id} with name "${name}" (${language})`);
+  console.log(`Created genre #${tmdbGenreId} with name "${name}"`);
 }

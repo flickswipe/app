@@ -1,11 +1,15 @@
 import request from "supertest";
 import { app } from "../../app";
 
+// sample data
+import { USER_A } from "../../test/sample-data/users";
+
 describe("send magic link", () => {
-  it("returns a 400 when user already authenticated", async () => {
+  it("returns a 400 when user authenticated", async () => {
+    // has correct status
     await request(app)
       .post("/api/en/auth/send-magic-link")
-      .set("Cookie", await global.signIn("test@user.com"))
+      .set("Cookie", await global.signIn(USER_A.email))
       .send({
         email: "new@user.com",
       })
@@ -13,6 +17,7 @@ describe("send magic link", () => {
   });
 
   it("returns a 400 when no email supplied", async () => {
+    // has correct status
     await request(app)
       .post("/api/en/auth/send-magic-link")
       .send({})
@@ -20,6 +25,7 @@ describe("send magic link", () => {
   });
 
   it("returns a 400 when invalid email supplied", async () => {
+    // has correct status
     await request(app)
       .post("/api/en/auth/send-magic-link")
       .send({
@@ -29,11 +35,10 @@ describe("send magic link", () => {
   });
 
   it("returns a 202 when valid email supplied", async () => {
+    // has correct status
     await request(app)
       .post("/api/en/auth/send-magic-link")
-      .send({
-        email: "new@email.com",
-      })
+      .send(USER_A)
       .expect(202);
   });
 });

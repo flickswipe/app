@@ -1,237 +1,133 @@
 import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
 import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
 import { Utelly } from "../../modules/rapidapi-utelly/models/utelly";
-
 import { natsWrapper } from "../../nats-wrapper";
-
 import { announceMovie } from "../announce";
+
+// sample data
+import { TMDB_MOVIE_A } from "../../test/sample-data/tmdb-movies";
+import { UTELLY_A } from "../../test/sample-data/utellys";
+import { TMDB_GENRE_A } from "../../test/sample-data/tmdb-genres";
+import { TmdbGenre } from "../../modules/tmdb/models/tmdb-genre";
+const UTELLY_A_NO_LOCATIONS = Object.assign({}, UTELLY_A, { locations: [] });
 
 describe("announce", () => {
   describe("announce movie", () => {
-    it("should throw error if missing an id", async () => {
-      await expect(() => announceMovie({})).rejects.toThrow();
+    describe("invalid args", () => {
+      describe("no ids supplied", () => {
+        it("should throw error", async () => {
+          // throws error
+          await expect(() => announceMovie({})).rejects.toThrow();
+        });
+      });
+
+      describe("`imdbId` doesn't match any `TmdbMovie` doc", () => {
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ imdbId: TMDB_MOVIE_A.imdbId })
+          ).rejects.toThrow();
+        });
+      });
+
+      describe("`tmdbMovieId` doesn't match any `TmdbMovie` doc", () => {
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId })
+          ).rejects.toThrow();
+        });
+      });
+
+      describe("`imdbId` doesn't match any `Utelly` doc", () => {
+        beforeEach(async () => {
+          await TmdbMovie.build(TMDB_MOVIE_A).save();
+        });
+
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId })
+          ).rejects.toThrow();
+        });
+      });
+
+      describe("`Utelly` doc exists but `TmdbMovie` doc doesn't", () => {
+        beforeEach(async () => {
+          await Utelly.build(UTELLY_A).save();
+        });
+
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ imdbId: UTELLY_A.imdbId })
+          ).rejects.toThrow();
+        });
+      });
+
+      describe("`TmdbMovie` and `Utelly` docs exist, but not `Genres`", () => {
+        beforeEach(async () => {
+          await Promise.all([
+            await TmdbMovie.build(TMDB_MOVIE_A).save(),
+            await Utelly.build(UTELLY_A).save(),
+          ]);
+        });
+        it("should throw error", async () => {
+          // throws error
+          await expect(() =>
+            announceMovie({ imdbId: UTELLY_A.imdbId })
+          ).rejects.toThrow();
+        });
+      });
     });
 
-    it("should throw error if `imdbId` doesn't match any `TmdbMovie` doc", async () => {
-      await expect(() =>
-        announceMovie({ imdbId: "tt1234567" })
-      ).rejects.toThrow();
+    describe("irrelevant data", () => {
+      describe("no stream locations", () => {
+        beforeEach(async () => {
+          await Promise.all([
+            TmdbMovie.build(TMDB_MOVIE_A).save(),
+            TmdbGenre.build(TMDB_GENRE_A).save(),
+            Utelly.build(UTELLY_A_NO_LOCATIONS).save(),
+          ]);
+        });
+
+        it("should not publish event", async () => {
+          await announceMovie({ imdbId: TMDB_MOVIE_A.imdbId });
+
+          // has not been published
+          expect(natsWrapper.client.publish).not.toHaveBeenCalled();
+        });
+      });
     });
 
-    it("should throw error if `tmdbMovieId` doesn't match any `TmdbMovie` doc", async () => {
-      await expect(() => announceMovie({ tmdbMovieId: 1 })).rejects.toThrow();
-    });
+    describe("relevant data", () => {
+      beforeEach(async () => {
+        await Promise.all([
+          MovieId.build({
+            tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
+          }).save(),
+          TmdbMovie.build(TMDB_MOVIE_A).save(),
+          TmdbGenre.build(TMDB_GENRE_A).save(),
+          Utelly.build(UTELLY_A).save(),
+        ]);
+      });
 
-    it("should throw error if `imdbId` doesn't match any `Utelly` doc", async () => {
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "english",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
+      it("should publish an event", async () => {
+        await announceMovie({ imdbId: TMDB_MOVIE_A.imdbId });
 
-      await expect(() => announceMovie({ tmdbMovieId: 1 })).rejects.toThrow();
-    });
+        // has been published
+        expect(natsWrapper.client.publish).toHaveBeenCalled();
+      });
 
-    it("should throw error if `Utelly` doc exists but `TmdbMovie` doc doesn't", async () => {
-      await Utelly.build({
-        imdbId: "tt1234567",
-        country: "uk",
-        locations: [
-          {
-            displayName: "Netflix",
-            name: "NETFLIXUK",
-            id: "1234567890",
-            url: "https://netflix.com/m/123456",
-          },
-        ],
-      }).save();
+      it("should update `emitted` to `true`", async () => {
+        await announceMovie({ imdbId: TMDB_MOVIE_A.imdbId });
 
-      await expect(() =>
-        announceMovie({ imdbId: "tt1234567" })
-      ).rejects.toThrow();
-    });
-
-    it("should return null if no streaming locations exist", async () => {
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "english",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
-
-      await Utelly.build({
-        imdbId: "tt1234567",
-        country: "uk",
-        locations: [],
-      }).save();
-
-      expect(await announceMovie({ imdbId: "tt1234567" })).toBeUndefined();
-    });
-
-    it("should publish an event when all data correct", async () => {
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "english",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
-
-      await Utelly.build({
-        imdbId: "tt1234567",
-        country: "uk",
-        locations: [
-          {
-            displayName: "Netflix",
-            name: "NETFLIXUK",
-            id: "1234567890",
-            url: "https://netflix.com/m/123456",
-          },
-        ],
-      }).save();
-
-      await announceMovie({ imdbId: "tt1234567" });
-
-      expect(natsWrapper.client.publish).toHaveBeenCalled();
-    });
-
-    it("should normalize language attribute in published event", async () => {
-      await MovieId.build({
-        tmdbMovieId: 1,
-      }).save();
-
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "english",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
-
-      await Utelly.build({
-        imdbId: "tt1234567",
-        country: "uk",
-        locations: [
-          {
-            displayName: "Netflix",
-            name: "NETFLIXUK",
-            id: "1234567890",
-            url: "https://netflix.com/m/123456",
-          },
-        ],
-      }).save();
-
-      await announceMovie({ imdbId: "tt1234567" });
-
-      expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-        "media-item:updated",
-        // @ts-ignore
-        expect.stringContaining('"language":"en"'),
-        expect.any(Function)
-      );
-    });
-
-    it("should mark movie id as emitted", async () => {
-      await MovieId.build({
-        tmdbMovieId: 1,
-      }).save();
-
-      await TmdbMovie.build({
-        tmdbMovieId: 1,
-        imdbId: "tt1234567",
-        title: "My Test Movie",
-        images: {
-          poster: "/poster.jpg",
-          backdrop: "/backdrop.jpg",
-        },
-        genres: ["xxx"],
-        rating: {
-          average: 10,
-          count: 1,
-          popularity: 10,
-        },
-        language: "english",
-        releaseDate: new Date(),
-        runtime: 180,
-        plot: "My Test Movie plot description",
-        neverUse: true,
-      }).save();
-
-      await Utelly.build({
-        imdbId: "tt1234567",
-        country: "uk",
-        locations: [
-          {
-            displayName: "Netflix",
-            name: "NETFLIXUK",
-            id: "1234567890",
-            url: "https://netflix.com/m/123456",
-          },
-        ],
-      }).save();
-
-      await announceMovie({ imdbId: "tt1234567" });
-
-      expect(
-        await MovieId.findOne({
-          tmdbMovieId: 1,
-        })
-      ).toEqual(expect.objectContaining({ emitted: true }));
+        expect(
+          await MovieId.findOne({
+            tmdbMovieId: TMDB_MOVIE_A.tmdbMovieId,
+          })
+        ).toEqual(expect.objectContaining({ emitted: true }));
+      });
     });
   });
 });

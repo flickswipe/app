@@ -22,6 +22,8 @@ const countrySchema = new mongoose.Schema(
     country: {
       type: String,
       required: true,
+      unique: true,
+      dropDups: true,
     },
   },
   {

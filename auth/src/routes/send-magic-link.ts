@@ -3,6 +3,7 @@ import {
   currentUser,
   EmailTokenType,
   mongodbCatch,
+  validateIso6391Param,
   validateRequest,
 } from "@flickswipe/common";
 
@@ -39,8 +40,11 @@ const router = express.Router();
  * }
  */
 router.post(
-  "/api/en/auth/send-magic-link",
-  [body("email").isEmail().withMessage(`Email must be valid`)],
+  "/api/:iso6391/auth/send-magic-link",
+  [
+    validateIso6391Param("iso6391"),
+    body("email").isEmail().withMessage(`Email must be valid`),
+  ],
   validateRequest,
   currentUser,
   async (req: Request, res: Response) => {

@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { Relationship } from "../modules/relationships/models/relationship";
 import {
   blockRelationship,
@@ -10,13 +9,13 @@ import {
 } from "../modules/relationships/relationships";
 import { User } from "../modules/track-auth/models/user";
 
+// sample data
+import { USER_A, USER_B } from "../test/sample-data/users";
+
 type relationshipFn = (toUser: string, fromUser: string) => Promise<void>;
 
 describe("relationships", () => {
   describe("flows", () => {
-    const A = Types.ObjectId("aaaaaaaaaaaa").toHexString();
-    const B = Types.ObjectId("bbbbbbbbbbbb").toHexString();
-
     const actions: { [key: string]: relationshipFn } = {
       accept: acceptRelationship,
       block: blockRelationship,
@@ -27,14 +26,7 @@ describe("relationships", () => {
     };
 
     beforeEach(async () => {
-      await User.build({
-        id: A,
-        email: "a@user.com",
-      }).save();
-      await User.build({
-        id: B,
-        email: "b@user.com",
-      }).save();
+      await Promise.all([User.build(USER_A).save(), User.build(USER_B).save()]);
     });
 
     it.each`
@@ -63,14 +55,12 @@ describe("relationships", () => {
         expectedTypeA: string;
         expectedTypeB: string;
       }) => {
-        // execute flow
         const executeFlow = flow
-          // parse string
           .split("→")
           .map((line) => line.trim().split(" "))
           .map(([fromUserKey, action]) => {
-            const fromUserId = fromUserKey === "A" ? A : B;
-            const toUserId = fromUserKey === "A" ? B : A;
+            const fromUserId = fromUserKey === "A" ? USER_A.id : USER_B.id;
+            const toUserId = fromUserKey === "A" ? USER_B.id : USER_A.id;
             const fn = actions[action];
 
             return { fn, fromUserId, toUserId };
@@ -80,17 +70,14 @@ describe("relationships", () => {
           })
           .map(({ fn, fromUserId, toUserId }) => {
             return () => {
-              console.log("call", fn, fromUserId, toUserId);
               return fn(fromUserId, toUserId);
             };
           })
-          // create promise chain
           .reduce(
             (
               acc: () => Promise<void>,
               curr: () => Promise<void>
             ): (() => Promise<void>) => {
-              console.log("chaining", acc, "then", curr);
               return () => acc().then(curr);
             }
           );
@@ -101,17 +88,17 @@ describe("relationships", () => {
           // do nothing
         }
 
-        // get A relationship
         const { relationshipType: actualTypeA } = (await Relationship.findOne({
-          sourceUser: A,
-          targetUser: B,
+          sourceUser: USER_A.id,
+          targetUser: USER_B.id,
         })) || { relationshipType: "none" };
 
         const { relationshipType: actualTypeB } = (await Relationship.findOne({
-          sourceUser: B,
-          targetUser: A,
+          sourceUser: USER_B.id,
+          targetUser: USER_A.id,
         })) || { relationshipType: "none" };
 
+        // has expected types
         expect(actualTypeA).toBe(expectedTypeA);
         expect(actualTypeB).toBe(expectedTypeB);
       }

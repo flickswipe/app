@@ -3,7 +3,7 @@ import {
   CountrySetting,
   SettingType,
 } from "@flickswipe/common";
-import { Types } from "mongoose";
+import mongoose from "mongoose";
 import { natsWrapper } from "../../../nats-wrapper";
 import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
 import { Setting } from "../models/setting";
@@ -13,7 +13,7 @@ export async function updateCountry(
   value: CountrySetting["value"]
 ): Promise<void> {
   // validate
-  if (!Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
     throw new BadRequestError(`Invalid user id "${userId}"`);
   }
 

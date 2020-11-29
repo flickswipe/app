@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { EmailTokenType } from "@flickswipe/common";
+import { UserDoc } from "./user";
 
 /**
  * Properties used to create a EmailToken
@@ -21,7 +22,7 @@ interface EmailTokenAttrs {
  */
 interface EmailTokenDoc extends mongoose.Document {
   emailTokenType: EmailTokenType;
-  user: string;
+  user: mongoose.Types.ObjectId | UserDoc;
   userAgent: string;
   token: string;
   url: string;
@@ -43,7 +44,8 @@ const emailTokenSchema = new mongoose.Schema(
       required: true,
     },
     user: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     userAgent: {

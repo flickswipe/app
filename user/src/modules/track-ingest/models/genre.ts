@@ -1,22 +1,21 @@
 import mongoose from "mongoose";
-import { iso6391 } from "@flickswipe/common";
 
 /**
  * Properties used to create a Genre
  */
 interface GenreAttrs {
   id: string;
+  tmdbGenreId: number;
   name: string;
-  language: iso6391;
 }
 
 /**
- * Properties that a Genre document has
+ * Properties that a MovieId document has
  */
 interface GenreDoc extends mongoose.Document {
   id: string;
+  tmdbGenreId: number;
   name: string;
-  language: iso6391;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,11 +25,11 @@ interface GenreDoc extends mongoose.Document {
  */
 const genreSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
+    tmdbGenreId: {
+      type: Number,
       required: true,
     },
-    language: {
+    name: {
       type: String,
       required: true,
     },
@@ -42,7 +41,6 @@ const genreSchema = new mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
-        delete ret.language;
         delete ret.createdAt;
         delete ret.updatedAt;
       },
@@ -55,7 +53,7 @@ const genreSchema = new mongoose.Schema(
  */
 interface GenreModel extends mongoose.Model<GenreDoc> {
   build(attrs: GenreAttrs): GenreDoc;
-  id(string: string): mongoose.Types.ObjectId;
+  id(value: string): mongoose.Types.ObjectId;
 }
 
 genreSchema.statics.build = (attrs: GenreAttrs) => {
@@ -64,10 +62,8 @@ genreSchema.statics.build = (attrs: GenreAttrs) => {
   );
 };
 
-genreSchema.statics.id = (string = "") => {
-  return string
-    ? mongoose.Types.ObjectId(string.padStart(24, "0").slice(-24))
-    : mongoose.Types.ObjectId();
+genreSchema.statics.id = (value: string) => {
+  return mongoose.Types.ObjectId(value);
 };
 
 /**

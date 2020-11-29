@@ -3,118 +3,72 @@ import { app } from "../../app";
 import { Genre } from "../../modules/track-ingest/models/genre";
 import { MediaItem } from "../../modules/track-ingest/models/media-item";
 
+// sample data
+import { GENRE_A } from "../../test/sample-data/genres";
+import { MEDIA_ITEM_A } from "../../test/sample-data/media-items";
+
 describe("get media item", () => {
-  it("returns a 401", async () => {
-    await request(app)
-      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
-      .send()
-      .expect(401);
+  describe("invalid conditions", () => {
+    describe("not signed in", () => {
+      it("returns a 401", async () => {
+        // has correct status
+        await request(app)
+          .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
+          .send()
+          .expect(401);
+      });
+    });
+
+    describe("no media items exist", () => {
+      it("returns a 404", async () => {
+        // has correct status
+        await request(app)
+          .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
+          .set("Cookie", await global.signIn())
+          .send()
+          .expect(404);
+      });
+    });
   });
 
-  it("returns a 404", async () => {
-    await request(app)
-      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
-      .set("Cookie", await global.signIn())
-      .send()
-      .expect(404);
-  });
+  describe("valid conditions", () => {
+    beforeEach(async () => {
+      await Promise.all([
+        Genre.build(GENRE_A).save(),
+        MediaItem.build(MEDIA_ITEM_A).save(),
+      ]);
+    });
 
-  it("returns a 200", async () => {
-    await Genre.build({
-      id: "ab1234567890ab1234567890",
-      name: "My Genre",
-      language: "en",
-    }).save();
+    it("returns a 200", async () => {
+      // has correct status
+      await request(app)
+        .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
+        .set("Cookie", await global.signIn())
+        .send()
+        .expect(200);
+    });
 
-    await MediaItem.build({
-      id: "bc1234567890ab1234567890",
-      tmdbMovieId: 123,
-      imdbId: "tt1234567",
-      title: "My Movie",
-      images: {
-        poster: "https://example.com/",
-        backdrop: "https://example.com/",
-      },
-      genres: ["ab1234567890ab1234567890"],
-      rating: {
-        average: 100,
-        count: 101,
-        popularity: 102,
-      },
-      language: "en",
-      releaseDate: new Date(),
-      runtime: 103,
-      plot: "My movie plit...",
-      streamLocations: {
-        us: [
-          {
-            id: "0987654321234567890",
-            name: "Netflix",
-            url: "https://example.com/",
-          },
-        ],
-      },
-    }).save();
+    it("returns media item", async () => {
+      const response = await request(app)
+        .get(`/api/en/survey/media-item/${MEDIA_ITEM_A.id}`)
+        .set("Cookie", await global.signIn())
+        .send();
 
-    await request(app)
-      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
-      .set("Cookie", await global.signIn())
-      .send()
-      .expect(200);
-  });
-
-  it("returns media item", async () => {
-    await Genre.build({
-      id: "ab1234567890ab1234567890",
-      name: "My Genre",
-      language: "en",
-    }).save();
-
-    await MediaItem.build({
-      id: "bc1234567890ab1234567890",
-      tmdbMovieId: 123,
-      imdbId: "tt1234567",
-      title: "My Movie",
-      images: {
-        poster: "https://example.com/",
-        backdrop: "https://example.com/",
-      },
-      genres: ["ab1234567890ab1234567890"],
-      rating: {
-        average: 100,
-        count: 101,
-        popularity: 102,
-      },
-      language: "en",
-      releaseDate: new Date(),
-      runtime: 103,
-      plot: "My movie plit...",
-      streamLocations: {
-        us: [
-          {
-            id: "0987654321234567890",
-            name: "Netflix",
-            url: "https://example.com/",
-          },
-        ],
-      },
-    }).save();
-
-    const response = await request(app)
-      .get("/api/en/survey/media-item/bc1234567890ab1234567890")
-      .set("Cookie", await global.signIn())
-      .send()
-      .expect(200);
-
-    console.info(response.body);
-
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        id: "bc1234567890ab1234567890",
-        tmdbMovieId: 123,
-        imdbId: "tt1234567",
-        title: "My Movie",
-      })
-    );
+      // has correct data
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: MEDIA_ITEM_A.id,
+          tmdbMovieId: MEDIA_ITEM_A.tmdbMovieId,
+          imdbId: MEDIA_ITEM_A.imdbId,
+          title: MEDIA_ITEM_A.title,
+        })
+      );
+      expect(response.body.genres[0]).toEqual(
+        expect.objectContaining({
+          tmdbGenreId: GENRE_A.tmdbGenreId,
+          name: GENRE_A.name,
+        })
+      );
+    });
   });
 });

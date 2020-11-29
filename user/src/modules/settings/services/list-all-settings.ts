@@ -1,7 +1,7 @@
 import {
   CountrySetting,
   GenresSetting,
-  LanguagesSetting,
+  AudioLanguagesSetting,
   RatingSetting,
   ReleaseDateSetting,
   RuntimeSetting,
@@ -9,12 +9,13 @@ import {
 } from "@flickswipe/common";
 import { Setting, SettingDoc } from "../models/setting";
 import camelCase from "camelcase";
+import cloneDeep from "clone-deep";
 
 export type SettingsPayload = {
   [key: string]: any;
   country: CountrySetting["value"];
   genres: GenresSetting["value"];
-  languages: LanguagesSetting["value"];
+  audioLanguages: AudioLanguagesSetting["value"];
   rating: RatingSetting["value"];
   releaseDate: ReleaseDateSetting["value"];
   runtime: RuntimeSetting["value"];
@@ -50,13 +51,13 @@ export async function listAllSettings(
     {
       country: "",
       genres: {},
-      languages: {},
+      audioLanguages: {},
       rating: {},
       releaseDate: {},
       runtime: {},
       streamLocations: {},
     },
-    defaultSettings,
+    cloneDeep(defaultSettings),
     settingsPayload
   );
 

@@ -1,4 +1,5 @@
-import express from "express";
+import { validateIso6391Param, validateRequest } from "@flickswipe/common";
+import express, { Request, Response } from "express";
 
 import { Jwt } from "../services/jwt";
 
@@ -17,13 +18,18 @@ const router = express.Router();
  *   "message": "User signed out"
  * }
  */
-router.post("/api/en/auth/sign-out", async (req, res) => {
-  Jwt.clearSession(req);
+router.post(
+  "/api/:iso6391/auth/sign-out",
+  [validateIso6391Param("iso6391")],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    Jwt.clearSession(req);
 
-  res.status(200).send({
-    message: `User signed out`,
-  });
-});
+    res.status(200).send({
+      message: `User signed out`,
+    });
+  }
+);
 
 /**
  * Exports
