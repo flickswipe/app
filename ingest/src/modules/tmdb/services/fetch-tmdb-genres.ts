@@ -2,7 +2,7 @@ import { TmdbGenre, TmdbGenreDoc } from "../models/tmdb-genre";
 import { tmdbGenresQuery } from "./queries/tmdb-genres-query";
 import { tmdbGenresParser } from "./queries/tmdb-genres-parser";
 
-import { GenreDetectedPublisher } from "../../../events/publishers/genre-detected";
+import { GenreUpdatedPublisher } from "../../../events/publishers/genre-updated";
 import { natsWrapper } from "../../../nats-wrapper";
 import { unifyISO6391 } from "../../../services/unify-iso6391";
 
@@ -52,11 +52,11 @@ export async function fetchTmdbGenres(
       );
 
       // publish event
-      await new GenreDetectedPublisher(natsWrapper.client).publish({
+      await new GenreUpdatedPublisher(natsWrapper.client).publish({
         tmdbGenreId: existingDoc.tmdbGenreId,
         name: existingDoc.name,
         language: unifyISO6391(existingDoc.language),
-        detectedAt: new Date(),
+        updatedAt: new Date(),
       });
 
       return existingDoc;
@@ -75,11 +75,11 @@ export async function fetchTmdbGenres(
       );
 
       // publish event
-      await new GenreDetectedPublisher(natsWrapper.client).publish({
+      await new GenreUpdatedPublisher(natsWrapper.client).publish({
         tmdbGenreId: insertedDoc.id,
         name: insertedDoc.name,
         language: unifyISO6391(insertedDoc.language),
-        detectedAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 

@@ -66,7 +66,7 @@ describe("fetch tmdb genres", () => {
 
         // has been normalized
         expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-          "genre:detected",
+          "genre:updated",
           expect.stringContaining(`"language":"${LANGUAGE}"`),
           expect.any(Function)
         );
@@ -106,7 +106,7 @@ describe("fetch tmdb genres", () => {
 
         // has been normalised
         expect(natsWrapper.client.publish).toHaveBeenCalledWith(
-          "genre:detected",
+          "genre:updated",
           expect.stringContaining(`"language":"${LANGUAGE}"`),
           expect.any(Function)
         );

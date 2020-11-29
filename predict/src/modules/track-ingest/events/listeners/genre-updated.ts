@@ -1,4 +1,4 @@
-import { Subjects, Listener, GenreDetectedEvent } from "@flickswipe/common";
+import { Subjects, Listener, GenreUpdatedEvent } from "@flickswipe/common";
 
 import { Message } from "node-nats-streaming";
 import { Genre, GenreDoc } from "../../models/genre";
@@ -6,11 +6,11 @@ import { Genre, GenreDoc } from "../../models/genre";
 const { QUEUE_GROUP_NAME } = process.env;
 
 /**
- * Listen to `GenreDetected` events
+ * Listen to `GenreUpdated` events
  */
-export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
+export class GenreUpdatedListener extends Listener<GenreUpdatedEvent> {
   // set listener subject
-  subject: Subjects.GenreDetected = Subjects.GenreDetected;
+  subject: Subjects.GenreUpdated = Subjects.GenreUpdated;
 
   // set queue group name
   queueGroupName = QUEUE_GROUP_NAME;
@@ -20,7 +20,7 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
    * @param msg message handler
    */
   async onMessage(
-    data: GenreDetectedEvent["data"],
+    data: GenreUpdatedEvent["data"],
     msg: Message
   ): Promise<void> {
     const { tmdbGenreId, language } = data;
@@ -48,15 +48,16 @@ export class GenreDetectedListener extends Listener<GenreDetectedEvent> {
  */
 async function updateGenreDoc(
   existingDoc: GenreDoc,
-  data: GenreDetectedEvent["data"]
+  data: GenreUpdatedEvent["data"]
 ): Promise<void> {
   const { tmdbGenreId, name } = data;
 
   // don't update if current data more recent
-  if (existingDoc.updatedAt > data.detectedAt) {
+  if (existingDoc.updatedAt > data.updatedAt) {
     console.log(`Skipping genre update: current data is more recent`);
     return;
   }
+
   // update
   existingDoc.name = name;
   await existingDoc.save();
@@ -67,7 +68,7 @@ async function updateGenreDoc(
 /**
  * @param data data to create with
  */
-async function createGenreDoc(data: GenreDetectedEvent["data"]): Promise<void> {
+async function createGenreDoc(data: GenreUpdatedEvent["data"]): Promise<void> {
   const { tmdbGenreId, name, language } = data;
 
   await Genre.build({ tmdbGenreId, name, language }).save();

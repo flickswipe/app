@@ -1,14 +1,14 @@
 import { Message } from "node-nats-streaming";
 import { Genre } from "../../../models/genre";
 import { natsWrapper } from "../../../../../nats-wrapper";
-import { GenreDetectedListener } from "../genre-detected";
+import { GenreUpdatedListener } from "../genre-updated";
 
 // sample data
 import { GENRE_A } from "../../../../../test/sample-data/genres";
 
 const setup = async () => {
   return {
-    listener: new GenreDetectedListener(natsWrapper.client),
+    listener: new GenreUpdatedListener(natsWrapper.client),
 
     // @ts-ignore
     msg: {
@@ -30,7 +30,7 @@ describe("genre detected listener", () => {
             tmdbGenreId: GENRE_A.tmdbGenreId,
             name: "New Name",
             language: GENRE_A.language,
-            detectedAt: new Date(new Date().getTime() - 86600),
+            updatedAt: new Date(new Date().getTime() - 86600),
           },
           msg
         );
@@ -57,7 +57,7 @@ describe("genre detected listener", () => {
             tmdbGenreId: GENRE_A.tmdbGenreId,
             name: "New Name",
             language: GENRE_A.language,
-            detectedAt: new Date(new Date().getTime() - 86600),
+            updatedAt: new Date(new Date().getTime() - 86600),
           },
           msg
         );
@@ -78,7 +78,7 @@ describe("genre detected listener", () => {
             tmdbGenreId: GENRE_A.tmdbGenreId,
             name: "New Name",
             language: GENRE_A.language,
-            detectedAt: new Date(new Date().getTime() + 86600),
+            updatedAt: new Date(new Date().getTime() + 86600),
           },
           msg
         );
@@ -104,7 +104,7 @@ describe("genre detected listener", () => {
             tmdbGenreId: GENRE_A.tmdbGenreId,
             name: "New Name",
             language: GENRE_A.language,
-            detectedAt: new Date(new Date().getTime() + 86600),
+            updatedAt: new Date(new Date().getTime() + 86600),
           },
           msg
         );
@@ -123,7 +123,7 @@ describe("genre detected listener", () => {
             tmdbGenreId: GENRE_A.tmdbGenreId,
             name: GENRE_A.name,
             language: GENRE_A.language,
-            detectedAt: new Date(),
+            updatedAt: new Date(),
           },
           msg
         );
@@ -150,7 +150,7 @@ describe("genre detected listener", () => {
           tmdbGenreId: GENRE_A.tmdbGenreId,
           name: GENRE_A.name,
           language: GENRE_A.language,
-          detectedAt: new Date(new Date().getTime() + 86600),
+          updatedAt: new Date(new Date().getTime() + 86600),
         },
         msg
       );

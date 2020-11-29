@@ -74,7 +74,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.70",
+    "@flickswipe/common": "0.0.73",
     "@types/camelcase": "^5.2.0",
     "@types/cookie-session": "^2.0.41",
     "@types/express": "^4.17.8",
