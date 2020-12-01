@@ -12,7 +12,7 @@ import {
 } from "@flickswipe/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { queryMediaItems } from "../../track-ingest/services/query-media-items";
-import { listAllSurveyResponses } from "../../track-survey/track-survey";
+import { getSurveyResponses } from "../../track-survey/track-survey";
 import { getSettings } from "../../track-user-settings/track-user-settings";
 import { MediaItemsSuggestedPublisher } from "../events/publishers/media-items-suggested";
 import { Suggestion, SuggestionDoc } from "../models/suggestion";
@@ -94,8 +94,10 @@ async function getPreviousSuggestions(userId: string): Promise<string[]> {
 /**
  * @param userId user to get survey responses for
  */
-async function getSurveyResponses(userId: string): Promise<string[]> {
-  const surveyResponses = (await listAllSurveyResponses(userId)).map(
+async function getMediaItemsWithSurveyResponses(
+  userId: string
+): Promise<string[]> {
+  const surveyResponses = (await getSurveyResponses(userId)).map(
     (doc: { mediaItem: string }) => doc.mediaItem
   );
 
@@ -118,12 +120,15 @@ async function getUserSuggestions(
   const query = {};
 
   // ignore media items that are already suggested / have survey responses
-  const [previousSuggestions, surveyResponses] = await Promise.all([
+  const [
+    previousSuggestions,
+    mediaItemsWithSurveyResponses,
+  ] = await Promise.all([
     getPreviousSuggestions(userId),
-    getSurveyResponses(userId),
+    getMediaItemsWithSurveyResponses(userId),
   ]);
   const ignoreIds = Array.from(
-    new Set([].concat(previousSuggestions, surveyResponses))
+    new Set([].concat(previousSuggestions, mediaItemsWithSurveyResponses))
   );
   if (ignoreIds.length)
     Object.assign(query, {

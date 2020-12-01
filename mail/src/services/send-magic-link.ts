@@ -1,5 +1,5 @@
 import { EmailTokenCreatedEvent } from "@flickswipe/common";
-import { Email } from "./email";
+import { Email } from "./classes/email";
 
 const [L, R] = Email.delimiters;
 

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { getUserWithSmallestQueue } from "./modules/generate-suggestions/generate-suggestions";
+import { getNextUserToProcess } from "./modules/generate-suggestions/generate-suggestions";
 import { createSuggestions } from "./modules/generate-suggestions/generate-suggestions";
 
 import { natsWrapper } from "./nats-wrapper";
@@ -59,7 +59,7 @@ if (!QUEUE_GROUP_NAME) {
   // continuously generate suggestions
   const loop = async () => {
     console.log(`Generating user suggestions...`);
-    const user = await getUserWithSmallestQueue();
+    const user = await getNextUserToProcess();
 
     if (!user) {
       console.log(`No users need suggestions, idling for 1 minute!`);

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
-import { listAllSettings } from "../../modules/settings/settings";
+import { getSettings } from "../../modules/settings/settings";
 import {
   getGenres,
   getAudioLanguages,
@@ -39,29 +39,29 @@ describe("get settings", () => {
         .expect(200);
     });
 
-    it("calls listAllSettings", async () => {
+    it("calls getSettings", async () => {
       await request(app)
         .get("/api/en/user/settings")
         .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
       // has been called
-      expect(listAllSettings).toHaveBeenCalled();
+      expect(getSettings).toHaveBeenCalled();
     });
 
-    it("returns value of listAllSettings", async () => {
+    it("returns value of getSettings", async () => {
       const response = await request(app)
         .get("/api/en/user/settings")
         .set("Cookie", await global.signIn(USER_A.id))
         .send();
 
       // has correct data
-      expect(response.body).toEqual(await listAllSettings(USER_A.id));
+      expect(response.body).toEqual(await getSettings(USER_A.id));
     });
 
-    it("aggregates value of listAllSettings with getGenres", async () => {
+    it("aggregates value of getSettings with getGenres", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue(
+      getSettings.mockResolvedValue(
         Object.assign({}, ALL_SETTINGS_EMPTY, {
           genres: GENRES_SETTING.value,
         })
@@ -87,9 +87,9 @@ describe("get settings", () => {
       );
     });
 
-    it("aggregates value of listAllSettings with getAudioLanguages", async () => {
+    it("aggregates value of getSettings with getAudioLanguages", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue(
+      getSettings.mockResolvedValue(
         Object.assign({}, ALL_SETTINGS_EMPTY, {
           audioLanguages: AUDIO_LANGUAGES_SETTING.value,
         })
@@ -119,9 +119,9 @@ describe("get settings", () => {
       );
     });
 
-    it("aggregates value of listAllSettings with getStreamLocations", async () => {
+    it("aggregates value of getSettings with getStreamLocations", async () => {
       // @ts-ignore
-      listAllSettings.mockResolvedValue(
+      getSettings.mockResolvedValue(
         Object.assign({}, ALL_SETTINGS_EMPTY, {
           streamLocations: STREAM_LOCATIONS_SETTING.value,
         })

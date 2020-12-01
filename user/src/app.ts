@@ -5,15 +5,15 @@ import "express-async-errors";
 
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-import { relationshipBlockRouter } from "./routes/relationship-block";
-import { relationshipUnblockRouter } from "./routes/relationship-unblock";
-import { relationshipAcceptRouter } from "./routes/relationship-accept";
-import { relationshipCancelRouter } from "./routes/relationship-cancel";
-import { relationshipRequestRouter } from "./routes/relationship-request";
-import { relationshipRejectRouter } from "./routes/relationship-reject";
-import { getRelationshipsRouter } from "./routes/get-relationships";
-import { getSettingsRouter } from "./routes/get-settings";
-import { settingsUpdateRouter } from "./routes/settings-update";
+import { relationshipsBlockRouter } from "./routes/relationships-block";
+import { relationshipsUnblockRouter } from "./routes/relationships-unblock";
+import { relationshipsAcceptRouter } from "./routes/relationships-accept";
+import { relationshipsCancelRouter } from "./routes/relationships-cancel";
+import { relationshipsRequestRouter } from "./routes/relationships-request";
+import { relationshipsRejectRouter } from "./routes/relationships-reject";
+import { relationshipsGetAllRouter } from "./routes/relationships-get-all";
+import { settingsGetAllRouter } from "./routes/settings-get-all";
+import { settingsUpdateManyRouter } from "./routes/settings-update-many";
 
 /**
  * Configure express app
@@ -38,15 +38,15 @@ app.use(
  * Configure routes
  */
 
-app.use(getRelationshipsRouter);
-app.use(getSettingsRouter);
-app.use(relationshipAcceptRouter);
-app.use(relationshipBlockRouter);
-app.use(relationshipCancelRouter);
-app.use(relationshipRequestRouter);
-app.use(relationshipRejectRouter);
-app.use(relationshipUnblockRouter);
-app.use(settingsUpdateRouter);
+app.use(relationshipsGetAllRouter);
+app.use(settingsGetAllRouter);
+app.use(relationshipsAcceptRouter);
+app.use(relationshipsBlockRouter);
+app.use(relationshipsCancelRouter);
+app.use(relationshipsRequestRouter);
+app.use(relationshipsRejectRouter);
+app.use(relationshipsUnblockRouter);
+app.use(settingsUpdateManyRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();

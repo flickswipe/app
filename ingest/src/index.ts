@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { Ingestion } from "./services/ingestion";
+import { Ingest } from "./services/classes/ingest";
 import { natsWrapper } from "./nats-wrapper";
 
 /**
@@ -63,7 +63,7 @@ if (!TMDB_KEY) {
   }
 
   // start ingest
-  Ingestion.start({
+  Ingest.start({
     // Streaming Service Provider Countries
     countries: [
       // "uk", // United Kingdom

@@ -1,4 +1,4 @@
-export const listAllSettings = jest.fn().mockResolvedValue({
+export const getSettings = jest.fn().mockResolvedValue({
   country: "",
   genres: {},
   audioLanguages: {},

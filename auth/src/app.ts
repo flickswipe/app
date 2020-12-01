@@ -7,11 +7,11 @@ import useragent from "express-useragent";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
-import { consumeTokenRouter } from "./routes/consume-token";
-import { createUserRouter } from "./routes/create-user";
-import { sendAddEmailLinkRouter } from "./routes/send-add-email-link";
-import { sendMagicLinkRouter } from "./routes/send-magic-link";
-import { signOutRouter } from "./routes/sign-out";
+import { tokensConsumeRouter } from "./routes/token-consume";
+import { usersCreateRouter } from "./routes/user-create";
+import { usersSendAddEmailLinkRouter } from "./routes/user-send-add-email-link";
+import { usersSendMagicLinkRouter } from "./routes/user-send-magic-link";
+import { usersSignOutRouter } from "./routes/user-sign-out";
 
 /**
  * Configure express app
@@ -39,11 +39,11 @@ app.use(
 /**
  * Configure routes
  */
-app.use(consumeTokenRouter);
-app.use(createUserRouter);
-app.use(sendAddEmailLinkRouter);
-app.use(sendMagicLinkRouter);
-app.use(signOutRouter);
+app.use(tokensConsumeRouter);
+app.use(usersCreateRouter);
+app.use(usersSendAddEmailLinkRouter);
+app.use(usersSendMagicLinkRouter);
+app.use(usersSignOutRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();

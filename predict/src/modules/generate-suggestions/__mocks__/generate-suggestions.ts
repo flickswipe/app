@@ -1,4 +1,4 @@
-export const getUserWithSmallestQueue = jest.fn().mockResolvedValue({
+export const getNextUserToProcess = jest.fn().mockResolvedValue({
   id: "useruseruser",
 });
 export const createSuggestions = jest.fn().mockResolvedValue(["itemitemitem"]);

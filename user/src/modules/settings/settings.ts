@@ -1,4 +1,4 @@
-export * from "./services/list-all-settings";
+export * from "./services/get-settings";
 export * from "./services/update-country";
 export * from "./services/update-genres";
 export * from "./services/update-languages";
