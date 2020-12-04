@@ -31,7 +31,6 @@ const movieIdSchema = new mongoose.Schema(
       type: Number,
       required: true,
       unique: true,
-      dropDups: true,
     },
     timesUsed: {
       type: Number,

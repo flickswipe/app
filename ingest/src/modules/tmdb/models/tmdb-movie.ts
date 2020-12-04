@@ -61,13 +61,11 @@ const tmdbMovieSchema = new mongoose.Schema(
       type: Number,
       required: true,
       unique: true,
-      dropDups: true,
     },
     imdbId: {
       type: String,
       required: true,
       unique: true,
-      dropDups: true,
     },
     title: {
       type: String,
