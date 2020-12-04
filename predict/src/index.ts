@@ -1,8 +1,24 @@
+import * as Sentry from "@sentry/node";
+import { RewriteFrames } from "@sentry/integrations";
+
 import mongoose from "mongoose";
 import { getNextUserToProcess } from "./modules/generate-suggestions/generate-suggestions";
 import { createSuggestions } from "./modules/generate-suggestions/generate-suggestions";
 
 import { natsWrapper } from "./nats-wrapper";
+
+/**
+ * Error & performance tracking
+ */
+Sentry.init({
+  integrations: [
+    new RewriteFrames({
+      root: __dirname || process.cwd(),
+    }),
+  ],
+
+  tracesSampleRate: 1.0,
+});
 
 /**
  * Get environment variables
@@ -35,26 +51,22 @@ if (!QUEUE_GROUP_NAME) {
  * Initialize
  */
 (async () => {
-  try {
-    // connect to messaging server
-    await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-    natsWrapper.client.on("close", () => {
-      console.log(`NATS connection closed!`);
-      process.exit();
-    });
-    process.on("SIGINT", () => natsWrapper.client.close());
-    process.on("SIGTERM", () => natsWrapper.client.close());
+  // connect to messaging server
+  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
+  natsWrapper.client.on("close", () => {
+    console.log(`NATS connection closed!`);
+    process.exit();
+  });
+  process.on("SIGINT", () => natsWrapper.client.close());
+  process.on("SIGTERM", () => natsWrapper.client.close());
 
-    // connect to database server
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    });
-    console.log(`Connected to MongoDb`);
-  } catch (err) {
-    console.error(err);
-  }
+  // connect to database server
+  await mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  });
+  console.log(`Connected to MongoDb`);
 
   // continuously generate suggestions
   const loop = async () => {

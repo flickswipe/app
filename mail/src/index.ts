@@ -1,8 +1,24 @@
+import * as Sentry from "@sentry/node";
+import { RewriteFrames } from "@sentry/integrations";
+
 import { natsWrapper } from "./nats-wrapper";
 import { transporterWrapper } from "./transporter-wrapper";
 
 import { EmailTokenCreatedListener } from "./events/listeners/email-token-created";
 import { sendTestEmail } from "./services/send-test";
+
+/**
+ * Error & performance tracking
+ */
+Sentry.init({
+  integrations: [
+    new RewriteFrames({
+      root: __dirname || process.cwd(),
+    }),
+  ],
+
+  tracesSampleRate: 1.0,
+});
 
 /**
  * Get environment variables
@@ -52,33 +68,29 @@ if (!SENDER_ADDRESS) {
  * Initialize
  */
 (async () => {
-  try {
-    // connect to messaging server
-    await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-    natsWrapper.client.on("close", () => {
-      console.log(`NATS connection closed!`);
-      process.exit();
-    });
-    process.on("SIGINT", () => natsWrapper.client.close());
-    process.on("SIGTERM", () => natsWrapper.client.close());
+  // connect to messaging server
+  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
+  natsWrapper.client.on("close", () => {
+    console.log(`NATS connection closed!`);
+    process.exit();
+  });
+  process.on("SIGINT", () => natsWrapper.client.close());
+  process.on("SIGTERM", () => natsWrapper.client.close());
 
-    // listen to events
-    new EmailTokenCreatedListener(natsWrapper.client).listen();
+  // listen to events
+  new EmailTokenCreatedListener(natsWrapper.client).listen();
 
-    // connect to mail server
-    await transporterWrapper.connect(
-      parseInt(SMTP_PORT, 10),
-      SMTP_HOST,
-      SMTP_USER,
-      SMTP_PASS,
-      // mail option defaults
-      {
-        from: SENDER_ADDRESS,
-      }
-    );
-  } catch (err) {
-    console.error(err);
-  }
+  // connect to mail server
+  await transporterWrapper.connect(
+    parseInt(SMTP_PORT, 10),
+    SMTP_HOST,
+    SMTP_USER,
+    SMTP_PASS,
+    // mail option defaults
+    {
+      from: SENDER_ADDRESS,
+    }
+  );
 
   // send test email
   if (NODE_ENV === "development") {

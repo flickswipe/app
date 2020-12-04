@@ -16,6 +16,8 @@ spec:
         - name: predict
           image: flickswipe/predict
           env:
+            - name: SENTRY_DSN
+              value: "https://2e5df7e90a74465896fbdb45842c390c@o485399.ingest.sentry.io/5545308"
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:

@@ -16,6 +16,8 @@ spec:
         - name: auth
           image: flickswipe/auth
           env:
+            - name: SENTRY_DSN
+              value: "https://7b8298d301d3400283faec735cd1d3df@o485399.ingest.sentry.io/5545156"
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:

@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
+    "start": "ts-node-dev src/index.ts --project ./tsconfig.production.json",
     "test": "jest --no-cache",
     "test:ci": "jest",
     "lint": "eslint . --ext .ts"
@@ -58,6 +58,9 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@flickswipe/common": "0.0.77",
+    "@sentry/integrations": "^5.28.0",
+    "@sentry/node": "^5.28.0",
+    "@sentry/tracing": "^5.28.0",
     "@types/mongoose": "^5.7.36",
     "@types/split2": "^2.1.6",
     "axios": "^0.20.0",
@@ -66,6 +69,7 @@
     "node-nats-streaming": "^0.3.2",
     "split2": "^3.2.2",
     "ts-node-dev": "^1.0.0-pre.63",
+    "tslib": "^1.14.1",
     "typescript": "^4.0.3"
   },
   "devDependencies": {
