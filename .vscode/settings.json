@@ -1,4 +1,5 @@
 {
+  "typescript.tsdk": "./auth/node_modules/typescript/lib",
   "eslint.workingDirectories": [
     { "directory": "auth", "changeProcessCWD": true },
     { "directory": "docs", "changeProcessCWD": true },
