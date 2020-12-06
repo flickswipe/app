@@ -119,8 +119,19 @@ function shouldSkip(
 ): boolean {
   options;
 
-  // filter condition: audio language must be recognized
-  if (result.audioLanguage === null) {
+  // filter condition: must have required fields
+  const stringValues = [
+    result.tmdbMovieId,
+    result.imdbId,
+    result.title,
+    result.images.poster,
+    result.images.backdrop,
+    result.audioLanguage,
+    result.releaseDate,
+    result.runtime,
+  ].map((item) => `${item}`);
+
+  if (stringValues.includes("null") || stringValues.includes("NaN")) {
     return true;
   }
 
