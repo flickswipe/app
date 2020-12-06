@@ -11,6 +11,13 @@ export async function fetchTmdbFileExport(
   console.log(`Fetching tmdb file export...`);
 
   const read = await movieIdsReadFileExport(date, options);
+
+  if (!read) {
+    return new Promise((resolve, reject) => {
+      reject(`Couldn't read movie ids`);
+    });
+  }
+
   const write = read.pipe(movieIdsWriteMongodb());
 
   return new Promise((resolve, reject) =>
