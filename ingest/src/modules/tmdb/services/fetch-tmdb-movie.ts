@@ -119,6 +119,11 @@ function shouldSkip(
 ): boolean {
   options;
 
+  // filter condition: audio language must be recognized
+  if (result.audioLanguage === null) {
+    return true;
+  }
+
   // filter condition: media must have been released already
   if (result.status !== "Released") {
     return true;

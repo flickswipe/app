@@ -1,7 +1,7 @@
 /**
  * Types
  */
-
+import * as Sentry from "@sentry/node";
 import { unifyISO6391 } from "../../../../services/unify-iso6391";
 
 // raw data received by parser
@@ -92,6 +92,21 @@ const parser = async (
     return null;
   }
 
+  // fix bad language data
+  switch (raw.original_language) {
+    case "cn":
+      raw.original_language = "zh";
+  }
+
+  const audioLanguage = unifyISO6391(raw.original_language);
+
+  // alert bad language data
+  if (!audioLanguage) {
+    Sentry.captureException(
+      new Error(`Unrecognized language ${raw.original_language}`)
+    );
+  }
+
   // parse
   return {
     tmdbMovieId: raw.id,
@@ -107,7 +122,7 @@ const parser = async (
       count: raw.vote_count,
       popularity: raw.popularity,
     },
-    audioLanguage: unifyISO6391(raw.original_language),
+    audioLanguage: audioLanguage,
     releaseDate: new Date(raw.release_date),
     runtime: raw.runtime,
     plot: raw.overview,
