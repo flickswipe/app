@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ingest
-          image: flickswipe/ingest
+          image: us.gcr.io/flickswipe-dev/ingest
           env:
             - name: SENTRY_DSN
               value: "https://8e31546b892c442cb87836185989347d@o485399.ingest.sentry.io/5545304"

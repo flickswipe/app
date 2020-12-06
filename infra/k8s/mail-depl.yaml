@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mail
-          image: flickswipe/mail
+          image: us.gcr.io/flickswipe-dev/mail
           env:
             - name: SENTRY_DSN
               value: "https://5dd85c4fb82647c9922505fc5a378d98@o485399.ingest.sentry.io/5545305"

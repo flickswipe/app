@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user
-          image: flickswipe/user
+          image: us.gcr.io/flickswipe-dev/user
           env:
             - name: SENTRY_DSN
               value: "https://00e0177de713478282e1f0ed74ee207b@o485399.ingest.sentry.io/5545312"

@@ -5,10 +5,11 @@ deploy:
     manifests:
       - ./infra/k8s/*
 build:
-  local:
-    push: false
+  googleCloudBuild:
+    projectId: flickswipe-dev
+
   artifacts:
-    - image: flickswipe/auth
+    - image: us.gcr.io/flickswipe-dev/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -16,7 +17,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/survey
+    - image: us.gcr.io/flickswipe-dev/survey
       context: survey
       docker:
         dockerfile: Dockerfile
@@ -24,7 +25,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/ingest
+    - image: us.gcr.io/flickswipe-dev/ingest
       context: ingest
       docker:
         dockerfile: Dockerfile
@@ -32,7 +33,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/mail
+    - image: us.gcr.io/flickswipe-dev/mail
       context: mail
       docker:
         dockerfile: Dockerfile
@@ -40,7 +41,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/predict
+    - image: us.gcr.io/flickswipe-dev/predict
       context: predict
       docker:
         dockerfile: Dockerfile
@@ -48,7 +49,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: flickswipe/user
+    - image: us.gcr.io/flickswipe-dev/user
       context: user
       docker:
         dockerfile: Dockerfile
