@@ -227,7 +227,7 @@ describe("ingest", () => {
 
       jest.runOnlyPendingTimers();
 
-      expect(runTmdbFileExportFetch).toHaveBeenCalledTimes(2);
+      expect(runTmdbFileExportFetch).toHaveBeenCalledTimes(1);
     });
   });
 

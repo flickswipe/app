@@ -74,9 +74,9 @@ export class Ingest {
     const oncePerDay = 24 * 60 * 60 * 1000;
 
     setTimeout(() => {
-      setInterval(async () => {
+      setInterval(() => {
         const today = new Date();
-        await Ingest.runTmdbFileExportFetch(today, options);
+        Ingest.runTmdbFileExportFetch(today, options);
       }, oncePerDay);
     }, msUntil8am);
   }
