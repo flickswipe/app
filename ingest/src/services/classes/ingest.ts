@@ -146,7 +146,7 @@ export class Ingest {
    * @param options
    */
   static async runTmdbGenresFetch(options: StartOptions): Promise<void> {
-    fetchTmdbGenres(options);
+    await fetchTmdbGenres(options);
   }
 
   /**
@@ -168,9 +168,9 @@ export class Ingest {
         return;
       }
 
-      const gotResult = await Ingest.runUtellyDataFetch(nextImdbId, options);
-
-      gotResult && (await announceMediaItem({ imdbId: nextImdbId }));
+      if (await Ingest.runUtellyDataFetch(nextImdbId, options)) {
+        await announceMediaItem({ imdbId: nextImdbId });
+      }
     }, thousandPerDay);
   }
 
