@@ -6,6 +6,14 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import {
+  UserCreatedListener,
+  UserUpdatedEmailListener,
+} from "./modules/track-auth/track-auth";
+import {
+  GenreUpdatedListener,
+  MediaItemUpdatedListener,
+} from "./modules/track-ingest/track-ingest";
 
 /**
  * Error & performance tracking
@@ -72,6 +80,16 @@ if (!QUEUE_GROUP_NAME) {
   });
   process.on("SIGINT", () => natsWrapper.client.close());
   process.on("SIGTERM", () => natsWrapper.client.close());
+
+  // listen to events
+  [
+    // track auth
+    UserCreatedListener,
+    UserUpdatedEmailListener,
+    // track ingest
+    GenreUpdatedListener,
+    MediaItemUpdatedListener,
+  ].forEach((Listener) => new Listener(natsWrapper.client).listen());
 
   // connect to database server
   await mongoose.connect(MONGO_URI, {

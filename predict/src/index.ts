@@ -2,10 +2,20 @@ import * as Sentry from "@sentry/node";
 import { RewriteFrames } from "@sentry/integrations";
 
 import mongoose from "mongoose";
-import { getNextUserToProcess } from "./modules/generate-suggestions/generate-suggestions";
+import {
+  getNextUserToProcess,
+  UserCreatedListener,
+} from "./modules/generate-suggestions/generate-suggestions";
 import { createSuggestions } from "./modules/generate-suggestions/generate-suggestions";
 
 import { natsWrapper } from "./nats-wrapper";
+import {
+  GenreUpdatedListener,
+  MediaItemDestroyedListener,
+  MediaItemUpdatedListener,
+} from "./modules/track-ingest/track-ingest";
+import { MediaItemRatedListener } from "./modules/track-survey/track-survey";
+import { UserUpdatedSettingListener } from "./modules/track-user-settings/track-user-settings";
 
 /**
  * Error & performance tracking
@@ -59,6 +69,20 @@ if (!QUEUE_GROUP_NAME) {
   });
   process.on("SIGINT", () => natsWrapper.client.close());
   process.on("SIGTERM", () => natsWrapper.client.close());
+
+  // listen to events
+  [
+    // generate suggestions
+    UserCreatedListener,
+    // track-ingest
+    GenreUpdatedListener,
+    MediaItemDestroyedListener,
+    MediaItemUpdatedListener,
+    // track survey
+    MediaItemRatedListener,
+    // track user settings
+    UserUpdatedSettingListener,
+  ].forEach((Listener) => new Listener(natsWrapper.client).listen());
 
   // connect to database server
   await mongoose.connect(MONGO_URI, {
