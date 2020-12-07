@@ -27,7 +27,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: flickswipe
             - name: MONGO_URI
-              value: "mongodb://user-mongo-srv:27017/user"
+              value: "mongodb+srv://flickswipe:Ey0lpzpKoFhRq5bq@flickswipe-mongodb-clus.v6qxz.mongodb.net/user"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
