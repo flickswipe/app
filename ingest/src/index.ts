@@ -112,6 +112,6 @@ if (!TMDB_KEY) {
     // Earliest release date to include
     earliestReleaseDate: new Date("01-01-1970"),
     // Minimum TMDB popularity to include
-    minTmdbPopularity: 20,
+    minTmdbPopularity: 5,
   });
 })();

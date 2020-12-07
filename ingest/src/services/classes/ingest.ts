@@ -73,11 +73,17 @@ export class Ingest {
     const msUntil8am = new Date().getTime() - new Date().setHours(8, 0, 0, 0);
     const oncePerDay = 24 * 60 * 60 * 1000;
 
+    const getCurrentDay = () => {
+      const today = new Date();
+      Ingest.runTmdbFileExportFetch(today, options);
+    };
+
+    if (msUntil8am > 60 * 1000) {
+      getCurrentDay();
+    }
+
     setTimeout(() => {
-      setInterval(() => {
-        const today = new Date();
-        Ingest.runTmdbFileExportFetch(today, options);
-      }, oncePerDay);
+      setInterval(getCurrentDay, oncePerDay);
     }, msUntil8am);
   }
 

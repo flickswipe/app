@@ -1,6 +1,6 @@
 import { User } from "../models/user";
 
-const DEFAULT_MAX_QUEUE_LENGTH = 50;
+const ENFORCED_MAX_QUEUE_LENGTH = 50;
 
 export async function getNextUserToProcess(
   opts: {
@@ -11,7 +11,10 @@ export async function getNextUserToProcess(
 } | null> {
   const user = await User.findOne({
     queueLength: {
-      $lt: opts.maxQueueLength || DEFAULT_MAX_QUEUE_LENGTH,
+      $lt:
+        opts.maxQueueLength < ENFORCED_MAX_QUEUE_LENGTH
+          ? opts.maxQueueLength
+          : ENFORCED_MAX_QUEUE_LENGTH,
     },
   }).sort({ queueLength: "asc", updatedAt: "desc" });
 

@@ -10,6 +10,7 @@ import { createSuggestions } from "./modules/generate-suggestions/generate-sugge
 
 import { natsWrapper } from "./nats-wrapper";
 import {
+  countMediaItems,
   GenreUpdatedListener,
   MediaItemDestroyedListener,
   MediaItemUpdatedListener,
@@ -95,7 +96,10 @@ if (!QUEUE_GROUP_NAME) {
   // continuously generate suggestions
   const loop = async () => {
     console.log(`Generating user suggestions...`);
-    const user = await getNextUserToProcess();
+    const totalMediaItems = await countMediaItems();
+    const user = await getNextUserToProcess({
+      maxQueueLength: totalMediaItems,
+    });
 
     if (!user) {
       console.log(`No users need suggestions, idling for 1 minute!`);
