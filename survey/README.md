@@ -7,6 +7,15 @@ Provides media item data to user and consumes user ratings.
 Listens for events from the `INGEST` microservice and stores the data. Provides
 a set of routes for the app to access media item data.
 
+### Setup
+
+Optionally uses the `survey-db-user` and `survey-db-pass` secrets to override `db-pass` and `db-user`
+
+```
+kubectl create secret generic survey-db-user --from-literal=JWT_KEY=???
+kubectl create secret generic survey-db-pass --from-literal=JWT_KEY=???
+```
+
 ### API Documentation
 
 Run `npm run apidoc` to generate documentation, then open it:

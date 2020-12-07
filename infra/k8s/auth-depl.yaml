@@ -26,8 +26,32 @@ spec:
               value: "http://nats-srv:4222"
             - name: NATS_CLUSTER_ID
               value: flickswipe
+            - name: AUTH_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-db-user
+                  key: AUTH_DB_USER
+                  optional: true
+            - name: AUTH_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-db-pass
+                  key: AUTH_DB_PASS
+                  optional: true
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-user
+                  key: DB_USER
+                  optional: true
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-pass
+                  key: DB_PASS
+                  optional: true
             - name: MONGO_URI
-              value: "mongodb+srv://flickswipe:Ey0lpzpKoFhRq5bq@flickswipe-mongodb-clus.v6qxz.mongodb.net/auth"
+              value: "mongodb+srv://flickswipe-mongodb-clus.v6qxz.mongodb.net"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

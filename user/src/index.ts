@@ -40,6 +40,10 @@ const {
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,
+  USER_DB_USER,
+  USER_DB_PASS,
+  DB_USER,
+  DB_PASS,
   MONGO_URI,
   JWT_KEY,
   PORT,
@@ -54,6 +58,12 @@ if (!NATS_URL) {
 }
 if (!NATS_CLUSTER_ID) {
   throw new Error(`NATS_CLUSTER_ID must be defined`);
+}
+if (!USER_DB_USER && !DB_USER) {
+  throw new Error(`USER_DB_USER or DB_USER must be defined`);
+}
+if (!USER_DB_PASS && !DB_PASS) {
+  throw new Error(`USER_DB_PASS or DB_PASS must be defined`);
 }
 if (!MONGO_URI) {
   throw new Error(`MONGO_URI must be defined`);
@@ -93,9 +103,12 @@ if (!QUEUE_GROUP_NAME) {
 
   // connect to database server
   await mongoose.connect(MONGO_URI, {
+    dbName: "user",
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    user: USER_DB_USER || DB_USER,
+    pass: USER_DB_PASS || DB_PASS,
   });
   console.log(`Connected to MongoDb`);
 

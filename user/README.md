@@ -2,6 +2,15 @@
 
 Manage user settings and relationships; generate/process media survey queues.
 
+### Setup
+
+Optionally uses the `user-db-user` and `user-db-pass` secrets to override `db-pass` and `db-user`
+
+```
+kubectl create secret generic user-db-user --from-literal=JWT_KEY=???
+kubectl create secret generic user-db-pass --from-literal=JWT_KEY=???
+```
+
 ### Overview
 
 This microservice has four main modules:

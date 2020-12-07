@@ -11,6 +11,13 @@ kubectl create secret generic rapidapi-secret --from-literal=RAPIDAPI_KEY=???
 kubectl create secret generic tmdb-secret --from-literal=TMDB_KEY=???
 ```
 
+Optionally uses the `ingest-db-user` and `ingest-db-pass` secrets to override `db-pass` and `db-user`
+
+```
+kubectl create secret generic ingest-db-user --from-literal=JWT_KEY=???
+kubectl create secret generic ingest-db-pass --from-literal=JWT_KEY=???
+```
+
 ### Overview
 
 Movie data is imported from [TMDB](https://developers.themoviedb.org/3/getting-started "TMDB") and then combined with availability on streaming services data from [Utelly](https://www.utelly.com/). Movie data is free for non-commercial use, whereas utelly charges 0.01 cents (USD) per request (1000 free requests per month).

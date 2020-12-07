@@ -36,5 +36,29 @@ spec:
               value: "http://nats-srv:4222"
             - name: NATS_CLUSTER_ID
               value: flickswipe
+            - name: INGEST_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ingest-db-user
+                  key: INGEST_DB_USER
+                  optional: true
+            - name: INGEST_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ingest-db-pass
+                  key: INGEST_DB_PASS
+                  optional: true
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-user
+                  key: DB_USER
+                  optional: true
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-pass
+                  key: DB_PASS
+                  optional: true
             - name: MONGO_URI
-              value: "mongodb+srv://flickswipe:Ey0lpzpKoFhRq5bq@flickswipe-mongodb-clus.v6qxz.mongodb.net/ingest"
+              value: "mongodb+srv://flickswipe-mongodb-clus.v6qxz.mongodb.net"

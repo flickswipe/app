@@ -23,6 +23,10 @@ Sentry.init({
  * Get environment variables
  */
 const {
+  INGEST_DB_USER,
+  INGEST_DB_PASS,
+  DB_USER,
+  DB_PASS,
   MONGO_URI,
   NATS_CLIENT_ID,
   NATS_URL,
@@ -31,6 +35,12 @@ const {
   TMDB_KEY,
 } = process.env;
 
+if (!INGEST_DB_USER && !DB_USER) {
+  throw new Error(`INGEST_DB_USER or DB_USER must be defined`);
+}
+if (!INGEST_DB_PASS && !DB_PASS) {
+  throw new Error(`INGEST_DB_PASS or DB_PASS must be defined`);
+}
 if (!MONGO_URI) {
   throw new Error(`MONGO_URI must be defined`);
 }
@@ -43,11 +53,9 @@ if (!NATS_URL) {
 if (!NATS_CLUSTER_ID) {
   throw new Error(`NATS_CLUSTER_ID must be defined`);
 }
-
 if (!RAPIDAPI_KEY) {
   throw new Error(`RAPIDAPI_KEY must be defined`);
 }
-
 if (!TMDB_KEY) {
   throw new Error(`TMDB_KEY must be defined`);
 }
@@ -67,10 +75,13 @@ if (!TMDB_KEY) {
 
   // connect to database server
   await mongoose.connect(MONGO_URI, {
+    dbName: "ingest",
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    user: INGEST_DB_USER || DB_USER,
+    pass: INGEST_DB_PASS || DB_PASS,
   });
   console.log(`Connected to MongoDb`);
 
@@ -112,6 +123,6 @@ if (!TMDB_KEY) {
     // Earliest release date to include
     earliestReleaseDate: new Date("01-01-1970"),
     // Minimum TMDB popularity to include
-    minTmdbPopularity: 5,
+    minTmdbPopularity: 20,
   });
 })();

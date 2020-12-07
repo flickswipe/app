@@ -71,5 +71,5 @@ async function createGenreDoc(data: GenreUpdatedEvent["data"]): Promise<void> {
 
   await Genre.build({ id, tmdbGenreId, name }).save();
 
-  console.log(`Created genre #${tmdbGenreId} with name "${name}"`);
+  console.log(`Created genre #${id} with name "${name}"`);
 }

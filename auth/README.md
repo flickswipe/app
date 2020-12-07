@@ -10,6 +10,13 @@ Requires the `jwt-secret` secret, which can be any string of (secret) random cha
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=???
 ```
 
+Optionally uses the `auth-db-user` and `auth-db-pass` secrets to override `db-pass` and `db-user`
+
+```
+kubectl create secret generic auth-db-user --from-literal=JWT_KEY=???
+kubectl create secret generic auth-db-pass --from-literal=JWT_KEY=???
+```
+
 ### API Documentation
 
 Run `npm run apidoc` to generate documentation, then open it:
