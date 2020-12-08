@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+import {
+    attachExitTasks, connectToDatabaseServer, connectToMessagingServer
+} from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -78,35 +81,31 @@ if (!QUEUE_GROUP_NAME) {
  * Initialize
  */
 (async () => {
-  // connect to messaging server
-  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-  natsWrapper.client.on("close", () => {
-    console.info(`NATS connection closed!`);
-    process.exit();
-  });
-  process.on("SIGINT", () => natsWrapper.client.close());
-  process.on("SIGTERM", () => natsWrapper.client.close());
+  const exitTasks = await Promise.all([
+    connectToMessagingServer(
+      natsWrapper,
+      NATS_CLUSTER_ID,
+      NATS_CLIENT_ID,
+      NATS_URL,
+      [
+        // track-ingest
+        GenreUpdatedListener,
+        MediaItemDestroyedListener,
+        MediaItemUpdatedListener,
+        // track prediect
+        MediaItemsSuggestedListener,
+      ]
+    ),
+    connectToDatabaseServer(
+      mongoose,
+      MONGO_URI,
+      SURVEY_DB_USER || DB_USER,
+      SURVEY_DB_PASS || DB_PASS,
+      "survey"
+    ),
+  ]);
 
-  // listen to events
-  [
-    // track-ingest
-    GenreUpdatedListener,
-    MediaItemDestroyedListener,
-    MediaItemUpdatedListener,
-    // track prediect
-    MediaItemsSuggestedListener,
-  ].forEach((Listener) => new Listener(natsWrapper.client).listen());
-
-  // connect to database server
-  await mongoose.connect(MONGO_URI, {
-    dbName: "survey",
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    user: SURVEY_DB_USER || DB_USER,
-    pass: SURVEY_DB_PASS || DB_PASS,
-  });
-  console.info(`Connected to MongoDb`);
+  attachExitTasks(exitTasks);
 
   // start http server
   app.use(Sentry.Handlers.requestHandler());

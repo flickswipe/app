@@ -1,3 +1,4 @@
+import { attachExitTasks, connectToMailServer, connectToMessagingServer } from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 
@@ -67,29 +68,25 @@ if (!SENDER_ADDRESS) {
  * Initialize
  */
 (async () => {
-  // connect to messaging server
-  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-  natsWrapper.client.on("close", () => {
-    console.info(`NATS connection closed!`);
-    process.exit();
-  });
-  process.on("SIGINT", () => natsWrapper.client.close());
-  process.on("SIGTERM", () => natsWrapper.client.close());
+  const exitTasks = await Promise.all([
+    connectToMessagingServer(
+      natsWrapper,
+      NATS_CLUSTER_ID,
+      NATS_CLIENT_ID,
+      NATS_URL,
+      [EmailTokenCreatedListener]
+    ),
+    connectToMailServer(
+      transporterWrapper,
+      parseInt(SMTP_PORT, 10),
+      SMTP_HOST,
+      SMTP_USER,
+      SMTP_PASS,
+      SENDER_ADDRESS
+    ),
+  ]);
 
-  // listen to events
-  new EmailTokenCreatedListener(natsWrapper.client).listen();
-
-  // connect to mail server
-  await transporterWrapper.connect(
-    parseInt(SMTP_PORT, 10),
-    SMTP_HOST,
-    SMTP_USER,
-    SMTP_PASS,
-    // mail option defaults
-    {
-      from: SENDER_ADDRESS,
-    }
-  );
+  attachExitTasks(exitTasks);
 
   // send test email
   if (NODE_ENV === "development") {

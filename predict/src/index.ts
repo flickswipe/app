@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+import {
+    attachExitTasks, connectToDatabaseServer, connectToMessagingServer
+} from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 
@@ -67,39 +70,35 @@ if (!QUEUE_GROUP_NAME) {
  * Initialize
  */
 (async () => {
-  // connect to messaging server
-  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-  natsWrapper.client.on("close", () => {
-    console.info(`NATS connection closed!`);
-    process.exit();
-  });
-  process.on("SIGINT", () => natsWrapper.client.close());
-  process.on("SIGTERM", () => natsWrapper.client.close());
+  const exitTasks = await Promise.all([
+    connectToMessagingServer(
+      natsWrapper,
+      NATS_CLUSTER_ID,
+      NATS_CLIENT_ID,
+      NATS_URL,
+      [
+        // generate suggestions
+        UserCreatedListener,
+        // track-ingest
+        GenreUpdatedListener,
+        MediaItemDestroyedListener,
+        MediaItemUpdatedListener,
+        // track survey
+        MediaItemRatedListener,
+        // track user settings
+        UserUpdatedSettingListener,
+      ]
+    ),
+    connectToDatabaseServer(
+      mongoose,
+      MONGO_URI,
+      PREDICT_DB_USER || DB_USER,
+      PREDICT_DB_PASS || DB_PASS,
+      "predict"
+    ),
+  ]);
 
-  // listen to events
-  [
-    // generate suggestions
-    UserCreatedListener,
-    // track-ingest
-    GenreUpdatedListener,
-    MediaItemDestroyedListener,
-    MediaItemUpdatedListener,
-    // track survey
-    MediaItemRatedListener,
-    // track user settings
-    UserUpdatedSettingListener,
-  ].forEach((Listener) => new Listener(natsWrapper.client).listen());
-
-  // connect to database server
-  await mongoose.connect(MONGO_URI, {
-    dbName: "predict",
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    user: PREDICT_DB_USER || DB_USER,
-    pass: PREDICT_DB_PASS || DB_PASS,
-  });
-  console.info(`Connected to MongoDb`);
+  attachExitTasks(exitTasks);
 
   // continuously generate suggestions
   const loop = async () => {

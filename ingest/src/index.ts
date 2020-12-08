@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+import {
+    attachExitTasks, connectToDatabaseServer, connectToMessagingServer
+} from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 
@@ -64,26 +67,23 @@ if (!TMDB_KEY) {
  * Initialize
  */
 (async () => {
-  // connect to messaging server
-  await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
-  natsWrapper.client.on("close", () => {
-    console.info(`NATS connection closed!`);
-    process.exit();
-  });
-  process.on("SIGINT", () => natsWrapper.client.close());
-  process.on("SIGTERM", () => natsWrapper.client.close());
+  const exitTasks = await Promise.all([
+    connectToMessagingServer(
+      natsWrapper,
+      NATS_CLUSTER_ID,
+      NATS_CLIENT_ID,
+      NATS_URL
+    ),
+    connectToDatabaseServer(
+      mongoose,
+      MONGO_URI,
+      INGEST_DB_USER || DB_USER,
+      INGEST_DB_PASS || DB_PASS,
+      "ingest"
+    ),
+  ]);
 
-  // connect to database server
-  await mongoose.connect(MONGO_URI, {
-    dbName: "ingest",
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    user: INGEST_DB_USER || DB_USER,
-    pass: INGEST_DB_PASS || DB_PASS,
-  });
-  console.info(`Connected to MongoDb`);
+  attachExitTasks(exitTasks);
 
   // start ingest
   Ingest.start({
