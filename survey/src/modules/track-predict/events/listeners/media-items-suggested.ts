@@ -47,5 +47,5 @@ async function createSuggestionDocs(
 
   await Promise.all(promises);
 
-  console.log(`Suggested ${mediaItems.length} media items for user #${user}`);
+  console.info(`Suggested ${mediaItems.length} media items for user #${user}`);
 }

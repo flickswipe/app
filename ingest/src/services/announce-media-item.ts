@@ -83,7 +83,7 @@ export async function announceMediaItem({
   });
 
   if (!Object.values(streamLocations).length) {
-    console.log(
+    console.info(
       `${tmdbMovieDoc.title} isn't availabe to stream in any country`
     );
     return;
@@ -113,7 +113,7 @@ export async function announceMediaItem({
   };
 
   // publish event
-  console.log(`Broadcasting media item...`, mediaItem);
+  console.info(`Broadcasting media item...`, mediaItem);
   await new MediaItemUpdatedPublisher(natsWrapper.client).publish(mediaItem);
 
   // mark movie as published

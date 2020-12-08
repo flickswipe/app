@@ -61,5 +61,5 @@ export async function blockRelationship(
     updatedAt: new Date(),
   });
 
-  console.log(`${fromUserId} blocked relationship with ${toUserId}`);
+  console.info(`${fromUserId} blocked relationship with ${toUserId}`);
 }

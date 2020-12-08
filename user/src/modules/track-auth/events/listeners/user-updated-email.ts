@@ -50,12 +50,12 @@ async function updateUserEmail(
 
   // don't update if current data more recent
   if (existingDoc.updatedAt > data.updatedAt) {
-    console.log(`Skipping user update: current data is more recent`);
+    console.info(`Skipping user update: current data is more recent`);
     return;
   }
   // update
   existingDoc.email = email;
   await existingDoc.save();
 
-  console.log(`Updated user #${id}'s email to ${existingDoc.email}`);
+  console.info(`Updated user #${id}'s email to ${existingDoc.email}`);
 }

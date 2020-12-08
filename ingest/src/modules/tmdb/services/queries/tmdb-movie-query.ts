@@ -29,7 +29,10 @@ export async function tmdbMovieQuery(
 
   // handle missing data
   if (!response?.data?.id) {
-    console.log(`tmdb movie query invalid response`, response && response.data);
+    console.info(
+      `tmdb movie query invalid response`,
+      response && response.data
+    );
     return null;
   }
 

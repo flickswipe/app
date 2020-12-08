@@ -36,7 +36,7 @@ export async function rejectRelationship(
     updatedAt: new Date(),
   });
 
-  console.log(
+  console.info(
     `${originalReceiverId} rejected relationship with ${originalRequesterId}`
   );
 }

@@ -29,7 +29,7 @@ export const movieIdsReadFileExport = async (
   const fileExportUrl = URL.replace("MM_DD_YYYY", `${MM}_${DD}_${YYYY}`);
 
   // stream from the server
-  console.log(`Getting file export ${fileExportUrl}`);
+  console.info(`Getting file export ${fileExportUrl}`);
 
   let result;
   try {
@@ -44,7 +44,7 @@ export const movieIdsReadFileExport = async (
   }
 
   if (!result?.data) {
-    console.log(`File export stream contains no data`);
+    console.info(`File export stream contains no data`);
     return;
   }
 

@@ -59,5 +59,5 @@ async function updateUserSettings(
     await Setting.build({ settingType, user, value }).save();
   }
 
-  console.log(`Updated ${settingType} setting for user #${user}`, value);
+  console.info(`Updated ${settingType} setting for user #${user}`, value);
 }

@@ -47,7 +47,7 @@ export async function acceptRelationship(
     updatedAt: new Date(),
   });
 
-  console.log(
+  console.info(
     `${originalReceiverId} accepted relationship with ${originalRequesterId}`
   );
 }

@@ -67,7 +67,7 @@ if (!TMDB_KEY) {
   // connect to messaging server
   await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
   natsWrapper.client.on("close", () => {
-    console.log(`NATS connection closed!`);
+    console.info(`NATS connection closed!`);
     process.exit();
   });
   process.on("SIGINT", () => natsWrapper.client.close());
@@ -83,7 +83,7 @@ if (!TMDB_KEY) {
     user: INGEST_DB_USER || DB_USER,
     pass: INGEST_DB_PASS || DB_PASS,
   });
-  console.log(`Connected to MongoDb`);
+  console.info(`Connected to MongoDb`);
 
   // start ingest
   Ingest.start({

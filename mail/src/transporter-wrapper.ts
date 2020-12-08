@@ -50,7 +50,7 @@ class TransporterWrapper {
           return reject(error);
         }
 
-        console.log("Connected to mail server");
+        console.info("Connected to mail server");
         resolve();
       });
     });
@@ -62,7 +62,7 @@ class TransporterWrapper {
     console.info(`Sent ${mailOptions.subject} to ${mailOptions.to}`);
 
     if (this.isEtherealAccount) {
-      console.log(
+      console.info(
         `Ethereal email preview URL: `,
         nodemailer.getTestMessageUrl(info)
       );

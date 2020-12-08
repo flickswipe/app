@@ -33,7 +33,7 @@ export async function utellyQuery(
 
   // handle missing data
   if (!response?.data?.collection?.locations) {
-    console.log(`utelly query invalid response`, response && response.data);
+    console.info(`utelly query invalid response`, response && response.data);
     return null;
   }
 

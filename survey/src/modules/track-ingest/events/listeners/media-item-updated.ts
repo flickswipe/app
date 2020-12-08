@@ -45,11 +45,11 @@ async function updateMediaItem(
   existingDoc: MediaItemDoc,
   data: MediaItemUpdatedEvent["data"]
 ): Promise<void> {
-  console.log("updateMediaItem", data);
+  console.info("updateMediaItem", data);
 
   // don't overwrite more recent data
   if (existingDoc.updatedAt > data.updatedAt) {
-    console.log(`Skipping media item update: current data is more recent`);
+    console.info(`Skipping media item update: current data is more recent`);
     return;
   }
   // update
@@ -66,7 +66,7 @@ async function updateMediaItem(
 
   await existingDoc.save();
 
-  console.log(`Updated media item "${data.title}"`);
+  console.info(`Updated media item "${data.title}"`);
 }
 
 /**
@@ -75,9 +75,9 @@ async function updateMediaItem(
 async function createMediaItem(
   data: MediaItemUpdatedEvent["data"]
 ): Promise<void> {
-  console.log("createMediaItem", data);
+  console.info("createMediaItem", data);
 
   await MediaItem.build(data).save();
 
-  console.log(`Created media item "${data.title}"`);
+  console.info(`Created media item "${data.title}"`);
 }

@@ -44,5 +44,5 @@ async function createUser(data: UserCreatedEvent["data"]): Promise<void> {
 
   await User.build({ id, email }).save();
 
-  console.log(`Created user #${id} with email "${email}"`);
+  console.info(`Created user #${id} with email "${email}"`);
 }

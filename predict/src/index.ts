@@ -70,7 +70,7 @@ if (!QUEUE_GROUP_NAME) {
   // connect to messaging server
   await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
   natsWrapper.client.on("close", () => {
-    console.log(`NATS connection closed!`);
+    console.info(`NATS connection closed!`);
     process.exit();
   });
   process.on("SIGINT", () => natsWrapper.client.close());
@@ -99,18 +99,18 @@ if (!QUEUE_GROUP_NAME) {
     user: PREDICT_DB_USER || DB_USER,
     pass: PREDICT_DB_PASS || DB_PASS,
   });
-  console.log(`Connected to MongoDb`);
+  console.info(`Connected to MongoDb`);
 
   // continuously generate suggestions
   const loop = async () => {
-    console.log(`Generating user suggestions...`);
+    console.info(`Generating user suggestions...`);
     const totalMediaItems = await countMediaItems();
     const user = await getNextUserToProcess({
       maxQueueLength: totalMediaItems,
     });
 
     if (!user) {
-      console.log(`No users need suggestions, idling for 1 minute!`);
+      console.info(`No users need suggestions, idling for 1 minute!`);
       setTimeout(loop, 60 * 1000);
       return;
     }

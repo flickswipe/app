@@ -8,7 +8,7 @@ export async function fetchTmdbFileExport(
   date: Date,
   options: Record<string, unknown> = {}
 ): Promise<Stream> {
-  console.log(`Fetching tmdb file export...`);
+  console.info(`Fetching tmdb file export...`);
 
   const read = await movieIdsReadFileExport(date, options);
 
@@ -24,9 +24,9 @@ export async function fetchTmdbFileExport(
     write
       .on("finish", async () => {
         const count = await MovieId.countDocuments();
-        console.log(`Fetched ${count} IDs from tmdb file export!`);
+        console.info(`Fetched ${count} IDs from tmdb file export!`);
         const validCount = await MovieId.countDocuments({ neverUse: false });
-        console.log(`(Tracking data for ${validCount} movies)`);
+        console.info(`(Tracking data for ${validCount} movies)`);
 
         resolve(write);
       })

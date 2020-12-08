@@ -47,7 +47,7 @@ async function updateMediaItem(
 ): Promise<void> {
   // don't overwrite more recent data
   if (existingDoc.updatedAt > data.updatedAt) {
-    console.log(`Skipping media item update: current data is more recent`);
+    console.info(`Skipping media item update: current data is more recent`);
     return;
   }
   // update
@@ -64,7 +64,7 @@ async function updateMediaItem(
 
   await existingDoc.save();
 
-  console.log(`Updated media item "${data.title}"`);
+  console.info(`Updated media item "${data.title}"`);
 }
 
 /**
@@ -75,5 +75,5 @@ async function createMediaItem(
 ): Promise<void> {
   await MediaItem.build(data).save();
 
-  console.log(`Created media item "${data.title}"`);
+  console.info(`Created media item "${data.title}"`);
 }

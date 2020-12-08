@@ -23,7 +23,7 @@ export class Ingest {
    * @param options
    */
   static async start(options: StartOptions): Promise<void> {
-    console.log(`Starting ingestion...`);
+    console.info(`Starting ingestion...`);
     (await Queue.isFirstImport())
       ? Ingest.runFirstImport(options)
       : Ingest.runRegularImport(options);
@@ -35,7 +35,7 @@ export class Ingest {
    * @param options
    */
   static async runFirstImport(options: StartOptions): Promise<void> {
-    console.log(`Running first import...`);
+    console.info(`Running first import...`);
 
     // get the file export
     const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
@@ -55,8 +55,8 @@ export class Ingest {
    * @param options
    */
   static async runRegularImport(options: StartOptions): Promise<void> {
-    console.log(`Scheduling regular import...`);
-    console.log(
+    console.info(`Scheduling regular import...`);
+    console.info(
       `Data will be fetched for ${options.countries.length} countries`
     );
 
@@ -70,7 +70,7 @@ export class Ingest {
    * Schedule regular TMDB file fetch
    */
   static scheduleTmdbFileExportFetch(options: StartOptions): void {
-    console.log(`Scheduling tmdb file data fetch...`);
+    console.info(`Scheduling tmdb file data fetch...`);
 
     const msUntil8am = new Date().getTime() - new Date().setHours(8, 0, 0, 0);
     const oncePerDay = 24 * 60 * 60 * 1000;
@@ -105,7 +105,7 @@ export class Ingest {
    * Schedule regular TMDB movie data fetch
    */
   static scheduleTmdbMovieFetch(options: StartOptions): void {
-    console.log(`Scheduling tmdb movie data fetch...`);
+    console.info(`Scheduling tmdb movie data fetch...`);
 
     const oncePerSecond = 1000;
 
@@ -113,7 +113,7 @@ export class Ingest {
       const nextTmdbMovieId = await Queue.getNextTmdbMovie();
 
       if (!nextTmdbMovieId) {
-        console.log(`Nothing in queue for tmdb movie data`);
+        console.info(`Nothing in queue for tmdb movie data`);
         return;
       }
 
@@ -139,7 +139,7 @@ export class Ingest {
    * @param options
    */
   static scheduleTmdbGenresFetch(options: StartOptions): void {
-    console.log(`Scheduling tmdb genres data fetch...`);
+    console.info(`Scheduling tmdb genres data fetch...`);
 
     const oncePerDay = 24 * 60 * 60 * 1000;
 
@@ -163,7 +163,7 @@ export class Ingest {
    * @param options
    */
   static scheduleUtellyDataFetch(options: StartOptions): void {
-    console.log(`Scheduling utelly data fetch...`);
+    console.info(`Scheduling utelly data fetch...`);
     const { countries } = options;
 
     const thousandPerDay = ((24 * 60 * 60 * 1000) / 1000) * countries.length;
@@ -172,7 +172,7 @@ export class Ingest {
       const nextImdbId = await Queue.getNextUtelly();
 
       if (!nextImdbId) {
-        console.log(`Nothing in queue for utelly data`);
+        console.info(`Nothing in queue for utelly data`);
         return;
       }
 

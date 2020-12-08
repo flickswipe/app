@@ -36,7 +36,7 @@ export async function cancelRelationship(
     updatedAt: new Date(),
   });
 
-  console.log(
+  console.info(
     `${originalRequesterId} cancelled relationship with ${originalReceiverId}`
   );
 }

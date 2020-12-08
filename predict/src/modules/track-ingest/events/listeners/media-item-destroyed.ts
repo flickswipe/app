@@ -43,5 +43,5 @@ async function deleteMediaItem(
   await MediaItem.deleteMany({
     _id: id,
   });
-  console.log(`Removed media item ${id}`);
+  console.info(`Removed media item ${id}`);
 }

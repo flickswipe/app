@@ -52,7 +52,7 @@ async function updateGenreDoc(
 
   // don't update if current data more recent
   if (existingDoc.updatedAt > data.updatedAt) {
-    console.log(`Skipping genre update: current data is more recent`);
+    console.info(`Skipping genre update: current data is more recent`);
     return;
   }
 
@@ -61,7 +61,7 @@ async function updateGenreDoc(
   existingDoc.name = name;
   await existingDoc.save();
 
-  console.log(`Updated genre #${tmdbGenreId}'s name to ${existingDoc.name}`);
+  console.info(`Updated genre #${tmdbGenreId}'s name to ${existingDoc.name}`);
 }
 
 /**
@@ -72,5 +72,5 @@ async function createGenreDoc(data: GenreUpdatedEvent["data"]): Promise<void> {
 
   await Genre.build({ id, tmdbGenreId, name }).save();
 
-  console.log(`Created genre #${id} with name "${name}"`);
+  console.info(`Created genre #${id} with name "${name}"`);
 }

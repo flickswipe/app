@@ -19,12 +19,12 @@ export async function fetchTmdbMovie(
     earliestReleaseDate?: Date;
   } = {}
 ): Promise<TmdbMovieDoc | void> {
-  console.log(`Fetching tmdb movie ${tmdbMovieId}...`);
+  console.info(`Fetching tmdb movie ${tmdbMovieId}...`);
 
   // get new data
   const raw = await tmdbMovieQuery(tmdbMovieId);
   if (!raw) {
-    console.log(`No tmdb movie data for ${tmdbMovieId}`);
+    console.info(`No tmdb movie data for ${tmdbMovieId}`);
     return null;
   }
 
@@ -62,7 +62,7 @@ export async function fetchTmdbMovie(
     }
 
     // end processing
-    console.log(`Marked ${result.title} as never to be used.`);
+    console.info(`Marked ${result.title} as never to be used.`);
     return null;
   }
 
@@ -79,7 +79,7 @@ export async function fetchTmdbMovie(
     existingDoc.plot = result.plot;
 
     await existingDoc.save();
-    console.log(`Updated tmdb movie data for ${existingDoc.title}!`);
+    console.info(`Updated tmdb movie data for ${existingDoc.title}!`);
 
     return existingDoc;
   }
@@ -97,7 +97,7 @@ export async function fetchTmdbMovie(
     runtime: result.runtime,
     plot: result.plot,
   }).save();
-  console.log(`Created tmdb movie data for ${insertedDoc.title}`);
+  console.info(`Created tmdb movie data for ${insertedDoc.title}`);
 
   return insertedDoc;
 }

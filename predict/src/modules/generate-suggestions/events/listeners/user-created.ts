@@ -50,5 +50,5 @@ async function createUser(data: UserCreatedEvent["data"]): Promise<void> {
   const { id } = data;
 
   await User.build({ id }).save();
-  console.log(`Created user #${id}`);
+  console.info(`Created user #${id}`);
 }

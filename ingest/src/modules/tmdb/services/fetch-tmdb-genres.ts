@@ -14,12 +14,12 @@ export async function fetchTmdbGenres(
 ): Promise<TmdbGenreDoc[]> {
   options;
 
-  console.log(`Fetching tmdb genres...`);
+  console.info(`Fetching tmdb genres...`);
 
   // get new data
   const raw = await tmdbGenresQuery();
   if (!raw) {
-    console.log(`No tmdb genres data`);
+    console.info(`No tmdb genres data`);
     return null;
   }
 
@@ -41,7 +41,7 @@ export async function fetchTmdbGenres(
       existingDoc.name = genre.name;
 
       await existingDoc.save();
-      console.log(`Detected tmdb genre data for ${existingDoc.name}`);
+      console.info(`Detected tmdb genre data for ${existingDoc.name}`);
 
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({
@@ -61,7 +61,7 @@ export async function fetchTmdbGenres(
     }).save();
 
     if (insertedDoc) {
-      console.log(`Detected tmdb genre data for ${insertedDoc.name}`);
+      console.info(`Detected tmdb genre data for ${insertedDoc.name}`);
 
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({

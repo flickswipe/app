@@ -28,7 +28,7 @@ export async function tmdbGenresQuery(): Promise<TmdbGenresApiResultRaw | void> 
 
   // handle missing data
   if (!response?.data?.genres) {
-    console.log(
+    console.info(
       `tmdb genres query invalid response`,
       response && response.data
     );

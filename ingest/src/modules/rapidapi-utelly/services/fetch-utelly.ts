@@ -9,12 +9,12 @@ export async function fetchUtelly(
 ): Promise<UtellyDoc | void> {
   options;
 
-  console.log(`Fetching utelly locations ${imdbId}...`);
+  console.info(`Fetching utelly locations ${imdbId}...`);
 
   // get new data
   const raw = await utellyQuery(imdbId, country);
   if (!raw) {
-    console.log(`No utelly data for ${imdbId}`);
+    console.info(`No utelly data for ${imdbId}`);
     return null;
   }
 
@@ -33,7 +33,7 @@ export async function fetchUtelly(
 
     await existingDoc.save();
 
-    console.log(`Updated utelly data for ${existingDoc.imdbId}`);
+    console.info(`Updated utelly data for ${existingDoc.imdbId}`);
     return existingDoc;
   }
 
@@ -45,7 +45,7 @@ export async function fetchUtelly(
   }).save();
 
   if (insertedDoc) {
-    console.log(`Created utelly data for ${insertedDoc.imdbId}`);
+    console.info(`Created utelly data for ${insertedDoc.imdbId}`);
   }
 
   return insertedDoc;

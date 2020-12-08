@@ -81,7 +81,7 @@ if (!QUEUE_GROUP_NAME) {
   // connect to messaging server
   await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
   natsWrapper.client.on("close", () => {
-    console.log(`NATS connection closed!`);
+    console.info(`NATS connection closed!`);
     process.exit();
   });
   process.on("SIGINT", () => natsWrapper.client.close());
@@ -96,7 +96,7 @@ if (!QUEUE_GROUP_NAME) {
     user: AUTH_DB_USER || DB_USER,
     pass: AUTH_DB_PASS || DB_PASS,
   });
-  console.log(`Connected to MongoDb`);
+  console.info(`Connected to MongoDb`);
 
   // start http server
   app.use(Sentry.Handlers.requestHandler());
@@ -104,6 +104,6 @@ if (!QUEUE_GROUP_NAME) {
   app.use(Sentry.Handlers.errorHandler());
 
   app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
+    console.info(`Listening on port ${PORT}`);
   });
 })();
