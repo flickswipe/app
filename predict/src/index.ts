@@ -5,6 +5,7 @@ import {
 } from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
 import {
     createSuggestions, getNextUserToProcess, UserCreatedListener
@@ -21,6 +22,7 @@ import { natsWrapper } from './nats-wrapper';
  */
 Sentry.init({
   integrations: [
+    new Tracing.Integrations.Mongo(),
     new RewriteFrames({
       root: __dirname || process.cwd(),
     }),

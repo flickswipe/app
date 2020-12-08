@@ -19,6 +19,7 @@ import { natsWrapper } from './nats-wrapper';
  */
 Sentry.init({
   integrations: [
+    new Tracing.Integrations.Mongo(),
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({
       // @ts-ignore
