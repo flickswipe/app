@@ -28,14 +28,24 @@ export class MediaItemUpdatedListener extends Listener<MediaItemUpdatedEvent> {
   ): Promise<void> {
     const promises = [];
 
-    // track audioLanguages
-    promises.push(createAudioLanguageIfNotExists(data.audioLanguage));
+    // parse stream locations
+    const streamLocations = parseStreamLocations(data);
 
     // track stream locations
-    parseStreamLocations(data).forEach((location) => {
+    streamLocations.forEach((location) => {
       promises.push(saveStreamLocation(location, data));
-      promises.push(createCountryIfNotExists(location.country));
     });
+
+    // track countries
+    const countries = Array.from(
+      new Set(streamLocations.map(({ country }) => country))
+    );
+    countries.forEach((country) => {
+      promises.push(createCountryIfNotExists(country));
+    });
+
+    // track audioLanguages
+    promises.push(createAudioLanguageIfNotExists(data.audioLanguage));
 
     // wait for all promises to finish
     await Promise.all(promises);
