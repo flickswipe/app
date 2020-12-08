@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-    attachExitTasks, connectToDatabaseServer, connectToMessagingServer
+    attachExitTasks, connectToDatabaseServer, connectToMessagingServer, scheduleOnce
 } from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
@@ -122,7 +122,7 @@ if (!QUEUE_GROUP_NAME) {
     const user = await getNextUserToProcess(options);
 
     if (!user) {
-      setTimeout(loop, 60 * 1000);
+      scheduleOnce(loop, 60 * 1000);
 
       console.info(`No users need suggestions`);
       tx.finish();
@@ -139,7 +139,7 @@ if (!QUEUE_GROUP_NAME) {
     });
 
     await createSuggestions(user.id);
-    setImmediate(loop);
+    scheduleOnce(loop, 0);
 
     tx.finish();
     console.info(`Generated suggestions`);

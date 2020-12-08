@@ -28,11 +28,12 @@ Sentry.init({
  * Get environment variables
  */
 const {
+  INGEST_MONGO_URI,
   INGEST_DB_USER,
   INGEST_DB_PASS,
+  MONGO_URI,
   DB_USER,
   DB_PASS,
-  MONGO_URI,
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,
@@ -46,8 +47,8 @@ if (!INGEST_DB_USER && !DB_USER) {
 if (!INGEST_DB_PASS && !DB_PASS) {
   throw new Error(`INGEST_DB_PASS or DB_PASS must be defined`);
 }
-if (!MONGO_URI) {
-  throw new Error(`MONGO_URI must be defined`);
+if (!INGEST_MONGO_URI && !MONGO_URI) {
+  throw new Error(`INGEST_MONGO_URI or MONGO_URI must be defined`);
 }
 if (!NATS_CLIENT_ID) {
   throw new Error(`NATS_CLIENT_ID must be defined`);
@@ -78,7 +79,7 @@ if (!TMDB_KEY) {
     ),
     connectToDatabaseServer(
       mongoose,
-      MONGO_URI,
+      INGEST_MONGO_URI || MONGO_URI,
       INGEST_DB_USER || DB_USER,
       INGEST_DB_PASS || DB_PASS,
       "ingest"
@@ -115,10 +116,6 @@ if (!TMDB_KEY) {
       // "pt", // Portugal
       // "se", // Sweden
       // "sg", // Singapore
-    ],
-    // AudioLanguages to fetch data in
-    audioLanguages: [
-      "en", // English
     ],
     // Whether to include adult media
     includeAdultContent: false,

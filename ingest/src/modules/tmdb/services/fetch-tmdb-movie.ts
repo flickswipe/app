@@ -114,7 +114,7 @@ export async function fetchTmdbMovie(
     existingDoc.plot = result.plot;
     await existingDoc.save();
 
-    console.info(`Updated tmdb movie data for ${existingDoc.title}!`);
+    console.info(`Updated tmdb movie data for ${existingDoc.title}`);
     tx.finish();
     return existingDoc;
   }
