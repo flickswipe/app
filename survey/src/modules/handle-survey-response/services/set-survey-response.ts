@@ -46,7 +46,5 @@ export async function setSurveyResponse(
     updatedAt: new Date(),
   });
 
-  console.info(
-    `user #${user} responded to media item #${mediaItem} as: ${interestType} (rating: ${rating})`
-  );
+  console.info(`User ${user} rated media item ${mediaItem}`);
 }

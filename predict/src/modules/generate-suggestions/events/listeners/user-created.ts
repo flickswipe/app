@@ -49,6 +49,6 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
 async function createUser(data: UserCreatedEvent["data"]): Promise<void> {
   const { id } = data;
 
-  await User.build({ id }).save();
-  console.info(`Created user #${id}`);
+  const insertedDoc = await User.build({ id }).save();
+  console.info(`Tracked user ${insertedDoc.id}`);
 }

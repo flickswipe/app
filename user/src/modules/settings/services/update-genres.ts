@@ -53,4 +53,6 @@ export async function updateGenres(
     value: value,
     updatedAt: new Date(),
   });
+
+  console.info(`User ${userId} updated setting ${SettingType.Genres}`);
 }

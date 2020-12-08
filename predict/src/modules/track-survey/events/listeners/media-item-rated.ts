@@ -43,7 +43,13 @@ export class MediaItemRatedListener extends Listener<MediaItemRatedEvent> {
 async function createSurveyReponse(
   data: MediaItemRatedEvent["data"]
 ): Promise<void> {
-  await SurveyResponse.build({ user: data.user, mediaItem: data.id }).save();
+  const insertedDoc = await SurveyResponse.build({
+    user: data.user,
+    mediaItem: data.id,
+  }).save();
+  console.info(
+    `Tracked media item rating: user ${insertedDoc.user} rated ${insertedDoc.mediaItem}`
+  );
 }
 
 async function removeFromQueue(

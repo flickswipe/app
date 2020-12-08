@@ -48,4 +48,6 @@ export async function updateStreamLocations(
     value: value,
     updatedAt: new Date(),
   });
+
+  console.info(`User ${userId} updated setting ${SettingType.StreamLocations}`);
 }

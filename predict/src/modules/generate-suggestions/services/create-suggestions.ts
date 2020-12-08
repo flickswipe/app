@@ -107,8 +107,6 @@ async function getUserSuggestions(
   userId: string,
   settings: SimpleSetting[]
 ): Promise<string[]> {
-  console.info("Creating suggestions for userId", userId);
-
   // Base query
   const query = {};
 
@@ -303,7 +301,7 @@ async function getUserSuggestions(
   const suggestions: string[] = candidates.map(({ id }) => id).filter((n) => n);
 
   console.info(
-    `created ${suggestions.length} suggestions for #${userId}`,
+    `created ${suggestions.length} suggestions for ${userId}`,
     suggestions
   );
 

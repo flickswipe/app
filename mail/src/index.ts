@@ -86,7 +86,7 @@ if (!SENDER_ADDRESS) {
     ),
   ]);
 
-  attachExitTasks(exitTasks);
+  attachExitTasks(process, exitTasks);
 
   // send test email
   if (NODE_ENV === "development") {

@@ -92,6 +92,10 @@ router.post(
       message: `User created`,
       user: userPayload,
     });
+
+    console.info(
+      `User ${user.id} created ${user.email ? "with" : "without"} email`
+    );
   }
 );
 

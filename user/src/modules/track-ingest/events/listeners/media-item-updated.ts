@@ -2,8 +2,8 @@ import { Message } from 'node-nats-streaming';
 
 import { Listener, MediaItemUpdatedEvent, Subjects } from '@flickswipe/common';
 
+import { AudioLanguage } from '../../models/audio-language';
 import { Country } from '../../models/country';
-import { Language } from '../../models/language';
 import { StreamLocation, StreamLocationAttrs } from '../../models/stream-location';
 
 const { QUEUE_GROUP_NAME } = process.env;
@@ -52,12 +52,15 @@ export async function createAudioLanguageIfNotExists(
   audioLanguage: string
 ): Promise<void> {
   // create doc if not exists
-  let audioLanguageDoc = await Language.findOne({
+  const existingDoc = await AudioLanguage.findOne({
     audioLanguage,
   });
 
-  if (!audioLanguageDoc) {
-    audioLanguageDoc = await Language.build({ audioLanguage }).save();
+  if (!existingDoc) {
+    const insertedDoc = await AudioLanguage.build({ audioLanguage }).save();
+    console.info(
+      `Tracked audio language ${insertedDoc.id} ${insertedDoc.audioLanguage}`
+    );
   }
 }
 
@@ -87,7 +90,7 @@ export function parseStreamLocations(
     try {
       url = new URL(location.url).origin;
     } catch (err) {
-      console.error(`Ignore ${location.name}: invalid url`, location, err);
+      console.error(`Ignore ${location.name}: invalid url`);
       return null;
     }
 
@@ -113,7 +116,15 @@ export async function saveStreamLocation(
 
   // create if none exists
   if (!existingDoc) {
-    await StreamLocation.build({ id, name, url, country }).save();
+    const insertedDoc = await StreamLocation.build({
+      id,
+      name,
+      url,
+      country,
+    }).save();
+    console.info(
+      `Tracked stream location ${insertedDoc.id} ${insertedDoc.name} ${insertedDoc.country}`
+    );
     return;
   }
 
@@ -123,11 +134,20 @@ export async function saveStreamLocation(
   }
 
   // update
-  existingDoc.name = name;
-  existingDoc.url = url;
-  existingDoc.country = country;
+  if (
+    existingDoc.name !== name ||
+    existingDoc.url !== url ||
+    existingDoc.country !== country
+  ) {
+    existingDoc.name = name;
+    existingDoc.url = url;
+    existingDoc.country = country;
 
-  await existingDoc.save();
+    await existingDoc.save();
+    console.info(
+      `Tracked stream location ${existingDoc.id} ${existingDoc.name} ${existingDoc.country}`
+    );
+  }
 }
 
 /**
@@ -142,6 +162,7 @@ export async function createCountryIfNotExists(country: string): Promise<void> {
 
   // create if none exists
   if (!existingDoc) {
-    await Country.build({ country }).save();
+    const insertedDoc = await Country.build({ country }).save();
+    console.info(`Tracked country ${insertedDoc.id} ${insertedDoc.country}`);
   }
 }

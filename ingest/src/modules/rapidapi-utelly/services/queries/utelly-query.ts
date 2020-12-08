@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { addBreadcrumb, captureException } from '@sentry/node';
+
 import { UtellyApiResultRaw } from './utelly-parser';
 
 /**
@@ -28,12 +30,16 @@ export async function utellyQuery(
       params: { source_id: imdbId, source: "imdb", country: country },
     });
   } catch (error) {
-    console.error(`utellyQuery error`, error);
+    captureException(error);
   }
 
   // handle missing data
   if (!response?.data?.collection?.locations) {
-    console.info(`utelly query invalid response`, response && response.data);
+    addBreadcrumb({
+      category: "utelly",
+      message: `Missing response.data.collection.locations`,
+      data: response && response.data,
+    });
     return null;
   }
 

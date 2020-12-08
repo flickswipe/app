@@ -138,6 +138,8 @@ router.post(
     res.status(200).send({
       message: `Token consumed`,
     });
+
+    console.info(`User ${userId} consumed token ${token}`);
   }
 );
 

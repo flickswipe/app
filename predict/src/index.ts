@@ -100,24 +100,49 @@ if (!QUEUE_GROUP_NAME) {
     ),
   ]);
 
-  attachExitTasks(exitTasks);
+  attachExitTasks(process, exitTasks);
 
   // continuously generate suggestions
   const loop = async () => {
-    console.info(`Generating user suggestions...`);
-    const totalMediaItems = await countMediaItems();
-    const user = await getNextUserToProcess({
-      maxQueueLength: totalMediaItems,
+    const tx = Sentry.startTransaction({
+      op: "generate-suggestions",
+      name: "Generate User Suggestions",
     });
 
+    Sentry.configureScope((scope) => scope.setSpan(tx));
+
+    Sentry.addBreadcrumb({
+      category: "suggestions",
+      message: `Fetch next user`,
+    });
+
+    const options = {
+      maxQueueLength: await countMediaItems(),
+    };
+    const user = await getNextUserToProcess(options);
+
     if (!user) {
-      console.info(`No users need suggestions, idling for 1 minute!`);
       setTimeout(loop, 60 * 1000);
+
+      console.info(`No users need suggestions`);
+      tx.finish();
       return;
     }
 
+    Sentry.addBreadcrumb({
+      category: "suggestions",
+      message: `Generate suggestions for ${user.id}`,
+      data: {
+        user,
+        options,
+      },
+    });
+
     await createSuggestions(user.id);
     setImmediate(loop);
+
+    tx.finish();
+    console.info(`Generated suggestions`);
   };
 
   loop();

@@ -37,6 +37,13 @@ const setup = async () => {
   };
 };
 
+const expectCorrectMediaItemData = async (id: string, data: any) => {
+  const mediaItemData = (await MediaItem.findById(id)).toJSON();
+  const correctData = expect.objectContaining(cloneDeep(data));
+
+  expect(mediaItemData).toEqual(correctData);
+};
+
 describe("media item updated listener", () => {
   describe("media item exists", () => {
     beforeEach(async () => {
@@ -49,9 +56,7 @@ describe("media item updated listener", () => {
         await listener.onMessage(EVENT_DATA_STALE, msg);
 
         // has not been updated
-        expect(await MediaItem.findById(EVENT_DATA_STALE.id)).toEqual(
-          expect.objectContaining(cloneDeep(MEDIA_ITEM_A))
-        );
+        await expectCorrectMediaItemData(EVENT_DATA_STALE.id, MEDIA_ITEM_A);
       });
 
       it("should acknowledge the message", async () => {
@@ -69,9 +74,7 @@ describe("media item updated listener", () => {
         await listener.onMessage(EVENT_DATA, msg);
 
         // has been updated
-        expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
-          expect.objectContaining(cloneDeep(MEDIA_ITEM_A_NEW))
-        );
+        await expectCorrectMediaItemData(EVENT_DATA_STALE.id, MEDIA_ITEM_A_NEW);
       });
 
       it("should acknowledge the message", async () => {
@@ -90,9 +93,7 @@ describe("media item updated listener", () => {
       await listener.onMessage(EVENT_DATA, msg);
 
       // has been created
-      expect(await MediaItem.findById(EVENT_DATA.id)).toEqual(
-        expect.objectContaining(cloneDeep(MEDIA_ITEM_A_NEW))
-      );
+      await expectCorrectMediaItemData(EVENT_DATA_STALE.id, MEDIA_ITEM_A_NEW);
     });
 
     it("should acknowledge the message", async () => {

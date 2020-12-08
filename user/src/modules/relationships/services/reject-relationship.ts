@@ -37,6 +37,6 @@ export async function rejectRelationship(
   });
 
   console.info(
-    `${originalReceiverId} rejected relationship with ${originalRequesterId}`
+    `User ${originalReceiverId} rejected relationship with user ${originalRequesterId}`
   );
 }

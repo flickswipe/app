@@ -96,5 +96,7 @@ export async function requestRelationship(
     updatedAt: new Date(),
   });
 
-  console.info(`${fromUserId} requested relationship with ${toUserId}`);
+  console.info(
+    `User ${fromUserId} requested relationship with user ${toUserId}`
+  );
 }

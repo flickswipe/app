@@ -3,6 +3,8 @@ import split2 from 'split2';
 import Stream from 'stream';
 import zlib from 'zlib';
 
+import { addBreadcrumb, captureException } from '@sentry/node';
+
 import { MovieIdsFilterRows } from './movie-ids-filter-rows';
 
 /**
@@ -29,7 +31,10 @@ export const movieIdsReadFileExport = async (
   const fileExportUrl = URL.replace("MM_DD_YYYY", `${MM}_${DD}_${YYYY}`);
 
   // stream from the server
-  console.info(`Getting file export ${fileExportUrl}`);
+  addBreadcrumb({
+    category: "tmdb-file-export",
+    message: `Fetch  ${fileExportUrl}`,
+  });
 
   let result;
   try {
@@ -39,12 +44,18 @@ export const movieIdsReadFileExport = async (
       responseType: "stream",
     });
   } catch (err) {
-    console.error(`Error when streaming file export: `, err);
+    captureException(err);
     return;
   }
 
   if (!result?.data) {
-    console.info(`File export stream contains no data`);
+    addBreadcrumb({
+      category: "tmdb-file-export",
+      message: `Missing result.data`,
+      data: {
+        result,
+      },
+    });
     return;
   }
 

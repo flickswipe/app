@@ -1,3 +1,5 @@
+import { addBreadcrumb, configureScope, startTransaction } from '@sentry/node';
+
 import { MediaItemDestroyedPublisher } from '../../../events/publishers/media-item-destroyed';
 import { natsWrapper } from '../../../nats-wrapper';
 import { MovieId } from '../../tmdb-file-export/models/movie-id';
@@ -19,12 +21,30 @@ export async function fetchTmdbMovie(
     earliestReleaseDate?: Date;
   } = {}
 ): Promise<TmdbMovieDoc | void> {
-  console.info(`Fetching tmdb movie ${tmdbMovieId}...`);
+  const tx = startTransaction({
+    op: "fetch-tmdb-movie",
+    name: "Fetch TMDB Movie Data",
+    data: {
+      tmdbMovieId,
+      options,
+    },
+  });
+
+  configureScope((scope) => scope.setSpan(tx));
+
+  addBreadcrumb({
+    category: "tmdb-movie",
+    message: `Fetch ${tmdbMovieId}`,
+  });
 
   // get new data
   const raw = await tmdbMovieQuery(tmdbMovieId);
   if (!raw) {
-    console.info(`No tmdb movie data for ${tmdbMovieId}`);
+    addBreadcrumb({
+      category: "tmdb-movie",
+      message: `No data for ${tmdbMovieId}`,
+    });
+    tx.finish();
     return null;
   }
 
@@ -32,6 +52,11 @@ export async function fetchTmdbMovie(
 
   // skip missing or irrelevant results
   if (!result || shouldSkip(result, options)) {
+    addBreadcrumb({
+      category: "tmdb-movie",
+      message: `Skipping ${tmdbMovieId}`,
+    });
+    tx.finish();
     return null;
   }
 
@@ -40,6 +65,11 @@ export async function fetchTmdbMovie(
 
   // mark as never used
   if (shouldNeverUse(result, options)) {
+    addBreadcrumb({
+      category: "tmdb-movie",
+      message: `Never use ${tmdbMovieId}`,
+    });
+
     // update movie id doc
     const movieIdDoc = await MovieId.findOne({ tmdbMovieId });
     if (movieIdDoc) {
@@ -62,12 +92,17 @@ export async function fetchTmdbMovie(
     }
 
     // end processing
-    console.info(`Marked ${result.title} as never to be used.`);
+    tx.finish();
     return null;
   }
 
   // update existing doc
   if (existingDoc) {
+    addBreadcrumb({
+      category: "tmdb-movie",
+      message: `Updating ${tmdbMovieId}`,
+    });
+
     existingDoc.imdbId = result.imdbId;
     existingDoc.title = result.title;
     existingDoc.images = result.images;
@@ -77,14 +112,19 @@ export async function fetchTmdbMovie(
     existingDoc.releaseDate = result.releaseDate;
     existingDoc.runtime = result.runtime;
     existingDoc.plot = result.plot;
-
     await existingDoc.save();
-    console.info(`Updated tmdb movie data for ${existingDoc.title}!`);
 
+    console.info(`Updated tmdb movie data for ${existingDoc.title}!`);
+    tx.finish();
     return existingDoc;
   }
 
   // create new doc
+  addBreadcrumb({
+    category: "tmdb-movie",
+    message: `Creating ${tmdbMovieId}`,
+  });
+
   const insertedDoc = await TmdbMovie.build({
     tmdbMovieId: tmdbMovieId,
     imdbId: result.imdbId,
@@ -97,8 +137,9 @@ export async function fetchTmdbMovie(
     runtime: result.runtime,
     plot: result.plot,
   }).save();
-  console.info(`Created tmdb movie data for ${insertedDoc.title}`);
 
+  console.info(`Created tmdb movie data for ${insertedDoc.title}`);
+  tx.finish();
   return insertedDoc;
 }
 

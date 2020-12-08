@@ -46,16 +46,15 @@ async function updateUserEmail(
   existingDoc: UserDoc,
   data: UserUpdatedEmailEvent["data"]
 ): Promise<void> {
-  const { id, email } = data;
+  const { email } = data;
 
   // don't update if current data more recent
   if (existingDoc.updatedAt > data.updatedAt) {
-    console.info(`Skipping user update: current data is more recent`);
     return;
   }
   // update
   existingDoc.email = email;
-  await existingDoc.save();
 
-  console.info(`Updated user #${id}'s email to ${existingDoc.email}`);
+  await existingDoc.save();
+  console.info(`Tracked user ${existingDoc.id}`);
 }

@@ -82,13 +82,6 @@ export async function announceMediaItem({
     updatedAts.push(updatedAt);
   });
 
-  if (!Object.values(streamLocations).length) {
-    console.info(
-      `${tmdbMovieDoc.title} isn't availabe to stream in any country`
-    );
-    return;
-  }
-
   const mostRecentUpdatedAt = new Date(
     Math.max.apply(
       null,
@@ -113,7 +106,6 @@ export async function announceMediaItem({
   };
 
   // publish event
-  console.info(`Broadcasting media item...`, mediaItem);
   await new MediaItemUpdatedPublisher(natsWrapper.client).publish(mediaItem);
 
   // mark movie as published
@@ -121,4 +113,6 @@ export async function announceMediaItem({
     { tmdbMovieId: tmdbMovieDoc.tmdbMovieId },
     { emitted: true }
   );
+
+  console.info(`Data ingestion completed for ${mediaItem.title}`);
 }

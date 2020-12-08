@@ -62,6 +62,8 @@ router.post(
     res.status(202).send({
       message: `Magic link generated`,
     });
+
+    console.info(`User ${currentUser.id} generated magic link`);
   }
 );
 

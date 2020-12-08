@@ -48,6 +48,6 @@ export async function acceptRelationship(
   });
 
   console.info(
-    `${originalReceiverId} accepted relationship with ${originalRequesterId}`
+    `User ${originalReceiverId} accepted relationship with user ${originalRequesterId}`
   );
 }

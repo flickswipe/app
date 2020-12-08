@@ -5,8 +5,8 @@ import { Message } from 'node-nats-streaming';
 import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
 import { MEDIA_ITEM_A, MEDIA_ITEM_A_NEW } from '../../../../../test/sample-data/media-items';
+import { AudioLanguage } from '../../../models/audio-language';
 import { Country } from '../../../models/country';
-import { Language } from '../../../models/language';
 import { StreamLocation, StreamLocationDoc } from '../../../models/stream-location';
 import {
     createAudioLanguageIfNotExists, createCountryIfNotExists, MediaItemUpdatedListener,
@@ -89,20 +89,20 @@ describe("media item updated listener", () => {
         await createAudioLanguageIfNotExists(AUDIO_LANGUAGE.audioLanguage);
 
         // has been created
-        expect(await Language.countDocuments(AUDIO_LANGUAGE)).toBe(1);
+        expect(await AudioLanguage.countDocuments(AUDIO_LANGUAGE)).toBe(1);
       });
     });
 
     describe("audioLanguage exists", () => {
       beforeEach(async () => {
-        await Language.build(AUDIO_LANGUAGE).save();
+        await AudioLanguage.build(AUDIO_LANGUAGE).save();
       });
 
       it("should not create audioLanguage", async () => {
         await createAudioLanguageIfNotExists(AUDIO_LANGUAGE.audioLanguage);
 
         // has not been created
-        expect(await Language.countDocuments(AUDIO_LANGUAGE)).toBe(1);
+        expect(await AudioLanguage.countDocuments(AUDIO_LANGUAGE)).toBe(1);
       });
     });
   });
@@ -211,7 +211,7 @@ describe("media item updated listener", () => {
         await listener.onMessage(EVENT_DATA_INVALID_STREAM_LOCATIONS, msg);
 
         // has been created
-        expect(await Language.countDocuments()).toBe(1);
+        expect(await AudioLanguage.countDocuments()).toBe(1);
       });
       it("should not create stream location", async () => {
         const { listener, msg } = await setup();
@@ -236,7 +236,7 @@ describe("media item updated listener", () => {
       await listener.onMessage(EVENT_DATA, msg);
 
       // has been created
-      expect(await Language.countDocuments()).toBe(1);
+      expect(await AudioLanguage.countDocuments()).toBe(1);
     });
     it("should create stream location", async () => {
       const { listener, msg } = await setup();

@@ -56,4 +56,6 @@ export async function updateRating(
     value: value,
     updatedAt: new Date(),
   });
+
+  console.info(`User ${userId} updated setting ${SettingType.Rating}`);
 }

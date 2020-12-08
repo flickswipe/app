@@ -40,4 +40,6 @@ export async function updateCountry(
     value: value,
     updatedAt: new Date(),
   });
+
+  console.info(`User ${userId} updated setting ${SettingType.Country}`);
 }

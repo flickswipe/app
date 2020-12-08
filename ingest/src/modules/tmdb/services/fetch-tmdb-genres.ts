@@ -1,3 +1,5 @@
+import { addBreadcrumb, configureScope, startTransaction } from '@sentry/node';
+
 import { GenreUpdatedPublisher } from '../../../events/publishers/genre-updated';
 import { natsWrapper } from '../../../nats-wrapper';
 import { TmdbGenre, TmdbGenreDoc } from '../models/tmdb-genre';
@@ -14,12 +16,29 @@ export async function fetchTmdbGenres(
 ): Promise<TmdbGenreDoc[]> {
   options;
 
-  console.info(`Fetching tmdb genres...`);
+  const tx = startTransaction({
+    op: "fetch-tmdb-genres",
+    name: "Fetch TMDB Genres Data",
+    data: {
+      options,
+    },
+  });
+
+  configureScope((scope) => scope.setSpan(tx));
+
+  addBreadcrumb({
+    category: "tmdb-genres",
+    message: `Fetch`,
+  });
 
   // get new data
   const raw = await tmdbGenresQuery();
   if (!raw) {
-    console.info(`No tmdb genres data`);
+    addBreadcrumb({
+      category: "tmdb-genres",
+      message: `No data`,
+    });
+    tx.finish();
     return null;
   }
 
@@ -27,6 +46,11 @@ export async function fetchTmdbGenres(
 
   // skip missing or irrelevant results
   if (!result?.genres) {
+    addBreadcrumb({
+      category: "tmdb-genres",
+      message: `Malformed data`,
+    });
+    tx.finish();
     return null;
   }
 
@@ -38,10 +62,15 @@ export async function fetchTmdbGenres(
 
     // update existing doc
     if (existingDoc) {
+      addBreadcrumb({
+        category: "tmdb-genres",
+        message: `Update genre ${existingDoc.id}`,
+      });
+
+      const previousName = existingDoc.name;
       existingDoc.name = genre.name;
 
       await existingDoc.save();
-      console.info(`Detected tmdb genre data for ${existingDoc.name}`);
 
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({
@@ -51,18 +80,22 @@ export async function fetchTmdbGenres(
         updatedAt: new Date(),
       });
 
+      console.info(`Renamed tmdb genre ${previousName} to ${existingDoc.name}`);
       return existingDoc;
     }
 
     // save new doc
+    addBreadcrumb({
+      category: "tmdb-genres",
+      message: `Create genre ${genre.tmdbGenreId} ${genre.name}`,
+    });
+
     const insertedDoc = await TmdbGenre.build({
       tmdbGenreId: genre.tmdbGenreId,
       name: genre.name,
     }).save();
 
     if (insertedDoc) {
-      console.info(`Detected tmdb genre data for ${insertedDoc.name}`);
-
       // publish event
       await new GenreUpdatedPublisher(natsWrapper.client).publish({
         id: insertedDoc.id,
@@ -72,6 +105,7 @@ export async function fetchTmdbGenres(
       });
     }
 
+    console.info(`Created tmdb genre ${insertedDoc.name}`);
     return insertedDoc;
   });
 
@@ -83,5 +117,6 @@ export async function fetchTmdbGenres(
     (doc: TmdbGenreDoc | void): boolean => doc instanceof TmdbGenre
   ) as TmdbGenreDoc[];
 
+  tx.finish();
   return docs;
 }

@@ -39,5 +39,7 @@ export async function unblockRelationship(
     updatedAt: new Date(),
   });
 
-  console.info(`${fromUserId} unblocked relationship with ${toUserId}`);
+  console.info(
+    `User ${fromUserId} unblocked relationship with user ${toUserId}`
+  );
 }

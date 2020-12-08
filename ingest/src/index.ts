@@ -85,7 +85,7 @@ if (!TMDB_KEY) {
     ),
   ]);
 
-  attachExitTasks(exitTasks);
+  attachExitTasks(process, exitTasks);
 
   // start ingest
   Ingest.start({

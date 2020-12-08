@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { addBreadcrumb, captureException } from '@sentry/node';
+
 import { TmdbGenresApiResultRaw } from './tmdb-genres-parser';
 
 /**
@@ -23,15 +25,16 @@ export async function tmdbGenresQuery(): Promise<TmdbGenresApiResultRaw | void> 
       },
     });
   } catch (error) {
-    console.error(`tmdbGenresQuery error`, error);
+    captureException(error);
   }
 
   // handle missing data
   if (!response?.data?.genres) {
-    console.info(
-      `tmdb genres query invalid response`,
-      response && response.data
-    );
+    addBreadcrumb({
+      category: "tmdb-genres",
+      message: `Missing response.data.genres`,
+      data: response && response.data,
+    });
     return null;
   }
 

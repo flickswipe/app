@@ -18,7 +18,12 @@
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "./src/test/setup.ts"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "./tsconfig.test.json"
+      }
+    }
   },
   "eslintConfig": {
     "root": true,
@@ -67,7 +72,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.81",
+    "@flickswipe/common": "0.0.85",
     "@sentry/integrations": "^5.29.0",
     "@sentry/node": "^5.29.0",
     "@sentry/tracing": "^5.29.0",

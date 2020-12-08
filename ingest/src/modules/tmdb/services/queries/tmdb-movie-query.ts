@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { addBreadcrumb, captureException } from '@sentry/node';
+
 import { TmdbMovieApiResultRaw } from './tmdb-movie-parser';
 
 /**
@@ -24,15 +26,16 @@ export async function tmdbMovieQuery(
       },
     });
   } catch (error) {
-    console.error(`tmdbMovieQuery error`, error);
+    captureException(error);
   }
 
   // handle missing data
   if (!response?.data?.id) {
-    console.info(
-      `tmdb movie query invalid response`,
-      response && response.data
-    );
+    addBreadcrumb({
+      category: "tmdb-movie",
+      message: `Missing response.data.id`,
+      data: response && response.data,
+    });
     return null;
   }
 

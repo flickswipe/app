@@ -66,6 +66,8 @@ router.post(
     res.status(202).send({
       message: `Add email link generated`,
     });
+
+    console.info(`User ${currentUser.id} generated add email link`);
   }
 );
 

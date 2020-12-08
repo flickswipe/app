@@ -1,5 +1,5 @@
-import { Language, LanguageDoc } from '../models/language';
+import { AudioLanguage, AudioLanguageDoc } from '../models/audio-language';
 
-export async function getAudioLanguages(): Promise<LanguageDoc[]> {
-  return await Language.find();
+export async function getAudioLanguages(): Promise<AudioLanguageDoc[]> {
+  return await AudioLanguage.find();
 }

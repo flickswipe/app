@@ -106,7 +106,7 @@ if (!QUEUE_GROUP_NAME) {
     ),
   ]);
 
-  attachExitTasks(exitTasks);
+  attachExitTasks(process, exitTasks);
 
   // start http server
   app.use(Sentry.Handlers.requestHandler());

@@ -50,7 +50,7 @@ class TransporterWrapper {
           return reject(error);
         }
 
-        console.info("Connected to mail server");
+        console.info(`Connected to ${host}`);
         resolve();
       });
     });

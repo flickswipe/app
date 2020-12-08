@@ -91,11 +91,11 @@ describe("announce", () => {
           ]);
         });
 
-        it("should not publish event", async () => {
+        it("should publish event", async () => {
           await announceMediaItem({ imdbId: TMDB_MOVIE_A.imdbId });
 
           // has not been published
-          expect(natsWrapper.client.publish).not.toHaveBeenCalled();
+          expect(natsWrapper.client.publish).toHaveBeenCalled();
         });
       });
     });
