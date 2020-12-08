@@ -1,10 +1,9 @@
-import fs from "fs";
-import axios from "axios";
+import axios from 'axios';
+import fs from 'fs';
 
-import { MovieId } from "../../models/movie-id";
-
+import { MovieId } from '../../models/movie-id';
 // sample data
-import { fetchTmdbFileExport } from "../fetch-tmdb-file-export";
+import { fetchTmdbFileExport } from '../fetch-tmdb-file-export';
 
 describe("fetch tmdb file export", () => {
   describe("data provided", () => {

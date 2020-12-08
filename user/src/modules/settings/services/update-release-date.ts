@@ -1,12 +1,10 @@
-import {
-  BadRequestError,
-  ReleaseDateSetting,
-  SettingType,
-} from "@flickswipe/common";
-import mongoose from "mongoose";
-import { natsWrapper } from "../../../nats-wrapper";
-import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
-import { Setting } from "../models/setting";
+import mongoose from 'mongoose';
+
+import { BadRequestError, ReleaseDateSetting, SettingType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
+import { Setting } from '../models/setting';
 
 export async function updateReleaseDate(
   userId: string,

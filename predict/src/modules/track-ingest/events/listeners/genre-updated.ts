@@ -1,7 +1,8 @@
-import { Subjects, Listener, GenreUpdatedEvent } from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { Genre, GenreDoc } from "../../models/genre";
+import { GenreUpdatedEvent, Listener, Subjects } from '@flickswipe/common';
+
+import { Genre, GenreDoc } from '../../models/genre';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

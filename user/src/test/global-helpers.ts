@@ -1,8 +1,8 @@
+import jwt from 'jsonwebtoken';
 /**
  * Provide global helper functions for tests
  */
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
+import mongoose from 'mongoose';
 
 declare global {
   namespace NodeJS {

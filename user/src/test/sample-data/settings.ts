@@ -1,17 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
 import {
-  CountrySetting,
-  GenresSetting,
-  AudioLanguagesSetting,
-  RatingSetting,
-  ReleaseDateSetting,
-  RuntimeSetting,
-  SettingType,
-  StreamLocationsSetting,
-} from "@flickswipe/common";
-import { SettingsPayload } from "../../modules/settings/settings";
-import { GENRE_A, GENRE_B } from "./genres";
-import { USER_A } from "./users";
+    AudioLanguagesSetting, CountrySetting, GenresSetting, RatingSetting, ReleaseDateSetting,
+    RuntimeSetting, SettingType, StreamLocationsSetting
+} from '@flickswipe/common';
+
+import { SettingsPayload } from '../../modules/settings/settings';
+import { GENRE_A, GENRE_B } from './genres';
+import { USER_A } from './users';
 
 export const COUNTRY_SETTING: Omit<CountrySetting, "updatedAt"> = {
   settingType: SettingType.Country,

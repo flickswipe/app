@@ -1,12 +1,13 @@
-import { Ingest, StartOptions } from "../ingest";
-
+import { fetchUtelly } from '../../../modules/rapidapi-utelly/services/fetch-utelly';
+import {
+    fetchTmdbFileExport
+} from '../../../modules/tmdb-file-export/services/fetch-tmdb-file-export';
+import { fetchTmdbGenres } from '../../../modules/tmdb/services/fetch-tmdb-genres';
+import { fetchTmdbMovie } from '../../../modules/tmdb/services/fetch-tmdb-movie';
+import { announceMediaItem } from '../../announce-media-item';
+import { Ingest, StartOptions } from '../ingest';
 // mocks
-import { Queue } from "../queue";
-import { fetchTmdbFileExport } from "../../../modules/tmdb-file-export/services/fetch-tmdb-file-export";
-import { fetchTmdbMovie } from "../../../modules/tmdb/services/fetch-tmdb-movie";
-import { fetchTmdbGenres } from "../../../modules/tmdb/services/fetch-tmdb-genres";
-import { announceMediaItem } from "../../announce-media-item";
-import { fetchUtelly } from "../../../modules/rapidapi-utelly/services/fetch-utelly";
+import { Queue } from '../queue';
 
 jest.mock("../queue");
 jest.mock("../../../modules/tmdb-file-export/services/fetch-tmdb-file-export");

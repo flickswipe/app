@@ -1,12 +1,13 @@
-import { InterestType } from "@flickswipe/common";
-import request from "supertest";
-import { app } from "../../app";
-import { Genre } from "../../modules/track-ingest/models/genre";
-import { MediaItem } from "../../modules/track-ingest/models/media-item";
+import request from 'supertest';
 
+import { InterestType } from '@flickswipe/common';
+
+import { app } from '../../app';
+import { Genre } from '../../modules/track-ingest/models/genre';
+import { MediaItem } from '../../modules/track-ingest/models/media-item';
 // sample data
-import { GENRE_A } from "../../test/sample-data/genres";
-import { MEDIA_ITEM_A, MEDIA_ITEM_B } from "../../test/sample-data/media-items";
+import { GENRE_A } from '../../test/sample-data/genres';
+import { MEDIA_ITEM_A, MEDIA_ITEM_B } from '../../test/sample-data/media-items';
 
 describe("survey respond", () => {
   describe("invalid conditions", () => {

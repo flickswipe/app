@@ -1,13 +1,11 @@
-import { BadRequestError } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Setting, SettingDoc } from "../../models/setting";
-import { updateGenres } from "../update-genres";
+import { BadRequestError } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
-import {
-  GENRES_SETTING,
-  GENRES_SETTING_EMPTY,
-} from "../../../../test/sample-data/settings";
+import { GENRES_SETTING, GENRES_SETTING_EMPTY } from '../../../../test/sample-data/settings';
+import { Setting, SettingDoc } from '../../models/setting';
+import { updateGenres } from '../update-genres';
+
 const INVALID_ID = "invalid-id";
 
 describe("update genres setting", () => {

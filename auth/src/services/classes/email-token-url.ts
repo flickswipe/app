@@ -1,17 +1,12 @@
-import {
-  BadRequestError,
-  EmailTokenType,
-  TooManyRequestsError,
-} from "@flickswipe/common";
+import { ObjectId } from 'mongodb';
 
-import { ObjectId } from "mongodb";
+import { BadRequestError, EmailTokenType, TooManyRequestsError } from '@flickswipe/common';
 
-import { EmailToken, EmailTokenAttrs } from "../../models/email-token";
-import { User } from "../../models/user";
-import { natsWrapper } from "../../nats-wrapper";
-import { Token } from "./token";
-
-import { EmailTokenCreatedPublisher } from "../../events/publishers/email-token-created";
+import { EmailTokenCreatedPublisher } from '../../events/publishers/email-token-created';
+import { EmailToken, EmailTokenAttrs } from '../../models/email-token';
+import { User } from '../../models/user';
+import { natsWrapper } from '../../nats-wrapper';
+import { Token } from './token';
 
 /**
  * Module Constants

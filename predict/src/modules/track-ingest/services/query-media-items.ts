@@ -1,4 +1,4 @@
-import { MediaItem, MediaItemDoc } from "../models/media-item";
+import { MediaItem, MediaItemDoc } from '../models/media-item';
 
 export async function queryMediaItems(
   query: Record<string, any>,

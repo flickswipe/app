@@ -1,17 +1,16 @@
-import request from "supertest";
+import mongoose from 'mongoose';
+import request from 'supertest';
 
-import mongoose from "mongoose";
+import { EmailTokenType } from '@flickswipe/common';
 
-import { natsWrapper } from "../../nats-wrapper";
-import { app } from "../../app";
-
-import { EmailTokenType } from "@flickswipe/common";
-import { EmailToken } from "../../models/email-token";
-import { User } from "../../models/user";
-import { EmailTokenUrl } from "../../services/classes/email-token-url";
-
+import { app } from '../../app';
+import { EmailToken } from '../../models/email-token';
+import { User } from '../../models/user';
+import { natsWrapper } from '../../nats-wrapper';
+import { EmailTokenUrl } from '../../services/classes/email-token-url';
 // sample data
-import { USER_A } from "../../test/sample-data/users";
+import { USER_A } from '../../test/sample-data/users';
+
 const USER_A_NO_EMAIL = {
   email: "",
 };

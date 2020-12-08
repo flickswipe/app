@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 export const TMDB_GENRE_A = {
   id: mongoose.Types.ObjectId("genreaaaaaaa").toHexString(),

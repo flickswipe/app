@@ -1,8 +1,8 @@
-import request from "supertest";
-import { app } from "../../app";
+import request from 'supertest';
 
+import { app } from '../../app';
 // sample data
-import { USER_A } from "../../test/sample-data/users";
+import { USER_A } from '../../test/sample-data/users';
 
 describe("send email update link", () => {
   it("returns a 401 when no current user", async () => {

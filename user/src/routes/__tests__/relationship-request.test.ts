@@ -1,8 +1,9 @@
-import request from "supertest";
-import { app } from "../../app";
-import { requestRelationship } from "../../modules/relationships/relationships";
-import { User } from "../../modules/track-auth/models/user";
-import { USER_A, USER_B } from "../../test/sample-data/users";
+import request from 'supertest';
+
+import { app } from '../../app';
+import { requestRelationship } from '../../modules/relationships/relationships';
+import { User } from '../../modules/track-auth/models/user';
+import { USER_A, USER_B } from '../../test/sample-data/users';
 
 // sample data
 const INVALID_ID = "invalid-id";

@@ -1,11 +1,8 @@
-import {
-  Subjects,
-  Listener,
-  MediaItemsSuggestedEvent,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { Suggestion } from "../../models/suggestion";
+import { Listener, MediaItemsSuggestedEvent, Subjects } from '@flickswipe/common';
+
+import { Suggestion } from '../../models/suggestion';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

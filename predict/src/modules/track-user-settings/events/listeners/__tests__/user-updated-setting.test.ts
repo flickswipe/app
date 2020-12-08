@@ -1,12 +1,14 @@
-import { CountrySetting, SettingType } from "@flickswipe/common";
-import { Message } from "node-nats-streaming";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { User } from "../../../../generate-suggestions/models/user";
-import { Setting } from "../../../models/setting";
-import { UserUpdatedSettingListener } from "../user-updated-setting";
+import { Message } from 'node-nats-streaming';
 
+import { CountrySetting, SettingType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
-import { USER_A } from "../../../../../test/sample-data/users";
+import { USER_A } from '../../../../../test/sample-data/users';
+import { User } from '../../../../generate-suggestions/models/user';
+import { Setting } from '../../../models/setting';
+import { UserUpdatedSettingListener } from '../user-updated-setting';
+
 const COUNTRY_A = "us";
 const COUNTRY_B = "uk";
 const EVENT_DATA = {

@@ -1,9 +1,8 @@
-import { TmdbGenre, TmdbGenreDoc } from "../models/tmdb-genre";
-import { tmdbGenresQuery } from "./queries/tmdb-genres-query";
-import { tmdbGenresParser } from "./queries/tmdb-genres-parser";
-
-import { GenreUpdatedPublisher } from "../../../events/publishers/genre-updated";
-import { natsWrapper } from "../../../nats-wrapper";
+import { GenreUpdatedPublisher } from '../../../events/publishers/genre-updated';
+import { natsWrapper } from '../../../nats-wrapper';
+import { TmdbGenre, TmdbGenreDoc } from '../models/tmdb-genre';
+import { tmdbGenresParser } from './queries/tmdb-genres-parser';
+import { tmdbGenresQuery } from './queries/tmdb-genres-query';
 
 /**
  * Fetch genre data from the TMDB RESTful API

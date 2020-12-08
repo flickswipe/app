@@ -1,18 +1,14 @@
-import {
-  currentUser,
-  requireAuth,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
 
-import express, { Request, Response } from "express";
-import { defaultSettings } from "../default-settings";
-import { getSettings, SettingsPayload } from "../modules/settings/settings";
 import {
-  getGenres,
-  getAudioLanguages,
-  getStreamLocations,
-} from "../modules/track-ingest/track-ingest";
+    currentUser, requireAuth, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
+
+import { defaultSettings } from '../default-settings';
+import { getSettings, SettingsPayload } from '../modules/settings/settings';
+import {
+    getAudioLanguages, getGenres, getStreamLocations
+} from '../modules/track-ingest/track-ingest';
 
 const router = express.Router();
 

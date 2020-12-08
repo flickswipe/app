@@ -1,22 +1,17 @@
-import * as Sentry from "@sentry/node";
-import { RewriteFrames } from "@sentry/integrations";
+import mongoose from 'mongoose';
 
-import mongoose from "mongoose";
-import {
-  getNextUserToProcess,
-  UserCreatedListener,
-} from "./modules/generate-suggestions/generate-suggestions";
-import { createSuggestions } from "./modules/generate-suggestions/generate-suggestions";
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
 
-import { natsWrapper } from "./nats-wrapper";
 import {
-  countMediaItems,
-  GenreUpdatedListener,
-  MediaItemDestroyedListener,
-  MediaItemUpdatedListener,
-} from "./modules/track-ingest/track-ingest";
-import { MediaItemRatedListener } from "./modules/track-survey/track-survey";
-import { UserUpdatedSettingListener } from "./modules/track-user-settings/track-user-settings";
+    createSuggestions, getNextUserToProcess, UserCreatedListener
+} from './modules/generate-suggestions/generate-suggestions';
+import {
+    countMediaItems, GenreUpdatedListener, MediaItemDestroyedListener, MediaItemUpdatedListener
+} from './modules/track-ingest/track-ingest';
+import { MediaItemRatedListener } from './modules/track-survey/track-survey';
+import { UserUpdatedSettingListener } from './modules/track-user-settings/track-user-settings';
+import { natsWrapper } from './nats-wrapper';
 
 /**
  * Error & performance tracking

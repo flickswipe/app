@@ -1,9 +1,9 @@
-import request from "supertest";
-import { app } from "../../app";
-import { Genre } from "../../modules/track-ingest/models/genre";
+import request from 'supertest';
 
+import { app } from '../../app';
+import { Genre } from '../../modules/track-ingest/models/genre';
 // sample data
-import { GENRE_A } from "../../test/sample-data/genres";
+import { GENRE_A } from '../../test/sample-data/genres';
 
 describe("get genres", () => {
   describe("invalid conditions", () => {

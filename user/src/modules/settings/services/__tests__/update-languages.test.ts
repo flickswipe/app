@@ -1,13 +1,13 @@
-import { BadRequestError } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Setting, SettingDoc } from "../../models/setting";
-import { updateAudioLanguages } from "../update-languages";
+import { BadRequestError } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
 import {
-  AUDIO_LANGUAGES_SETTING,
-  AUDIO_LANGUAGES_SETTING_EMPTY,
-} from "../../../../test/sample-data/settings";
+    AUDIO_LANGUAGES_SETTING, AUDIO_LANGUAGES_SETTING_EMPTY
+} from '../../../../test/sample-data/settings';
+import { Setting, SettingDoc } from '../../models/setting';
+import { updateAudioLanguages } from '../update-languages';
+
 const INVALID_ID = "invalid-id";
 
 describe("update audioLanguages setting", () => {

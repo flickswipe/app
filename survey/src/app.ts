@@ -1,17 +1,17 @@
-import { errorHandler, NotFoundError } from "@flickswipe/common";
+import 'express-async-errors';
 
-import express from "express";
-import "express-async-errors";
+import { json } from 'body-parser';
+import cookieSession from 'cookie-session';
+import express from 'express';
 
-import { json } from "body-parser";
-import cookieSession from "cookie-session";
+import { errorHandler, NotFoundError } from '@flickswipe/common';
 
-import { genresGetAllRouter } from "./routes/genres-get-all";
-import { mediaItemsGetOneRouter } from "./routes/media-items-get-one";
-import { suggestionsGetAllRouter } from "./routes/suggestions-get-all";
-import { surveyResponsesCreateOneRouter } from "./routes/survey-responses-create-one";
-import { surveyResponsesGetAllRouter } from "./routes/survey-responses-get-all";
-import { ratingsGetAllRouter } from "./routes/ratings-get-all";
+import { genresGetAllRouter } from './routes/genres-get-all';
+import { mediaItemsGetOneRouter } from './routes/media-items-get-one';
+import { ratingsGetAllRouter } from './routes/ratings-get-all';
+import { suggestionsGetAllRouter } from './routes/suggestions-get-all';
+import { surveyResponsesCreateOneRouter } from './routes/survey-responses-create-one';
+import { surveyResponsesGetAllRouter } from './routes/survey-responses-get-all';
 
 /**
  * Configure express app

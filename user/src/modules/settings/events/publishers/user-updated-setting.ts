@@ -1,8 +1,4 @@
-import {
-  Subjects,
-  Publisher,
-  UserUpdatedSettingEvent,
-} from "@flickswipe/common";
+import { Publisher, Subjects, UserUpdatedSettingEvent } from '@flickswipe/common';
 
 /**
  * @see UserUpdatedSettingEvent for payload interface

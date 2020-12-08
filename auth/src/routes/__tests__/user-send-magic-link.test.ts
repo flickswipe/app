@@ -1,8 +1,8 @@
-import request from "supertest";
-import { app } from "../../app";
+import request from 'supertest';
 
+import { app } from '../../app';
 // sample data
-import { USER_A } from "../../test/sample-data/users";
+import { USER_A } from '../../test/sample-data/users';
 
 describe("send magic link", () => {
   it("returns a 400 when user authenticated", async () => {

@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import { InterestType } from "@flickswipe/common";
+import mongoose from 'mongoose';
+
+import { InterestType } from '@flickswipe/common';
 
 /**
  * Properties used to create a SurveyResponse

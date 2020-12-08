@@ -1,4 +1,4 @@
-import { unifyISO6391 } from "../unify-iso6391";
+import { unifyISO6391 } from '../unify-iso6391';
 
 describe.only("ISO 630 1", () => {
   it("should unify language name (capitalized)", () => {

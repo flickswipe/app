@@ -1,8 +1,7 @@
-import { User } from "../../models/user";
-import { getNextUserToProcess } from "../get-next-user-to-process";
-
 // sample data
-import { USER_A, USER_B, USER_C } from "../../../../test/sample-data/users";
+import { USER_A, USER_B, USER_C } from '../../../../test/sample-data/users';
+import { User } from '../../models/user';
+import { getNextUserToProcess } from '../get-next-user-to-process';
 
 describe("get user with smallest queue", () => {
   const userIds: string[] = [USER_A.id, USER_B.id, USER_C.id];

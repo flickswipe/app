@@ -1,5 +1,5 @@
-import { transporterWrapper } from "../../transporter-wrapper";
-import { makePlainText } from "../make-plain-text";
+import { transporterWrapper } from '../../transporter-wrapper';
+import { makePlainText } from '../make-plain-text';
 
 /**
  * Create and send html emails from simple templates.

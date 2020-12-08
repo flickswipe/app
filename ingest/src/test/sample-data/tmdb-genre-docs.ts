@@ -1,4 +1,4 @@
-import { TmdbGenreAttrs } from "../../modules/tmdb/models/tmdb-genre";
+import { TmdbGenreAttrs } from '../../modules/tmdb/models/tmdb-genre';
 
 export const TMDB_GENRE_DOC_A: TmdbGenreAttrs = {
   tmdbGenreId: 28,

@@ -1,4 +1,4 @@
-import { User } from "../models/user";
+import { User } from '../models/user';
 
 const ENFORCED_MAX_QUEUE_LENGTH = 50;
 

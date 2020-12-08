@@ -1,9 +1,11 @@
-import { announceMediaItem } from "../announce-media-item";
-import { Queue } from "./queue";
-import { fetchUtelly } from "../../modules/rapidapi-utelly/services/fetch-utelly";
-import { fetchTmdbFileExport } from "../../modules/tmdb-file-export/services/fetch-tmdb-file-export";
-import { fetchTmdbMovie } from "../../modules/tmdb/services/fetch-tmdb-movie";
-import { fetchTmdbGenres } from "../../modules/tmdb/services/fetch-tmdb-genres";
+import { fetchUtelly } from '../../modules/rapidapi-utelly/services/fetch-utelly';
+import {
+    fetchTmdbFileExport
+} from '../../modules/tmdb-file-export/services/fetch-tmdb-file-export';
+import { fetchTmdbGenres } from '../../modules/tmdb/services/fetch-tmdb-genres';
+import { fetchTmdbMovie } from '../../modules/tmdb/services/fetch-tmdb-movie';
+import { announceMediaItem } from '../announce-media-item';
+import { Queue } from './queue';
 
 export interface StartOptions {
   [key: string]: unknown;

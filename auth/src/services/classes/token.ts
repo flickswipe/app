@@ -1,5 +1,5 @@
-import { randomBytes } from "crypto";
-import { promisify } from "util";
+import { randomBytes } from 'crypto';
+import { promisify } from 'util';
 
 /**
  * @see https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback

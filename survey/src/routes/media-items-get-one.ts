@@ -1,15 +1,11 @@
+import express, { Request, Response } from 'express';
+
 import {
-  NotFoundError,
-  currentUser,
-  requireAuth,
-  validateIso6391Param,
-  validateObjectIdParam,
-  validateRequest,
-} from "@flickswipe/common";
+    currentUser, NotFoundError, requireAuth, validateIso6391Param, validateObjectIdParam,
+    validateRequest
+} from '@flickswipe/common';
 
-import express, { Request, Response } from "express";
-
-import { getGenres, getMediaItem } from "../modules/track-ingest/track-ingest";
+import { getGenres, getMediaItem } from '../modules/track-ingest/track-ingest';
 
 const router = express.Router();
 

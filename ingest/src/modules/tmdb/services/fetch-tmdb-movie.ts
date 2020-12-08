@@ -1,13 +1,9 @@
-import { MovieId } from "../../tmdb-file-export/models/movie-id";
-import { TmdbMovie, TmdbMovieDoc } from "../models/tmdb-movie";
-import { tmdbMovieQuery } from "./queries/tmdb-movie-query";
-import {
-  tmdbMovieParser,
-  TmdbMovieApiResult,
-} from "./queries/tmdb-movie-parser";
-
-import { MediaItemDestroyedPublisher } from "../../../events/publishers/media-item-destroyed";
-import { natsWrapper } from "../../../nats-wrapper";
+import { MediaItemDestroyedPublisher } from '../../../events/publishers/media-item-destroyed';
+import { natsWrapper } from '../../../nats-wrapper';
+import { MovieId } from '../../tmdb-file-export/models/movie-id';
+import { TmdbMovie, TmdbMovieDoc } from '../models/tmdb-movie';
+import { TmdbMovieApiResult, tmdbMovieParser } from './queries/tmdb-movie-parser';
+import { tmdbMovieQuery } from './queries/tmdb-movie-query';
 
 /**
  * Fetch movie data from the TMDB RESTful API

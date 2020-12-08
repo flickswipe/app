@@ -1,11 +1,11 @@
-import { BadRequestError, RelationshipType } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Relationship } from "../../models/relationship";
-import { RelationshipRequest } from "../../models/relationship-request";
-import { acceptRelationship } from "../accept-relationship";
+import { BadRequestError, RelationshipType } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
-import { USER_A, USER_B } from "../../../../test/sample-data/users";
+import { USER_A, USER_B } from '../../../../test/sample-data/users';
+import { Relationship } from '../../models/relationship';
+import { RelationshipRequest } from '../../models/relationship-request';
+import { acceptRelationship } from '../accept-relationship';
 
 describe("accept relationship", () => {
   describe("invalid conditions", () => {

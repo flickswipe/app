@@ -1,4 +1,4 @@
-import { JSDOM } from "jsdom";
+import { JSDOM } from 'jsdom';
 
 export function makePlainText(html: string, permitAnchors = false): string {
   // remove existing whitespace

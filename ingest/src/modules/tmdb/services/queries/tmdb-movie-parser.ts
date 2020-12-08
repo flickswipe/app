@@ -1,8 +1,9 @@
 /**
  * Types
  */
-import * as Sentry from "@sentry/node";
-import { unifyISO6391 } from "../../../../services/unify-iso6391";
+import * as Sentry from '@sentry/node';
+
+import { unifyISO6391 } from '../../../../services/unify-iso6391';
 
 // raw data received by parser
 export interface TmdbMovieApiResultRaw {

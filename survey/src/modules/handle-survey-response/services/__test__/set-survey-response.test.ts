@@ -1,12 +1,12 @@
-import { BadRequestError } from "@flickswipe/common";
-import { MEDIA_ITEM_A } from "../../../../test/sample-data/media-items";
+import { BadRequestError } from '@flickswipe/common';
+
+import { MEDIA_ITEM_A } from '../../../../test/sample-data/media-items';
 import {
-  SURVEY_RESPONSE_CONSUMED_A,
-  SURVEY_RESPONSE_INTERESTED_A,
-} from "../../../../test/sample-data/survey-responses";
-import { MediaItem } from "../../../track-ingest/models/media-item";
-import { SurveyResponse } from "../../models/survey-response";
-import { setSurveyResponse } from "../set-survey-response";
+    SURVEY_RESPONSE_CONSUMED_A, SURVEY_RESPONSE_INTERESTED_A
+} from '../../../../test/sample-data/survey-responses';
+import { MediaItem } from '../../../track-ingest/models/media-item';
+import { SurveyResponse } from '../../models/survey-response';
+import { setSurveyResponse } from '../set-survey-response';
 
 describe("set survey response", () => {
   describe("invalid conditions", () => {

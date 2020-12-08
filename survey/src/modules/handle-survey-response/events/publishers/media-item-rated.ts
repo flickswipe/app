@@ -1,4 +1,4 @@
-import { Subjects, Publisher, MediaItemRatedEvent } from "@flickswipe/common";
+import { MediaItemRatedEvent, Publisher, Subjects } from '@flickswipe/common';
 
 /**
  * @see MediaItemRatedEvent for payload interface

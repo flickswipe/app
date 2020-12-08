@@ -1,4 +1,4 @@
-import { Subjects, Publisher, UserUpdatedEmailEvent } from "@flickswipe/common";
+import { Publisher, Subjects, UserUpdatedEmailEvent } from '@flickswipe/common';
 
 /**
  * @see UserUpdatedEmailEvent for payload interface

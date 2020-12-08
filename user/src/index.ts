@@ -1,19 +1,15 @@
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
-import { RewriteFrames } from "@sentry/integrations";
+import mongoose from 'mongoose';
 
-import mongoose from "mongoose";
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
-import { app } from "./app";
-import { natsWrapper } from "./nats-wrapper";
+import { app } from './app';
+import { UserCreatedListener, UserUpdatedEmailListener } from './modules/track-auth/track-auth';
 import {
-  UserCreatedListener,
-  UserUpdatedEmailListener,
-} from "./modules/track-auth/track-auth";
-import {
-  GenreUpdatedListener,
-  MediaItemUpdatedListener,
-} from "./modules/track-ingest/track-ingest";
+    GenreUpdatedListener, MediaItemUpdatedListener
+} from './modules/track-ingest/track-ingest';
+import { natsWrapper } from './nats-wrapper';
 
 /**
  * Error & performance tracking

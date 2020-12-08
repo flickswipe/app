@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import { GENRE_A, GENRE_B } from "./genres";
+import mongoose from 'mongoose';
+
+import { GENRE_A, GENRE_B } from './genres';
 
 export const MEDIA_ITEM_A = {
   id: mongoose.Types.ObjectId("mediaitemaaa").toHexString(),

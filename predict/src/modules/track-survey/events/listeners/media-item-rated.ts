@@ -1,8 +1,9 @@
-import { Subjects, Listener, MediaItemRatedEvent } from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { deleteSuggestion } from "../../../generate-suggestions/generate-suggestions";
-import { SurveyResponse } from "../../models/survey-response";
+import { Listener, MediaItemRatedEvent, Subjects } from '@flickswipe/common';
+
+import { deleteSuggestion } from '../../../generate-suggestions/generate-suggestions';
+import { SurveyResponse } from '../../models/survey-response';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

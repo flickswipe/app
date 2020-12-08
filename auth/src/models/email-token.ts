@@ -1,6 +1,8 @@
-import mongoose from "mongoose";
-import { EmailTokenType } from "@flickswipe/common";
-import { UserDoc } from "./user";
+import mongoose from 'mongoose';
+
+import { EmailTokenType } from '@flickswipe/common';
+
+import { UserDoc } from './user';
 
 /**
  * Properties used to create a EmailToken

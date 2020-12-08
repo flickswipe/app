@@ -1,9 +1,9 @@
-import request from "supertest";
-import { natsWrapper } from "../../nats-wrapper";
-import { app } from "../../app";
+import request from 'supertest';
 
+import { app } from '../../app';
+import { natsWrapper } from '../../nats-wrapper';
 // sample data
-import { USER_A } from "../../test/sample-data/users";
+import { USER_A } from '../../test/sample-data/users';
 
 describe("guest user signup", () => {
   it("returns a 201", async () => {

@@ -1,6 +1,7 @@
-import { BadRequestError } from "@flickswipe/common";
-import { Suggestion } from "../models/suggestion";
-import { User } from "../models/user";
+import { BadRequestError } from '@flickswipe/common';
+
+import { Suggestion } from '../models/suggestion';
+import { User } from '../models/user';
 
 export async function deleteSuggestion(
   userId: string,

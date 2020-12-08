@@ -1,4 +1,4 @@
-import { EmailTokenType } from "@flickswipe/common";
+import { EmailTokenType } from '@flickswipe/common';
 
 export const SIGN_IN_TOKEN_A = {
   id: "AAAAAA",

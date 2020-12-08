@@ -1,14 +1,12 @@
-import {
-  currentUser,
-  requireAuth,
-  validateRequest,
-  validateIso6391Param,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
 
-import express, { Request, Response } from "express";
-import { getSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
-import { getMediaItem } from "../modules/track-ingest/track-ingest";
-import { getSuggestions } from "../modules/track-predict/track-predict";
+import {
+    currentUser, requireAuth, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
+
+import { getSurveyResponses } from '../modules/handle-survey-response/handle-survey-response';
+import { getMediaItem } from '../modules/track-ingest/track-ingest';
+import { getSuggestions } from '../modules/track-predict/track-predict';
 
 const router = express.Router();
 

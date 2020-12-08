@@ -1,12 +1,8 @@
-import {
-  Subjects,
-  Listener,
-  UserUpdatedEmailEvent,
-  BadRequestError,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { User, UserDoc } from "../../models/user";
+import { BadRequestError, Listener, Subjects, UserUpdatedEmailEvent } from '@flickswipe/common';
+
+import { User, UserDoc } from '../../models/user';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

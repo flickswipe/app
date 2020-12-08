@@ -1,12 +1,10 @@
-import {
-  currentUser,
-  requireAuth,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
 
-import express, { Request, Response } from "express";
-import { getRelationships } from "../modules/relationships/relationships";
+import {
+    currentUser, requireAuth, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
+
+import { getRelationships } from '../modules/relationships/relationships';
 
 const router = express.Router();
 

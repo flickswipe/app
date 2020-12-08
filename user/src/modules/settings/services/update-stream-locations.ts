@@ -1,12 +1,10 @@
-import {
-  StreamLocationsSetting,
-  SettingType,
-  BadRequestError,
-} from "@flickswipe/common";
-import mongoose from "mongoose";
-import { natsWrapper } from "../../../nats-wrapper";
-import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
-import { Setting } from "../models/setting";
+import mongoose from 'mongoose';
+
+import { BadRequestError, SettingType, StreamLocationsSetting } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
+import { Setting } from '../models/setting';
 
 export async function updateStreamLocations(
   userId: string,

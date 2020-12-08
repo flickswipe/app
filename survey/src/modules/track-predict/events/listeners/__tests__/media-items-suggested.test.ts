@@ -1,7 +1,8 @@
-import { Message } from "node-nats-streaming";
-import { Suggestion } from "../../../models/suggestion";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { MediaItemsSuggestedListener } from "../media-items-suggested";
+import { Message } from 'node-nats-streaming';
+
+import { natsWrapper } from '../../../../../nats-wrapper';
+import { Suggestion } from '../../../models/suggestion';
+import { MediaItemsSuggestedListener } from '../media-items-suggested';
 
 const setup = async () => {
   return {

@@ -1,4 +1,4 @@
-import { SurveyResponse, SurveyResponseDoc } from "../models/survey-response";
+import { SurveyResponse, SurveyResponseDoc } from '../models/survey-response';
 
 export async function getSurveyResponses(
   user: string

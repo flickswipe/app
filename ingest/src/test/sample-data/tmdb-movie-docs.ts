@@ -1,4 +1,4 @@
-import { TmdbMovieAttrs } from "../../modules/tmdb/models/tmdb-movie";
+import { TmdbMovieAttrs } from '../../modules/tmdb/models/tmdb-movie';
 
 export const TMDB_MOVIE_DOC_A: TmdbMovieAttrs = {
   tmdbMovieId: 550,

@@ -1,16 +1,14 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { fetchTmdbMovie } from "../fetch-tmdb-movie";
-import { TmdbMovie } from "../../models/tmdb-movie";
-import { MovieId } from "../../../tmdb-file-export/models/movie-id";
-import { natsWrapper } from "../../../../nats-wrapper";
-
-// sample data
-import tmdbMovieApiResultSample from "./tmdb-movie.json";
+import { natsWrapper } from '../../../../nats-wrapper';
 import {
-  TMDB_MOVIE_DOC_A,
-  TMDB_MOVIE_DOC_A_NEW,
-} from "../../../../test/sample-data/tmdb-movie-docs";
+    TMDB_MOVIE_DOC_A, TMDB_MOVIE_DOC_A_NEW
+} from '../../../../test/sample-data/tmdb-movie-docs';
+import { MovieId } from '../../../tmdb-file-export/models/movie-id';
+import { TmdbMovie } from '../../models/tmdb-movie';
+import { fetchTmdbMovie } from '../fetch-tmdb-movie';
+// sample data
+import tmdbMovieApiResultSample from './tmdb-movie.json';
 
 describe("fetch tmdb movie", () => {
   describe("no data provided", () => {

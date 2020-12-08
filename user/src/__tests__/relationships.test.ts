@@ -1,16 +1,11 @@
-import { Relationship } from "../modules/relationships/models/relationship";
+import { Relationship } from '../modules/relationships/models/relationship';
 import {
-  blockRelationship,
-  acceptRelationship,
-  cancelRelationship,
-  rejectRelationship,
-  requestRelationship,
-  unblockRelationship,
-} from "../modules/relationships/relationships";
-import { User } from "../modules/track-auth/models/user";
-
+    acceptRelationship, blockRelationship, cancelRelationship, rejectRelationship,
+    requestRelationship, unblockRelationship
+} from '../modules/relationships/relationships';
+import { User } from '../modules/track-auth/models/user';
 // sample data
-import { USER_A, USER_B } from "../test/sample-data/users";
+import { USER_A, USER_B } from '../test/sample-data/users';
 
 type relationshipFn = (toUser: string, fromUser: string) => Promise<void>;
 

@@ -1,15 +1,10 @@
-import { RelationshipType } from "@flickswipe/common";
-import { Relationship } from "../../models/relationship";
-import { RelationshipRequest } from "../../models/relationship-request";
-import { getRelationships } from "../get-relationships";
+import { RelationshipType } from '@flickswipe/common';
 
 // sample data
-import {
-  USER_A,
-  USER_B,
-  USER_C,
-  USER_D,
-} from "../../../../test/sample-data/users";
+import { USER_A, USER_B, USER_C, USER_D } from '../../../../test/sample-data/users';
+import { Relationship } from '../../models/relationship';
+import { RelationshipRequest } from '../../models/relationship-request';
+import { getRelationships } from '../get-relationships';
 
 describe("list all relationships", () => {
   describe("user has no active relationships", () => {

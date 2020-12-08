@@ -1,6 +1,6 @@
-import { SIGN_IN_TOKEN_A } from "../../test/sample-data/tokens";
-import { transporterWrapper } from "../../transporter-wrapper";
-import { sendMagicLink } from "../send-magic-link";
+import { SIGN_IN_TOKEN_A } from '../../test/sample-data/tokens';
+import { transporterWrapper } from '../../transporter-wrapper';
+import { sendMagicLink } from '../send-magic-link';
 
 describe("send magic link", () => {
   describe("send", () => {

@@ -1,18 +1,13 @@
+import express, { Request, Response } from 'express';
+
 import {
-  BadRequestError,
-  currentUser,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
+    BadRequestError, currentUser, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
 
-import express, { Request, Response } from "express";
-
-import { User } from "../models/user";
-
-import { Jwt } from "../services/classes/jwt";
-
-import { natsWrapper } from "../nats-wrapper";
-import { UserCreatedPublisher } from "../events/publishers/user-created";
+import { UserCreatedPublisher } from '../events/publishers/user-created';
+import { User } from '../models/user';
+import { natsWrapper } from '../nats-wrapper';
+import { Jwt } from '../services/classes/jwt';
 
 const router = express.Router();
 

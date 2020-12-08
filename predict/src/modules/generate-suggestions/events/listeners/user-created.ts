@@ -1,13 +1,9 @@
-import {
-  Subjects,
-  Listener,
-  UserCreatedEvent,
-  BadRequestError,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { User } from "../../models/user";
-import { createSuggestions } from "../../services/create-suggestions";
+import { BadRequestError, Listener, Subjects, UserCreatedEvent } from '@flickswipe/common';
+
+import { User } from '../../models/user';
+import { createSuggestions } from '../../services/create-suggestions';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

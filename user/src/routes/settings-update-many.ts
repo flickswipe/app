@@ -1,22 +1,13 @@
-import {
-  BadRequestError,
-  currentUser,
-  requireAuth,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
-
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 
 import {
-  updateCountry,
-  updateGenres,
-  updateAudioLanguages,
-  updateRating,
-  updateReleaseDate,
-  updateRuntime,
-  updateStreamLocations,
-} from "../modules/settings/settings";
+    BadRequestError, currentUser, requireAuth, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
+
+import {
+    updateAudioLanguages, updateCountry, updateGenres, updateRating, updateReleaseDate,
+    updateRuntime, updateStreamLocations
+} from '../modules/settings/settings';
 
 const router = express.Router();
 

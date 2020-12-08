@@ -1,5 +1,6 @@
-import axios from "axios";
-import { UtellyApiResultRaw } from "./utelly-parser";
+import axios from 'axios';
+
+import { UtellyApiResultRaw } from './utelly-parser';
 
 /**
  * @see https://rapidapi.com/utelly/api/utelly?endpoint=apiendpoint_3cad787b-ca7b-449a-84b4-23b40d64fd7

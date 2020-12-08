@@ -1,15 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { fetchTmdbGenres } from "../fetch-tmdb-genres";
-import { TmdbGenre, TmdbGenreDoc } from "../../models/tmdb-genre";
-import { natsWrapper } from "../../../../nats-wrapper";
-
-// sample data
-import tmdbGenresApiResultSample from "./tmdb-genres.json";
+import { natsWrapper } from '../../../../nats-wrapper';
 import {
-  TMDB_GENRE_DOC_A,
-  TMDB_GENRE_DOC_A_NEW,
-} from "../../../../test/sample-data/tmdb-genre-docs";
+    TMDB_GENRE_DOC_A, TMDB_GENRE_DOC_A_NEW
+} from '../../../../test/sample-data/tmdb-genre-docs';
+import { TmdbGenre, TmdbGenreDoc } from '../../models/tmdb-genre';
+import { fetchTmdbGenres } from '../fetch-tmdb-genres';
+// sample data
+import tmdbGenresApiResultSample from './tmdb-genres.json';
 
 describe("fetch tmdb genres", () => {
   describe("no data provided", () => {

@@ -1,7 +1,8 @@
-import { validateIso6391Param, validateRequest } from "@flickswipe/common";
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 
-import { Jwt } from "../services/classes/jwt";
+import { validateIso6391Param, validateRequest } from '@flickswipe/common';
+
+import { Jwt } from '../services/classes/jwt';
 
 const router = express.Router();
 

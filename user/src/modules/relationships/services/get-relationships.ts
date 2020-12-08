@@ -1,9 +1,7 @@
-import { RelationshipType } from "@flickswipe/common";
-import { Relationship, RelationshipDoc } from "../models/relationship";
-import {
-  RelationshipRequest,
-  RelationshipRequestDoc,
-} from "../models/relationship-request";
+import { RelationshipType } from '@flickswipe/common';
+
+import { Relationship, RelationshipDoc } from '../models/relationship';
+import { RelationshipRequest, RelationshipRequestDoc } from '../models/relationship-request';
 
 export async function getRelationships(
   userId: string

@@ -1,9 +1,9 @@
 /**
  * Provide global helper functions for tests
  */
-import request from "supertest";
+import request from 'supertest';
 
-import { app } from "../app";
+import { app } from '../app';
 
 declare global {
   // @ts-ignore

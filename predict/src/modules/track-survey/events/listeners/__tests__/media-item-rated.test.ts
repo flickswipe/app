@@ -1,14 +1,16 @@
-import { Message } from "node-nats-streaming";
-import { SurveyResponse } from "../../../models/survey-response";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { MediaItemRatedListener } from "../media-item-rated";
-import { InterestType } from "@flickswipe/common";
-import { Suggestion } from "../../../../generate-suggestions/models/suggestion";
-import { User } from "../../../../generate-suggestions/models/user";
+import { Message } from 'node-nats-streaming';
 
+import { InterestType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../../../nats-wrapper';
+import { MEDIA_ITEM_A } from '../../../../../test/sample-data/media-items';
 // sample data
-import { USER_A } from "../../../../../test/sample-data/users";
-import { MEDIA_ITEM_A } from "../../../../../test/sample-data/media-items";
+import { USER_A } from '../../../../../test/sample-data/users';
+import { Suggestion } from '../../../../generate-suggestions/models/suggestion';
+import { User } from '../../../../generate-suggestions/models/user';
+import { SurveyResponse } from '../../../models/survey-response';
+import { MediaItemRatedListener } from '../media-item-rated';
+
 const EVENT_DATA = {
   id: MEDIA_ITEM_A.id,
   user: USER_A.id,

@@ -1,12 +1,9 @@
-import {
-  BadRequestError,
-  RelationshipType,
-  RelationshipUpdateType,
-} from "@flickswipe/common";
-import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
-import { Relationship } from "../models/relationship";
-import { RelationshipRequest } from "../models/relationship-request";
+import { BadRequestError, RelationshipType, RelationshipUpdateType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { RelationshipUpdatedPublisher } from '../events/publishers/relationship-updated';
+import { Relationship } from '../models/relationship';
+import { RelationshipRequest } from '../models/relationship-request';
 
 export async function acceptRelationship(
   originalReceiverId: string, // the user who is accepting

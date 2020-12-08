@@ -1,5 +1,6 @@
-import { AnySetting } from "@flickswipe/common";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
+
+import { AnySetting } from '@flickswipe/common';
 
 /**
  * Properties used to create a Setting

@@ -1,6 +1,6 @@
-import { ADD_EMAIL_TOKEN_A } from "../../test/sample-data/tokens";
-import { transporterWrapper } from "../../transporter-wrapper";
-import { sendAddEmailLink } from "../send-add-email-link";
+import { ADD_EMAIL_TOKEN_A } from '../../test/sample-data/tokens';
+import { transporterWrapper } from '../../transporter-wrapper';
+import { sendAddEmailLink } from '../send-add-email-link';
 
 describe("send add email link", () => {
   describe("send", () => {

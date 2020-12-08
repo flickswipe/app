@@ -1,10 +1,11 @@
-import { Message } from "node-nats-streaming";
-import { Genre, GenreDoc } from "../../../models/genre";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { GenreUpdatedListener } from "../genre-updated";
+import { Message } from 'node-nats-streaming';
 
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
-import { GENRE_A, GENRE_A_NEW } from "../../../../../test/sample-data/genres";
+import { GENRE_A, GENRE_A_NEW } from '../../../../../test/sample-data/genres';
+import { Genre, GenreDoc } from '../../../models/genre';
+import { GenreUpdatedListener } from '../genre-updated';
+
 const EVENT_DATA = {
   id: GENRE_A_NEW.id,
   tmdbGenreId: GENRE_A_NEW.tmdbGenreId,

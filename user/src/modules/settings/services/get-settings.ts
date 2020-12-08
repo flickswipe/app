@@ -1,15 +1,12 @@
+import camelCase from 'camelcase';
+import cloneDeep from 'clone-deep';
+
 import {
-  CountrySetting,
-  GenresSetting,
-  AudioLanguagesSetting,
-  RatingSetting,
-  ReleaseDateSetting,
-  RuntimeSetting,
-  StreamLocationsSetting,
-} from "@flickswipe/common";
-import { Setting, SettingDoc } from "../models/setting";
-import camelCase from "camelcase";
-import cloneDeep from "clone-deep";
+    AudioLanguagesSetting, CountrySetting, GenresSetting, RatingSetting, ReleaseDateSetting,
+    RuntimeSetting, StreamLocationsSetting
+} from '@flickswipe/common';
+
+import { Setting, SettingDoc } from '../models/setting';
 
 export type SettingsPayload = {
   [key: string]: any;

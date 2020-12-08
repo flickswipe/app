@@ -1,5 +1,5 @@
-import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
-import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
+import { MovieId } from '../../modules/tmdb-file-export/models/movie-id';
+import { TmdbMovie } from '../../modules/tmdb/models/tmdb-movie';
 
 /**
  * Queue handler

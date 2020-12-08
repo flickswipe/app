@@ -1,14 +1,14 @@
-import { MovieId } from "../../modules/tmdb-file-export/models/movie-id";
-import { TmdbMovie } from "../../modules/tmdb/models/tmdb-movie";
-import { Utelly } from "../../modules/rapidapi-utelly/models/utelly";
-import { natsWrapper } from "../../nats-wrapper";
-import { announceMediaItem } from "../announce-media-item";
-
+import { Utelly } from '../../modules/rapidapi-utelly/models/utelly';
+import { MovieId } from '../../modules/tmdb-file-export/models/movie-id';
+import { TmdbGenre } from '../../modules/tmdb/models/tmdb-genre';
+import { TmdbMovie } from '../../modules/tmdb/models/tmdb-movie';
+import { natsWrapper } from '../../nats-wrapper';
+import { TMDB_GENRE_A } from '../../test/sample-data/tmdb-genres';
 // sample data
-import { TMDB_MOVIE_A } from "../../test/sample-data/tmdb-movies";
-import { UTELLY_A } from "../../test/sample-data/utellys";
-import { TMDB_GENRE_A } from "../../test/sample-data/tmdb-genres";
-import { TmdbGenre } from "../../modules/tmdb/models/tmdb-genre";
+import { TMDB_MOVIE_A } from '../../test/sample-data/tmdb-movies';
+import { UTELLY_A } from '../../test/sample-data/utellys';
+import { announceMediaItem } from '../announce-media-item';
+
 const UTELLY_A_NO_LOCATIONS = Object.assign({}, UTELLY_A, { locations: [] });
 
 describe("announce", () => {

@@ -1,11 +1,8 @@
-import {
-  Subjects,
-  Listener,
-  MediaItemDestroyedEvent,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { MediaItem } from "../../models/media-item";
+import { Listener, MediaItemDestroyedEvent, Subjects } from '@flickswipe/common';
+
+import { MediaItem } from '../../models/media-item';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

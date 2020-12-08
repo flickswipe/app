@@ -1,4 +1,4 @@
-import ISO6391 from "iso-639-1";
+import ISO6391 from 'iso-639-1';
 
 export function unifyISO6391(languageString: string): string | null {
   if (ISO6391.validate(languageString)) {

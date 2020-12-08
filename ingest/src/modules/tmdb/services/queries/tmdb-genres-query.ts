@@ -1,5 +1,6 @@
-import axios from "axios";
-import { TmdbGenresApiResultRaw } from "./tmdb-genres-parser";
+import axios from 'axios';
+
+import { TmdbGenresApiResultRaw } from './tmdb-genres-parser';
 
 /**
  * @see https://developers.themoviedb.org/3/genres/get-movie-list

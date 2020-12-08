@@ -1,14 +1,11 @@
-import { Message } from "node-nats-streaming";
-import { MediaItem } from "../../../models/media-item";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { MediaItemUpdatedListener } from "../media-item-updated";
-import cloneDeep from "clone-deep";
+import cloneDeep from 'clone-deep';
+import { Message } from 'node-nats-streaming';
 
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
-import {
-  MEDIA_ITEM_A,
-  MEDIA_ITEM_A_NEW,
-} from "../../../../../test/sample-data/media-items";
+import { MEDIA_ITEM_A, MEDIA_ITEM_A_NEW } from '../../../../../test/sample-data/media-items';
+import { MediaItem } from '../../../models/media-item';
+import { MediaItemUpdatedListener } from '../media-item-updated';
 
 const EVENT_DATA = {
   id: MEDIA_ITEM_A_NEW.id,

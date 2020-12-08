@@ -1,17 +1,17 @@
-import { errorHandler, NotFoundError } from "@flickswipe/common";
+import 'express-async-errors';
 
-import express from "express";
-import "express-async-errors";
-import useragent from "express-useragent";
+import { json } from 'body-parser';
+import cookieSession from 'cookie-session';
+import express from 'express';
+import useragent from 'express-useragent';
 
-import { json } from "body-parser";
-import cookieSession from "cookie-session";
+import { errorHandler, NotFoundError } from '@flickswipe/common';
 
-import { tokensConsumeRouter } from "./routes/token-consume";
-import { usersCreateRouter } from "./routes/user-create";
-import { usersSendAddEmailLinkRouter } from "./routes/user-send-add-email-link";
-import { usersSendMagicLinkRouter } from "./routes/user-send-magic-link";
-import { usersSignOutRouter } from "./routes/user-sign-out";
+import { tokensConsumeRouter } from './routes/token-consume';
+import { usersCreateRouter } from './routes/user-create';
+import { usersSendAddEmailLinkRouter } from './routes/user-send-add-email-link';
+import { usersSendMagicLinkRouter } from './routes/user-send-magic-link';
+import { usersSignOutRouter } from './routes/user-sign-out';
 
 /**
  * Configure express app

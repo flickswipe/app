@@ -1,6 +1,6 @@
-import { Transform } from "stream";
+import { Transform } from 'stream';
 
-import { movieIdsParser } from "./movie-ids-parser";
+import { movieIdsParser } from './movie-ids-parser';
 
 /**
  * Transform stream to filter chunks

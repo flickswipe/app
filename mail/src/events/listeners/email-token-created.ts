@@ -1,14 +1,9 @@
-import {
-  Subjects,
-  Listener,
-  EmailTokenCreatedEvent,
-  EmailTokenType,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
+import { EmailTokenCreatedEvent, EmailTokenType, Listener, Subjects } from '@flickswipe/common';
 
-import { sendAddEmailLink } from "../../services/send-add-email-link";
-import { sendMagicLink } from "../../services/send-magic-link";
+import { sendAddEmailLink } from '../../services/send-add-email-link';
+import { sendMagicLink } from '../../services/send-magic-link';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

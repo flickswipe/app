@@ -1,11 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { fetchUtelly } from "../fetch-utelly";
-import { Utelly } from "../../models/utelly";
-
+import { UTELLY_DOC_A } from '../../../../test/sample-data/utelly-docs';
+import { Utelly } from '../../models/utelly';
+import { fetchUtelly } from '../fetch-utelly';
 // sample data
-import utellyApiResultSample from "./utelly.json";
-import { UTELLY_DOC_A } from "../../../../test/sample-data/utelly-docs";
+import utellyApiResultSample from './utelly.json';
 
 describe("fetch utelly", () => {
   describe("no data provided", () => {

@@ -1,12 +1,10 @@
-import { Subjects, Listener, MediaItemUpdatedEvent } from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import {
-  StreamLocation,
-  StreamLocationAttrs,
-} from "../../models/stream-location";
-import { Language } from "../../models/language";
-import { Country } from "../../models/country";
+import { Listener, MediaItemUpdatedEvent, Subjects } from '@flickswipe/common';
+
+import { Country } from '../../models/country';
+import { Language } from '../../models/language';
+import { StreamLocation, StreamLocationAttrs } from '../../models/stream-location';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
-import { MediaItemUpdatedPublisher } from "../events/publishers/media-item-updated";
-import { natsWrapper } from "../nats-wrapper";
-import { Utelly, UtellyDoc } from "../modules/rapidapi-utelly/models/utelly";
-import { TmdbMovie } from "../modules/tmdb/models/tmdb-movie";
-import { MovieId } from "../modules/tmdb-file-export/models/movie-id";
-import { TmdbGenre } from "../modules/tmdb/models/tmdb-genre";
+import mongoose from 'mongoose';
+
+import { MediaItemUpdatedPublisher } from '../events/publishers/media-item-updated';
+import { Utelly, UtellyDoc } from '../modules/rapidapi-utelly/models/utelly';
+import { MovieId } from '../modules/tmdb-file-export/models/movie-id';
+import { TmdbGenre } from '../modules/tmdb/models/tmdb-genre';
+import { TmdbMovie } from '../modules/tmdb/models/tmdb-movie';
+import { natsWrapper } from '../nats-wrapper';
 
 export async function announceMediaItem({
   imdbId,

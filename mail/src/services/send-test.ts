@@ -1,4 +1,4 @@
-import { Email } from "./classes/email";
+import { Email } from './classes/email';
 
 const [L, R] = Email.delimiters;
 

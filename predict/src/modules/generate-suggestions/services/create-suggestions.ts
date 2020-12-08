@@ -1,22 +1,15 @@
 import {
-  AnySetting,
-  BadRequestError,
-  CountrySetting,
-  GenresSetting,
-  AudioLanguagesSetting,
-  RatingSetting,
-  ReleaseDateSetting,
-  RuntimeSetting,
-  SettingType,
-  StreamLocationsSetting,
-} from "@flickswipe/common";
-import { natsWrapper } from "../../../nats-wrapper";
-import { queryMediaItems } from "../../track-ingest/services/query-media-items";
-import { getSurveyResponses } from "../../track-survey/track-survey";
-import { getSettings } from "../../track-user-settings/track-user-settings";
-import { MediaItemsSuggestedPublisher } from "../events/publishers/media-items-suggested";
-import { Suggestion, SuggestionDoc } from "../models/suggestion";
-import { User } from "../models/user";
+    AnySetting, AudioLanguagesSetting, BadRequestError, CountrySetting, GenresSetting,
+    RatingSetting, ReleaseDateSetting, RuntimeSetting, SettingType, StreamLocationsSetting
+} from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { queryMediaItems } from '../../track-ingest/services/query-media-items';
+import { getSurveyResponses } from '../../track-survey/track-survey';
+import { getSettings } from '../../track-user-settings/track-user-settings';
+import { MediaItemsSuggestedPublisher } from '../events/publishers/media-items-suggested';
+import { Suggestion, SuggestionDoc } from '../models/suggestion';
+import { User } from '../models/user';
 
 const MAX_SUGGESTIONS_TO_GENERATE = 50;
 

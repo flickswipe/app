@@ -1,19 +1,17 @@
-import mongoose from "mongoose";
-import { BadRequestError, SettingType } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { MediaItem } from "../../../track-ingest/models/media-item";
-import { SurveyResponse } from "../../../track-survey/models/survey-response";
-import { Setting } from "../../../track-user-settings/models/setting";
-import { Suggestion } from "../../models/suggestion";
-import { User } from "../../models/user";
-import { createSuggestions } from "../create-suggestions";
+import mongoose from 'mongoose';
 
+import { BadRequestError, SettingType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../../nats-wrapper';
+import { MEDIA_ITEM_A, MEDIA_ITEM_B } from '../../../../test/sample-data/media-items';
 // sample data
-import { USER_A, USER_B } from "../../../../test/sample-data/users";
-import {
-  MEDIA_ITEM_A,
-  MEDIA_ITEM_B,
-} from "../../../../test/sample-data/media-items";
+import { USER_A, USER_B } from '../../../../test/sample-data/users';
+import { MediaItem } from '../../../track-ingest/models/media-item';
+import { SurveyResponse } from '../../../track-survey/models/survey-response';
+import { Setting } from '../../../track-user-settings/models/setting';
+import { Suggestion } from '../../models/suggestion';
+import { User } from '../../models/user';
+import { createSuggestions } from '../create-suggestions';
 
 const expectOnlyOneCorrectSuggestionDocToExist = async () => {
   expect(

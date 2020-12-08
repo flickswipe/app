@@ -1,15 +1,12 @@
-import {
-  currentUser,
-  NotFoundError,
-  requireAuth,
-  validateIso6391Param,
-  validateObjectIdParam,
-  validateRequest,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
 
-import express, { Request, Response } from "express";
-import { cancelRelationship } from "../modules/relationships/relationships";
-import { getUser } from "../modules/track-auth/track-auth";
+import {
+    currentUser, NotFoundError, requireAuth, validateIso6391Param, validateObjectIdParam,
+    validateRequest
+} from '@flickswipe/common';
+
+import { cancelRelationship } from '../modules/relationships/relationships';
+import { getUser } from '../modules/track-auth/track-auth';
 
 const router = express.Router();
 

@@ -1,16 +1,12 @@
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+
 import {
-  BadRequestError,
-  currentUser,
-  EmailTokenType,
-  mongodbCatch,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
+    BadRequestError, currentUser, EmailTokenType, mongodbCatch, validateIso6391Param,
+    validateRequest
+} from '@flickswipe/common';
 
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-
-import { EmailTokenUrl } from "../services/classes/email-token-url";
+import { EmailTokenUrl } from '../services/classes/email-token-url';
 
 const router = express.Router();
 

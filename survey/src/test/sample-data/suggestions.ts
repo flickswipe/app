@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import { MEDIA_ITEM_A, MEDIA_ITEM_B } from "./media-items";
+import mongoose from 'mongoose';
+
+import { MEDIA_ITEM_A, MEDIA_ITEM_B } from './media-items';
 
 export const SUGGESTION_A = {
   user: mongoose.Types.ObjectId("useraaaaaaaa").toHexString(),

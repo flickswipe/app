@@ -1,14 +1,12 @@
 import {
-  BadRequestError,
-  NotAuthorizedError,
-  RelationshipType,
-  RelationshipUpdateType,
-  TooManyRequestsError,
-} from "@flickswipe/common";
-import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
-import { Relationship } from "../models/relationship";
-import { RelationshipRequest } from "../models/relationship-request";
+    BadRequestError, NotAuthorizedError, RelationshipType, RelationshipUpdateType,
+    TooManyRequestsError
+} from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { RelationshipUpdatedPublisher } from '../events/publishers/relationship-updated';
+import { Relationship } from '../models/relationship';
+import { RelationshipRequest } from '../models/relationship-request';
 
 export async function requestRelationship(
   fromUserId: string,

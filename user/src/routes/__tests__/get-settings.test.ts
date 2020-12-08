@@ -1,20 +1,16 @@
-import mongoose from "mongoose";
-import request from "supertest";
-import { app } from "../../app";
-import { getSettings } from "../../modules/settings/settings";
+import mongoose from 'mongoose';
+import request from 'supertest';
+
+import { app } from '../../app';
+import { getSettings } from '../../modules/settings/settings';
 import {
-  getGenres,
-  getAudioLanguages,
-  getStreamLocations,
-} from "../../modules/track-ingest/track-ingest";
-import { GENRE_A, GENRE_B, GENRE_C } from "../../test/sample-data/genres";
+    getAudioLanguages, getGenres, getStreamLocations
+} from '../../modules/track-ingest/track-ingest';
+import { GENRE_A, GENRE_B, GENRE_C } from '../../test/sample-data/genres';
 import {
-  ALL_SETTINGS_EMPTY,
-  GENRES_SETTING,
-  AUDIO_LANGUAGES_SETTING,
-  STREAM_LOCATIONS_SETTING,
-} from "../../test/sample-data/settings";
-import { USER_A } from "../../test/sample-data/users";
+    ALL_SETTINGS_EMPTY, AUDIO_LANGUAGES_SETTING, GENRES_SETTING, STREAM_LOCATIONS_SETTING
+} from '../../test/sample-data/settings';
+import { USER_A } from '../../test/sample-data/users';
 
 jest.mock("../../modules/settings/settings");
 jest.mock("../../modules/track-ingest/track-ingest");

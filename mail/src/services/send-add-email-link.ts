@@ -1,5 +1,6 @@
-import { EmailTokenCreatedEvent } from "@flickswipe/common";
-import { Email } from "./classes/email";
+import { EmailTokenCreatedEvent } from '@flickswipe/common';
+
+import { Email } from './classes/email';
 
 const [L, R] = Email.delimiters;
 

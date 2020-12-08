@@ -1,12 +1,10 @@
-import {
-  BadRequestError,
-  AudioLanguagesSetting,
-  SettingType,
-} from "@flickswipe/common";
-import mongoose from "mongoose";
-import { natsWrapper } from "../../../nats-wrapper";
-import { UserUpdatedSettingPublisher } from "../events/publishers/user-updated-setting";
-import { Setting } from "../models/setting";
+import mongoose from 'mongoose';
+
+import { AudioLanguagesSetting, BadRequestError, SettingType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
+import { Setting } from '../models/setting';
 
 export async function updateAudioLanguages(
   userId: string,

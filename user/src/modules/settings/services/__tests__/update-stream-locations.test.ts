@@ -1,13 +1,13 @@
-import { BadRequestError } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Setting, SettingDoc } from "../../models/setting";
-import { updateStreamLocations } from "../update-stream-locations";
+import { BadRequestError } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
 import {
-  STREAM_LOCATIONS_SETTING,
-  STREAM_LOCATIONS_SETTING_EMPTY,
-} from "../../../../test/sample-data/settings";
+    STREAM_LOCATIONS_SETTING, STREAM_LOCATIONS_SETTING_EMPTY
+} from '../../../../test/sample-data/settings';
+import { Setting, SettingDoc } from '../../models/setting';
+import { updateStreamLocations } from '../update-stream-locations';
+
 const INVALID_ID = "invalid-id";
 const INVALID_VALUE = {
   [INVALID_ID]: true,

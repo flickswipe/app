@@ -1,4 +1,4 @@
-import { makePlainText } from "../make-plain-text";
+import { makePlainText } from '../make-plain-text';
 
 describe("make plain text", () => {
   it("should strip surrounding html tags", () => {

@@ -1,11 +1,10 @@
-import * as Sentry from "@sentry/node";
-import { RewriteFrames } from "@sentry/integrations";
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
 
-import { natsWrapper } from "./nats-wrapper";
-import { transporterWrapper } from "./transporter-wrapper";
-
-import { EmailTokenCreatedListener } from "./events/listeners/email-token-created";
-import { sendTestEmail } from "./services/send-test";
+import { EmailTokenCreatedListener } from './events/listeners/email-token-created';
+import { natsWrapper } from './nats-wrapper';
+import { sendTestEmail } from './services/send-test';
+import { transporterWrapper } from './transporter-wrapper';
 
 /**
  * Error & performance tracking

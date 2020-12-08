@@ -1,4 +1,4 @@
-import { TMDB_MOVIE_A } from "./tmdb-movies";
+import { TMDB_MOVIE_A } from './tmdb-movies';
 
 export const UTELLY_A = {
   imdbId: TMDB_MOVIE_A.imdbId,

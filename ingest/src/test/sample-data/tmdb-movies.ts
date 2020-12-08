@@ -1,5 +1,5 @@
-import { TmdbMovieAttrs } from "../../modules/tmdb/models/tmdb-movie";
-import { TMDB_GENRE_A } from "./tmdb-genres";
+import { TmdbMovieAttrs } from '../../modules/tmdb/models/tmdb-movie';
+import { TMDB_GENRE_A } from './tmdb-genres';
 
 export const TMDB_MOVIE_A: TmdbMovieAttrs = {
   tmdbMovieId: 1,

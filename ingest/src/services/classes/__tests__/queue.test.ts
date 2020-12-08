@@ -1,10 +1,7 @@
-import { MovieId } from "../../../modules/tmdb-file-export/models/movie-id";
-import { TmdbMovie } from "../../../modules/tmdb/models/tmdb-movie";
-import {
-  TMDB_MOVIE_A,
-  TMDB_MOVIE_B,
-} from "../../../test/sample-data/tmdb-movies";
-import { Queue } from "../queue";
+import { MovieId } from '../../../modules/tmdb-file-export/models/movie-id';
+import { TmdbMovie } from '../../../modules/tmdb/models/tmdb-movie';
+import { TMDB_MOVIE_A, TMDB_MOVIE_B } from '../../../test/sample-data/tmdb-movies';
+import { Queue } from '../queue';
 
 // sample data
 const TMDB_MOVIE_A_NEVER_USE = Object.assign({}, TMDB_MOVIE_A, {

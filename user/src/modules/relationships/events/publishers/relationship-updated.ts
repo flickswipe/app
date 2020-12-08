@@ -1,8 +1,4 @@
-import {
-  Subjects,
-  Publisher,
-  RelationshipUpdatedEvent,
-} from "@flickswipe/common";
+import { Publisher, RelationshipUpdatedEvent, Subjects } from '@flickswipe/common';
 
 /**
  * @see RelationshipUpdatedEvent for payload interface

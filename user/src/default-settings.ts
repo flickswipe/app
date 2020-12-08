@@ -1,4 +1,4 @@
-import { AudioLanguagesSetting } from "@flickswipe/common";
+import { AudioLanguagesSetting } from '@flickswipe/common';
 
 export const defaultSettings = {
   country: "",

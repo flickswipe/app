@@ -1,9 +1,9 @@
-import axios from "axios";
-import split2 from "split2";
-import Stream from "stream";
-import zlib from "zlib";
+import axios from 'axios';
+import split2 from 'split2';
+import Stream from 'stream';
+import zlib from 'zlib';
 
-import { MovieIdsFilterRows } from "./movie-ids-filter-rows";
+import { MovieIdsFilterRows } from './movie-ids-filter-rows';
 
 /**
  * Configure source url

@@ -1,13 +1,10 @@
-import {
-  currentUser,
-  requireAuth,
-  InterestType,
-  validateRequest,
-  validateIso6391Param,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
 
-import express, { Request, Response } from "express";
-import { getSurveyResponses } from "../modules/handle-survey-response/handle-survey-response";
+import {
+    currentUser, InterestType, requireAuth, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
+
+import { getSurveyResponses } from '../modules/handle-survey-response/handle-survey-response';
 
 const router = express.Router();
 

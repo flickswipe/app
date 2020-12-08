@@ -1,13 +1,11 @@
-import { BadRequestError } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Setting, SettingDoc } from "../../models/setting";
-import { updateCountry } from "../update-country";
+import { BadRequestError } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
-import {
-  COUNTRY_SETTING,
-  COUNTRY_SETTING_EMPTY,
-} from "../../../../test/sample-data/settings";
+import { COUNTRY_SETTING, COUNTRY_SETTING_EMPTY } from '../../../../test/sample-data/settings';
+import { Setting, SettingDoc } from '../../models/setting';
+import { updateCountry } from '../update-country';
+
 const INVALID_ID = "invalid-id";
 
 describe("update country setting", () => {

@@ -1,5 +1,5 @@
-import { transporterWrapper } from "../../../transporter-wrapper";
-import { Email } from "../email";
+import { transporterWrapper } from '../../../transporter-wrapper';
+import { Email } from '../email';
 
 const [L, R] = Email.delimiters;
 const EMAIL_A = "a@test.com";

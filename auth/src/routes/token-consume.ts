@@ -1,22 +1,16 @@
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import { ObjectId } from 'mongodb';
+
 import {
-  BadRequestError,
-  EmailTokenType,
-  validateIso6391Param,
-  validateRequest,
-} from "@flickswipe/common";
+    BadRequestError, EmailTokenType, validateIso6391Param, validateRequest
+} from '@flickswipe/common';
 
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-
-import { ObjectId } from "mongodb";
-
-import { EmailToken } from "../models/email-token";
-import { User } from "../models/user";
-
-import { Jwt } from "../services/classes/jwt";
-
-import { natsWrapper } from "../nats-wrapper";
-import { UserUpdatedEmailPublisher } from "../events/publishers/user-updated-email";
+import { UserUpdatedEmailPublisher } from '../events/publishers/user-updated-email';
+import { EmailToken } from '../models/email-token';
+import { User } from '../models/user';
+import { natsWrapper } from '../nats-wrapper';
+import { Jwt } from '../services/classes/jwt';
 
 const router = express.Router();
 

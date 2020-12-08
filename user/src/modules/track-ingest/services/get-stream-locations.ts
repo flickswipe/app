@@ -1,4 +1,4 @@
-import { StreamLocation, StreamLocationDoc } from "../models/stream-location";
+import { StreamLocation, StreamLocationDoc } from '../models/stream-location';
 
 export async function getStreamLocations(
   country: string

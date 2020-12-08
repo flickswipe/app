@@ -1,4 +1,4 @@
-import { Subjects, Publisher, MediaItemUpdatedEvent } from "@flickswipe/common";
+import { MediaItemUpdatedEvent, Publisher, Subjects } from '@flickswipe/common';
 
 export class MediaItemUpdatedPublisher extends Publisher<
   MediaItemUpdatedEvent

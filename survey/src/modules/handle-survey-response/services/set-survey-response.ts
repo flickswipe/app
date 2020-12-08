@@ -1,8 +1,9 @@
-import { BadRequestError, InterestType } from "@flickswipe/common";
-import { natsWrapper } from "../../../nats-wrapper";
-import { getMediaItem } from "../../track-ingest/track-ingest";
-import { MediaItemRatedPublisher } from "../events/publishers/media-item-rated";
-import { SurveyResponse } from "../models/survey-response";
+import { BadRequestError, InterestType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { getMediaItem } from '../../track-ingest/track-ingest';
+import { MediaItemRatedPublisher } from '../events/publishers/media-item-rated';
+import { SurveyResponse } from '../models/survey-response';
 
 export async function setSurveyResponse(
   user: string,

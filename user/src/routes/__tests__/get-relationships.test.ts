@@ -1,7 +1,8 @@
-import request from "supertest";
-import { app } from "../../app";
-import { getRelationships } from "../../modules/relationships/relationships";
-import { USER_A } from "../../test/sample-data/users";
+import request from 'supertest';
+
+import { app } from '../../app';
+import { getRelationships } from '../../modules/relationships/relationships';
+import { USER_A } from '../../test/sample-data/users';
 
 // mocks
 jest.mock("../../modules/relationships/relationships");

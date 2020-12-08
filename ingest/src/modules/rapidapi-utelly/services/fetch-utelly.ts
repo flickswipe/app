@@ -1,6 +1,6 @@
-import { Utelly, UtellyDoc } from "../models/utelly";
-import { utellyQuery } from "./queries/utelly-query";
-import { utellyParser } from "./queries/utelly-parser";
+import { Utelly, UtellyDoc } from '../models/utelly';
+import { utellyParser } from './queries/utelly-parser';
+import { utellyQuery } from './queries/utelly-query';
 
 export async function fetchUtelly(
   imdbId: string,

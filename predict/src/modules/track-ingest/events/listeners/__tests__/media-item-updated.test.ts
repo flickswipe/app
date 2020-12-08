@@ -1,10 +1,11 @@
-import { Message } from "node-nats-streaming";
-import { MediaItem } from "../../../models/media-item";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { MediaItemUpdatedListener } from "../media-item-updated";
+import { Message } from 'node-nats-streaming';
 
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
-import { MEDIA_ITEM_A } from "../../../../../test/sample-data/media-items";
+import { MEDIA_ITEM_A } from '../../../../../test/sample-data/media-items';
+import { MediaItem } from '../../../models/media-item';
+import { MediaItemUpdatedListener } from '../media-item-updated';
+
 const EVENT_DATA = Object.assign({}, MEDIA_ITEM_A, {
   name: "New Name",
   updatedAt: new Date(new Date().getTime() + 86600),

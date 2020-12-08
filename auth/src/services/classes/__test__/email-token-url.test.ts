@@ -1,16 +1,12 @@
-import {
-  EmailTokenType,
-  BadRequestError,
-  TooManyRequestsError,
-} from "@flickswipe/common";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-import { EmailToken } from "../../../models/email-token";
-import { User, UserDoc } from "../../../models/user";
-import { EmailTokenUrl } from "../email-token-url";
+import { BadRequestError, EmailTokenType, TooManyRequestsError } from '@flickswipe/common';
 
+import { EmailToken } from '../../../models/email-token';
+import { User, UserDoc } from '../../../models/user';
 // sample data
-import { USER_A } from "../../../test/sample-data/users";
+import { USER_A } from '../../../test/sample-data/users';
+import { EmailTokenUrl } from '../email-token-url';
 
 describe("EmailTokenUrl", () => {
   describe("generate from email", () => {

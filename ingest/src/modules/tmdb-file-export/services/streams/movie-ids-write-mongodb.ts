@@ -1,7 +1,7 @@
-import { Writable } from "stream";
+import { Writable } from 'stream';
 
-import { movieIdsParser } from "./movie-ids-parser";
-import { MovieId } from "../../models/movie-id";
+import { MovieId } from '../../models/movie-id';
+import { movieIdsParser } from './movie-ids-parser';
 
 /**
  * Stream MovieId data to MovieId mongodb collection

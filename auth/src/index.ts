@@ -1,11 +1,11 @@
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
-import { RewriteFrames } from "@sentry/integrations";
+import mongoose from 'mongoose';
 
-import mongoose from "mongoose";
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
-import { app } from "./app";
-import { natsWrapper } from "./nats-wrapper";
+import { app } from './app';
+import { natsWrapper } from './nats-wrapper';
 
 /**
  * Error & performance tracking

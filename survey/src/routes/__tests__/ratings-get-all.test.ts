@@ -1,16 +1,16 @@
-import request from "supertest";
-import { app } from "../../app";
-import { SurveyResponse } from "../../modules/handle-survey-response/models/survey-response";
-import { Genre } from "../../modules/track-ingest/models/genre";
-import { MediaItem } from "../../modules/track-ingest/models/media-item";
+import request from 'supertest';
 
+import { app } from '../../app';
+import { SurveyResponse } from '../../modules/handle-survey-response/models/survey-response';
+import { Genre } from '../../modules/track-ingest/models/genre';
+import { MediaItem } from '../../modules/track-ingest/models/media-item';
 // sample data
-import { GENRE_A } from "../../test/sample-data/genres";
-import { MEDIA_ITEM_A, MEDIA_ITEM_B } from "../../test/sample-data/media-items";
+import { GENRE_A } from '../../test/sample-data/genres';
+import { MEDIA_ITEM_A, MEDIA_ITEM_B } from '../../test/sample-data/media-items';
 import {
-  SURVEY_RESPONSE_CONSUMED_B,
-  SURVEY_RESPONSE_INTERESTED_A,
-} from "../../test/sample-data/survey-responses";
+    SURVEY_RESPONSE_CONSUMED_B, SURVEY_RESPONSE_INTERESTED_A
+} from '../../test/sample-data/survey-responses';
+
 const USER = {
   id: SURVEY_RESPONSE_INTERESTED_A.user,
 };

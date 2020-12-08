@@ -1,26 +1,13 @@
-import { Setting } from "../../models/setting";
-import { getSettings } from "../get-settings";
-
-// sample data
-import { USER_A } from "../../../../test/sample-data/users";
 import {
-  ALL_SETTINGS,
-  COUNTRY_SETTING,
-  GENRES_SETTING,
-  AUDIO_LANGUAGES_SETTING,
-  RATING_SETTING,
-  RELEASE_DATE_SETTING,
-  RUNTIME_SETTING,
-  STREAM_LOCATIONS_SETTING,
-  COUNTRY_SETTING_EMPTY,
-  GENRES_SETTING_EMPTY,
-  AUDIO_LANGUAGES_SETTING_EMPTY,
-  RATING_SETTING_EMPTY,
-  RELEASE_DATE_SETTING_EMPTY,
-  RUNTIME_SETTING_EMPTY,
-  STREAM_LOCATIONS_SETTING_EMPTY,
-  ALL_SETTINGS_EMPTY,
-} from "../../../../test/sample-data/settings";
+    ALL_SETTINGS, ALL_SETTINGS_EMPTY, AUDIO_LANGUAGES_SETTING, AUDIO_LANGUAGES_SETTING_EMPTY,
+    COUNTRY_SETTING, COUNTRY_SETTING_EMPTY, GENRES_SETTING, GENRES_SETTING_EMPTY, RATING_SETTING,
+    RATING_SETTING_EMPTY, RELEASE_DATE_SETTING, RELEASE_DATE_SETTING_EMPTY, RUNTIME_SETTING,
+    RUNTIME_SETTING_EMPTY, STREAM_LOCATIONS_SETTING, STREAM_LOCATIONS_SETTING_EMPTY
+} from '../../../../test/sample-data/settings';
+// sample data
+import { USER_A } from '../../../../test/sample-data/users';
+import { Setting } from '../../models/setting';
+import { getSettings } from '../get-settings';
 
 describe("get settings", () => {
   describe("no settings or default settings", () => {

@@ -1,12 +1,9 @@
-import {
-  Subjects,
-  Listener,
-  UserUpdatedSettingEvent,
-} from "@flickswipe/common";
+import { Message } from 'node-nats-streaming';
 
-import { Message } from "node-nats-streaming";
-import { createSuggestions } from "../../../generate-suggestions/generate-suggestions";
-import { Setting } from "../../models/setting";
+import { Listener, Subjects, UserUpdatedSettingEvent } from '@flickswipe/common';
+
+import { createSuggestions } from '../../../generate-suggestions/generate-suggestions';
+import { Setting } from '../../models/setting';
 
 const { QUEUE_GROUP_NAME } = process.env;
 

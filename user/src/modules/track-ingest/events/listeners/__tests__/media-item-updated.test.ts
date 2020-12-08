@@ -1,27 +1,18 @@
-import mongoose from "mongoose";
-import cloneDeep from "clone-deep";
-import { Message } from "node-nats-streaming";
-import { natsWrapper } from "../../../../../nats-wrapper";
+import cloneDeep from 'clone-deep';
+import mongoose from 'mongoose';
+import { Message } from 'node-nats-streaming';
 
-import { Country } from "../../../models/country";
-import { Language } from "../../../models/language";
-import {
-  StreamLocation,
-  StreamLocationDoc,
-} from "../../../models/stream-location";
-import {
-  createCountryIfNotExists,
-  createAudioLanguageIfNotExists,
-  MediaItemUpdatedListener,
-  parseStreamLocations,
-  saveStreamLocation,
-} from "../media-item-updated";
-
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
+import { MEDIA_ITEM_A, MEDIA_ITEM_A_NEW } from '../../../../../test/sample-data/media-items';
+import { Country } from '../../../models/country';
+import { Language } from '../../../models/language';
+import { StreamLocation, StreamLocationDoc } from '../../../models/stream-location';
 import {
-  MEDIA_ITEM_A,
-  MEDIA_ITEM_A_NEW,
-} from "../../../../../test/sample-data/media-items";
+    createAudioLanguageIfNotExists, createCountryIfNotExists, MediaItemUpdatedListener,
+    parseStreamLocations, saveStreamLocation
+} from '../media-item-updated';
+
 const AUDIO_LANGUAGE = {
   audioLanguage: MEDIA_ITEM_A_NEW.audioLanguage,
 };

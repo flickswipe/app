@@ -1,11 +1,8 @@
-import {
-  BadRequestError,
-  RelationshipType,
-  RelationshipUpdateType,
-} from "@flickswipe/common";
-import { natsWrapper } from "../../../nats-wrapper";
-import { RelationshipUpdatedPublisher } from "../events/publishers/relationship-updated";
-import { Relationship } from "../models/relationship";
+import { BadRequestError, RelationshipType, RelationshipUpdateType } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../nats-wrapper';
+import { RelationshipUpdatedPublisher } from '../events/publishers/relationship-updated';
+import { Relationship } from '../models/relationship';
 
 export async function unblockRelationship(
   fromUserId: string,

@@ -1,11 +1,13 @@
-import { BadRequestError } from "@flickswipe/common";
-import { Message } from "node-nats-streaming";
-import { natsWrapper } from "../../../../../nats-wrapper";
-import { User } from "../../../models/user";
-import { UserUpdatedEmailListener } from "../user-updated-email";
+import { Message } from 'node-nats-streaming';
 
+import { BadRequestError } from '@flickswipe/common';
+
+import { natsWrapper } from '../../../../../nats-wrapper';
 // sample data
-import { USER_A } from "../../../../../test/sample-data/users";
+import { USER_A } from '../../../../../test/sample-data/users';
+import { User } from '../../../models/user';
+import { UserUpdatedEmailListener } from '../user-updated-email';
+
 const EVENT_DATA = {
   id: USER_A.id,
   email: USER_A.email,

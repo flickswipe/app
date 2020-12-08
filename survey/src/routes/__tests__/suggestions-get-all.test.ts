@@ -1,15 +1,16 @@
-import request from "supertest";
-import { app } from "../../app";
-import { SurveyResponse } from "../../modules/handle-survey-response/models/survey-response";
-import { Genre } from "../../modules/track-ingest/models/genre";
-import { MediaItem } from "../../modules/track-ingest/models/media-item";
-import { Suggestion } from "../../modules/track-predict/models/suggestion";
+import request from 'supertest';
 
+import { app } from '../../app';
+import { SurveyResponse } from '../../modules/handle-survey-response/models/survey-response';
+import { Genre } from '../../modules/track-ingest/models/genre';
+import { MediaItem } from '../../modules/track-ingest/models/media-item';
+import { Suggestion } from '../../modules/track-predict/models/suggestion';
 // sample dasta
-import { GENRE_A } from "../../test/sample-data/genres";
-import { MEDIA_ITEM_A } from "../../test/sample-data/media-items";
-import { SUGGESTION_A, SUGGESTION_B } from "../../test/sample-data/suggestions";
-import { SURVEY_RESPONSE_INTERESTED_B } from "../../test/sample-data/survey-responses";
+import { GENRE_A } from '../../test/sample-data/genres';
+import { MEDIA_ITEM_A } from '../../test/sample-data/media-items';
+import { SUGGESTION_A, SUGGESTION_B } from '../../test/sample-data/suggestions';
+import { SURVEY_RESPONSE_INTERESTED_B } from '../../test/sample-data/survey-responses';
+
 const USER = { id: SUGGESTION_A.user };
 
 describe("get suggestions", () => {

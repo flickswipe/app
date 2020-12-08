@@ -1,8 +1,8 @@
-import Stream from "stream";
+import Stream from 'stream';
 
-import { MovieId } from "../models/movie-id";
-import { movieIdsReadFileExport } from "./streams/movie-ids-read-file-export";
-import { movieIdsWriteMongodb } from "./streams/movie-ids-write-mongodb";
+import { MovieId } from '../models/movie-id';
+import { movieIdsReadFileExport } from './streams/movie-ids-read-file-export';
+import { movieIdsWriteMongodb } from './streams/movie-ids-write-mongodb';
 
 export async function fetchTmdbFileExport(
   date: Date,

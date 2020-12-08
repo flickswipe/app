@@ -1,13 +1,11 @@
-import { BadRequestError } from "@flickswipe/common";
-import { natsWrapper } from "../../../../nats-wrapper";
-import { Setting, SettingDoc } from "../../models/setting";
-import { updateRuntime } from "../update-runtime";
+import { BadRequestError } from '@flickswipe/common';
 
+import { natsWrapper } from '../../../../nats-wrapper';
 // sample data
-import {
-  RUNTIME_SETTING,
-  RUNTIME_SETTING_EMPTY,
-} from "../../../../test/sample-data/settings";
+import { RUNTIME_SETTING, RUNTIME_SETTING_EMPTY } from '../../../../test/sample-data/settings';
+import { Setting, SettingDoc } from '../../models/setting';
+import { updateRuntime } from '../update-runtime';
+
 const INVALID_ID = "invalid-id";
 const INVALID_VALUE_A = {
   min: "100",

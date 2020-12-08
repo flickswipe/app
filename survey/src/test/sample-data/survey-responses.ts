@@ -1,7 +1,9 @@
-import { InterestType } from "@flickswipe/common";
-import mongoose from "mongoose";
-import { SurveyResponseAttrs } from "../../modules/handle-survey-response/models/survey-response";
-import { MEDIA_ITEM_A, MEDIA_ITEM_B } from "./media-items";
+import mongoose from 'mongoose';
+
+import { InterestType } from '@flickswipe/common';
+
+import { SurveyResponseAttrs } from '../../modules/handle-survey-response/models/survey-response';
+import { MEDIA_ITEM_A, MEDIA_ITEM_B } from './media-items';
 
 export const SURVEY_RESPONSE_CONSUMED_A: SurveyResponseAttrs = {
   user: mongoose.Types.ObjectId("useraaaaaaaa").toHexString(),

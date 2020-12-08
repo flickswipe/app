@@ -1,2 +1,3 @@
-import "./environment-variables";
-import "./mocks";
+import './environment-variables';
+import './mocks';
+

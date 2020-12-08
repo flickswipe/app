@@ -1,4 +1,4 @@
-import nodemailer, { Transporter, SentMessageInfo } from "nodemailer";
+import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
 
 class TransporterWrapper {
   private _transporter?: Transporter;

@@ -1,16 +1,12 @@
-import request from "supertest";
-import { app } from "../../app";
+import request from 'supertest';
+
+import { app } from '../../app';
 import {
-  updateCountry,
-  updateGenres,
-  updateAudioLanguages,
-  updateRating,
-  updateReleaseDate,
-  updateRuntime,
-  updateStreamLocations,
-} from "../../modules/settings/settings";
-import { ALL_SETTINGS_EMPTY } from "../../test/sample-data/settings";
-import { USER_A } from "../../test/sample-data/users";
+    updateAudioLanguages, updateCountry, updateGenres, updateRating, updateReleaseDate,
+    updateRuntime, updateStreamLocations
+} from '../../modules/settings/settings';
+import { ALL_SETTINGS_EMPTY } from '../../test/sample-data/settings';
+import { USER_A } from '../../test/sample-data/users';
 
 jest.mock("../../modules/settings/settings");
 

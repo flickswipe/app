@@ -1,5 +1,6 @@
-import axios from "axios";
-import { TmdbMovieApiResultRaw } from "./tmdb-movie-parser";
+import axios from 'axios';
+
+import { TmdbMovieApiResultRaw } from './tmdb-movie-parser';
 
 /**
  * @see https://developers.themoviedb.org/3/movies/get-movie-details

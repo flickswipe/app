@@ -1,18 +1,13 @@
-import {
-  NotFoundError,
-  currentUser,
-  requireAuth,
-  InterestType,
-  BadRequestError,
-  validateRequest,
-  validateIso6391Param,
-  validateObjectIdParam,
-} from "@flickswipe/common";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-import { setSurveyResponse } from "../modules/handle-survey-response/handle-survey-response";
-import { getMediaItem } from "../modules/track-ingest/track-ingest";
+import {
+    BadRequestError, currentUser, InterestType, NotFoundError, requireAuth, validateIso6391Param,
+    validateObjectIdParam, validateRequest
+} from '@flickswipe/common';
+
+import { setSurveyResponse } from '../modules/handle-survey-response/handle-survey-response';
+import { getMediaItem } from '../modules/track-ingest/track-ingest';
 
 const router = express.Router();
 

@@ -1,19 +1,20 @@
-import { errorHandler, NotFoundError } from "@flickswipe/common";
+import 'express-async-errors';
 
-import express from "express";
-import "express-async-errors";
+import { json } from 'body-parser';
+import cookieSession from 'cookie-session';
+import express from 'express';
 
-import { json } from "body-parser";
-import cookieSession from "cookie-session";
-import { relationshipsBlockRouter } from "./routes/relationships-block";
-import { relationshipsUnblockRouter } from "./routes/relationships-unblock";
-import { relationshipsAcceptRouter } from "./routes/relationships-accept";
-import { relationshipsCancelRouter } from "./routes/relationships-cancel";
-import { relationshipsRequestRouter } from "./routes/relationships-request";
-import { relationshipsRejectRouter } from "./routes/relationships-reject";
-import { relationshipsGetAllRouter } from "./routes/relationships-get-all";
-import { settingsGetAllRouter } from "./routes/settings-get-all";
-import { settingsUpdateManyRouter } from "./routes/settings-update-many";
+import { errorHandler, NotFoundError } from '@flickswipe/common';
+
+import { relationshipsAcceptRouter } from './routes/relationships-accept';
+import { relationshipsBlockRouter } from './routes/relationships-block';
+import { relationshipsCancelRouter } from './routes/relationships-cancel';
+import { relationshipsGetAllRouter } from './routes/relationships-get-all';
+import { relationshipsRejectRouter } from './routes/relationships-reject';
+import { relationshipsRequestRouter } from './routes/relationships-request';
+import { relationshipsUnblockRouter } from './routes/relationships-unblock';
+import { settingsGetAllRouter } from './routes/settings-get-all';
+import { settingsUpdateManyRouter } from './routes/settings-update-many';
 
 /**
  * Configure express app

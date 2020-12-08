@@ -1,5 +1,6 @@
-import { RelationshipType } from "@flickswipe/common";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
+
+import { RelationshipType } from '@flickswipe/common';
 
 /**
  * Properties used to create a Relationship

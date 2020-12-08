@@ -1,5 +1,5 @@
-import { Request } from "express";
-import jwt from "jsonwebtoken";
+import { Request } from 'express';
+import jwt from 'jsonwebtoken';
 
 /**
  * Handles JWT logic
