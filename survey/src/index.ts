@@ -40,11 +40,12 @@ const {
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,
+  SURVEY_MONGO_URI,
   SURVEY_DB_USER,
   SURVEY_DB_PASS,
+  MONGO_URI,
   DB_USER,
   DB_PASS,
-  MONGO_URI,
   JWT_KEY,
   PORT,
   QUEUE_GROUP_NAME,
@@ -59,14 +60,14 @@ if (!NATS_URL) {
 if (!NATS_CLUSTER_ID) {
   throw new Error(`NATS_CLUSTER_ID must be defined`);
 }
+if (!SURVEY_MONGO_URI && !MONGO_URI) {
+  throw new Error(`SURVEY_MONGO_URI or MONGO_URI must be defined`);
+}
 if (!SURVEY_DB_USER && !DB_USER) {
   throw new Error(`SURVEY_DB_USER or DB_USER must be defined`);
 }
 if (!SURVEY_DB_PASS && !DB_PASS) {
   throw new Error(`SURVEY_DB_PASS or DB_PASS must be defined`);
-}
-if (!MONGO_URI) {
-  throw new Error(`MONGO_URI must be defined`);
 }
 if (!JWT_KEY) {
   throw new Error(`JWT_KEY must be defined`);
@@ -99,7 +100,7 @@ if (!QUEUE_GROUP_NAME) {
     ),
     connectToDatabaseServer(
       mongoose,
-      MONGO_URI,
+      SURVEY_MONGO_URI || MONGO_URI,
       SURVEY_DB_USER || DB_USER,
       SURVEY_DB_PASS || DB_PASS,
       "survey"

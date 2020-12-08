@@ -38,6 +38,8 @@ spec:
                   name: predict-db-pass
                   key: PREDICT_DB_PASS
                   optional: true
+            - name: MONGO_URI
+              value: "mongodb+srv://flickswipe-mongodb-clus.v6qxz.mongodb.net"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -50,7 +52,5 @@ spec:
                   name: db-pass
                   key: DB_PASS
                   optional: true
-            - name: MONGO_URI
-              value: "mongodb+srv://flickswipe-mongodb-clus.v6qxz.mongodb.net"
             - name: QUEUE_GROUP_NAME
               value: "predict_queue_group"
