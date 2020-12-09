@@ -13,6 +13,9 @@ import { natsWrapper } from './nats-wrapper';
 /**
  * Error & performance tracking
  */
+const tracesSampleRate = parseInt(process.env.SENTRY_SAMPLE_RATE, 10) || 0;
+console.info(`Sending ${tracesSampleRate * 100}% of events to Sentry`);
+
 Sentry.init({
   integrations: [
     new Tracing.Integrations.Mongo(),
@@ -26,7 +29,7 @@ Sentry.init({
     }),
   ],
 
-  tracesSampleRate: 1.0,
+  tracesSampleRate: tracesSampleRate,
 });
 
 /**
