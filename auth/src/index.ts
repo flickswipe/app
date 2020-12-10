@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-    attachExitTasks, connectToDatabaseServer, connectToMessagingServer
+    attachExitTasks, connectToDatabaseServer, connectToMessagingServer, startHttpServer
 } from '@flickswipe/common';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
@@ -31,6 +31,10 @@ Sentry.init({
 
   tracesSampleRate: tracesSampleRate,
 });
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+app.use(Sentry.Handlers.errorHandler());
 
 /**
  * Get environment variables
@@ -102,14 +106,10 @@ if (!QUEUE_GROUP_NAME) {
     ),
   ]);
 
-  attachExitTasks(process, exitTasks);
-
   // start http server
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
-  app.use(Sentry.Handlers.errorHandler());
+  const httpExitTask = await startHttpServer(app, parseInt(PORT, 10));
+  exitTasks.push(httpExitTask);
 
-  app.listen(PORT, () => {
-    console.info(`Listening on port ${PORT}`);
-  });
+  // graceful clean up
+  attachExitTasks(process, exitTasks);
 })();

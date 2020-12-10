@@ -79,7 +79,7 @@
   "author": "Christopher Drifter <christopherdrifter@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@flickswipe/common": "0.0.88",
+    "@flickswipe/common": "0.0.94",
     "@sentry/integrations": "^5.29.0",
     "@sentry/node": "^5.29.0",
     "@sentry/tracing": "^5.29.0",
