@@ -43,8 +43,7 @@ async function createUser(data: UserCreatedEvent["data"]): Promise<void> {
   const { id, email } = data;
 
   const insertedDoc = await User.build({ id, email }).save();
-  console.info(`Tracked user ${insertedDoc.id}`, {
-    id: insertedDoc.id,
-    email: insertedDoc.email,
-  });
+  console.info(
+    `Tracked user ${insertedDoc.id} ${email ? "with" : "without"} email`
+  );
 }

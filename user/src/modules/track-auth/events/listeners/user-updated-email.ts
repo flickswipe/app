@@ -56,5 +56,5 @@ async function updateUserEmail(
   existingDoc.email = email;
 
   await existingDoc.save();
-  console.info(`Tracked user ${existingDoc.id}`);
+  console.info(`Tracked new email for user ${existingDoc.id}`);
 }

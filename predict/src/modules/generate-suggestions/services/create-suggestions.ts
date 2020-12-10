@@ -300,10 +300,7 @@ async function getUserSuggestions(
   const candidates = await queryMediaItems(query, MAX_SUGGESTIONS_TO_GENERATE);
   const suggestions: string[] = candidates.map(({ id }) => id).filter((n) => n);
 
-  console.info(
-    `created ${suggestions.length} suggestions for ${userId}`,
-    suggestions
-  );
+  console.info(`created ${suggestions.length} suggestions for ${userId}`);
 
   return suggestions;
 }
