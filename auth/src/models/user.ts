@@ -4,14 +4,14 @@ import mongoose from 'mongoose';
  * Properties used to create a User
  */
 interface UserAttrs {
-  email: string;
+  email?: string;
 }
 
 /**
  * Properties that a User document has
  */
 interface UserDoc extends mongoose.Document {
-  email: string;
+  email?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
+      sparse: true,
     },
   },
   {
