@@ -16,6 +16,8 @@ spec:
         - name: ingest
           image: us.gcr.io/flickswipe-dev/ingest
           env:
+            - name: NODE_ENV
+              value: "development"
             - name: SENTRY_DSN
               value: "https://8e31546b892c442cb87836185989347d@o485399.ingest.sentry.io/5545304"
             - name: SENTRY_SAMPLE_RATE

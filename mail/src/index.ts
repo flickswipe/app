@@ -39,6 +39,8 @@ const {
   NODE_ENV,
 } = process.env;
 
+console.info(`Node environment`, process.version, NODE_ENV);
+
 if (!NATS_CLIENT_ID) {
   throw new Error(`NATS_CLIENT_ID must be defined`);
 }

@@ -16,6 +16,8 @@ spec:
         - name: survey
           image: us.gcr.io/flickswipe-dev/survey
           env:
+            - name: NODE_ENV
+              value: "development"
             - name: SENTRY_DSN
               value: "https://3223e4cfb05948b180e782a76950f503@o485399.ingest.sentry.io/5545311"
             - name: SENTRY_SAMPLE_RATE

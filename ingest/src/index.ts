@@ -44,6 +44,8 @@ const {
   TMDB_KEY,
 } = process.env;
 
+console.info(`Node environment`, process.version, NODE_ENV);
+
 if (!INGEST_DB_USER && !DB_USER) {
   throw new Error(`INGEST_DB_USER or DB_USER must be defined`);
 }

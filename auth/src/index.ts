@@ -40,6 +40,7 @@ app.use(Sentry.Handlers.errorHandler());
  * Get environment variables
  */
 const {
+  NODE_ENV,
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,
@@ -54,6 +55,8 @@ const {
   HOST,
   QUEUE_GROUP_NAME,
 } = process.env;
+
+console.info(`Node environment`, process.version, NODE_ENV);
 
 if (!NATS_CLIENT_ID) {
   throw new Error(`NATS_CLIENT_ID must be defined`);
