@@ -44,6 +44,7 @@ app.use(Sentry.Handlers.errorHandler());
  * Get environment variables
  */
 const {
+  NODE_ENV,
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,

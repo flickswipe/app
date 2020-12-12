@@ -31,6 +31,7 @@ Sentry.init({
  * Get environment variables
  */
 const {
+  NODE_ENV,
   INGEST_MONGO_URI,
   INGEST_DB_USER,
   INGEST_DB_PASS,

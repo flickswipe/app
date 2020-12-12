@@ -19,7 +19,7 @@ import { surveyResponsesGetAllRouter } from './routes/survey-responses-get-all';
 const app = express();
 
 // we're behind a load balancer
-app.set("trust-proxy", true);
+app.set("trust proxy", true);
 
 // parse json from body
 app.use(json());

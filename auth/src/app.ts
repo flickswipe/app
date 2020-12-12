@@ -19,7 +19,7 @@ import { usersSignOutRouter } from './routes/user-sign-out';
 const app = express();
 
 // we're behind a load balancer
-app.set("trust-proxy", true);
+app.set("trust proxy", true);
 
 // set req.useragent
 // @see https://www.npmjs.com/package/express-useragent

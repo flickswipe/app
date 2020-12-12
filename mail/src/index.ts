@@ -27,6 +27,7 @@ Sentry.init({
  * Get environment variables
  */
 const {
+  NODE_ENV,
   NATS_CLIENT_ID,
   NATS_URL,
   NATS_CLUSTER_ID,
@@ -36,7 +37,6 @@ const {
   SMTP_PASS,
   QUEUE_GROUP_NAME,
   SENDER_ADDRESS,
-  NODE_ENV,
 } = process.env;
 
 console.info(`Node environment`, process.version, NODE_ENV);
