@@ -63,7 +63,7 @@ router.post(
       message: `Magic link generated`,
     });
 
-    console.info(`User ${currentUser.id} generated magic link`);
+    console.info(`User generated magic link from email`);
   }
 );
 
