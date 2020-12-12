@@ -6,6 +6,8 @@ import {
     validateRequest
 } from '@flickswipe/common';
 
+import { EmailToken } from '../models/email-token';
+import { User } from '../models/user';
 import { EmailTokenUrl } from '../services/classes/email-token-url';
 
 const router = express.Router();
@@ -52,6 +54,15 @@ router.post(
     }
 
     const { email } = req.body;
+
+    // check email is not in use
+    const existingUser = await User.findOne({
+      email,
+    });
+
+    if (existingUser) {
+      throw new BadRequestError(`Email already in use`);
+    }
 
     // generate email token
     await EmailTokenUrl.generateFromUserId(
