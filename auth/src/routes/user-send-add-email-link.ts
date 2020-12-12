@@ -6,7 +6,6 @@ import {
     validateRequest
 } from '@flickswipe/common';
 
-import { EmailToken } from '../models/email-token';
 import { User } from '../models/user';
 import { EmailTokenUrl } from '../services/classes/email-token-url';
 
