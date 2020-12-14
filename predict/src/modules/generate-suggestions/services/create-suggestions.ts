@@ -59,6 +59,8 @@ export async function createSuggestions(
     mediaItems: suggestions,
     clearExistingSuggestions: clearExistingSuggestions,
   });
+
+  console.info(`User ${userId} created ${suggestions.length} new suggestions`);
 }
 
 /**

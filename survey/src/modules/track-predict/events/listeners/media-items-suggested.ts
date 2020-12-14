@@ -47,5 +47,5 @@ async function createSuggestionDocs(
 
   await Promise.all(promises);
 
-  console.info(`User ${user} received ${mediaItems.length} new suggestions`);
+  console.info(`User ${user} tracked ${mediaItems.length} suggestions`);
 }

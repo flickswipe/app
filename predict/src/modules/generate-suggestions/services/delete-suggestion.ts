@@ -11,7 +11,7 @@ export async function deleteSuggestion(
   const userDoc = await User.findById(userId);
 
   if (!userDoc) {
-    throw new BadRequestError(`User #${userId} doesn't exist`);
+    throw new BadRequestError(`User ${userId} doesn't exist`);
   }
 
   // delete suggestions
@@ -20,4 +20,6 @@ export async function deleteSuggestion(
   // update userDoc
   userDoc.queueLength = await Suggestion.countDocuments({ user: userId });
   await userDoc.save();
+
+  console.info(`User ${userId} deleted suggested media item ${mediaItem}`);
 }

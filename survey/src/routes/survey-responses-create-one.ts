@@ -21,6 +21,27 @@ const router = express.Router();
  *
  * @apiParam {string} id of the media item being responded to
  *
+ * @apiParamExample {json} Post Body: Consumed
+ * {
+ *  "interestType": "consumed",
+ *  "rating": 100
+ * }
+ *
+ * @apiParamExample {json} Post Body: Interested
+ * {
+ *  "interestType": "interested"
+ * }
+ *
+ * @apiParamExample {json} Post Body: Uninterested
+ * {
+ *  "interestType": "uninterested"
+ * }
+ *
+ * @apiParamExample {json} Post Body: Never
+ * {
+ *  "interestType": "never"
+ * }
+ *
  * @apiErrorExample {json}  400 Bad request
  * {
  *   "errors": [
