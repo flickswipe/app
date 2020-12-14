@@ -8,10 +8,7 @@
     "start": "ts-node-dev src/index.ts --project ./tsconfig.production.json",
     "test": "jest --no-cache",
     "test:ci": "jest",
-    "lint": "eslint . --ext .ts",
-    "apidoc": "apidoc -i src/ -o apidoc/",
-    "apidoc-open-win": "npm run apidoc && start ./apidoc/index.html",
-    "apidoc-open-mac": "npm run apidoc && open ./apidoc/index.html"
+    "lint": "eslint . --ext .ts"
   },
   "jest": {
     "preset": "ts-jest",
