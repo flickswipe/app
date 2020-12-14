@@ -1,0 +1,507 @@
+{
+	"info": {
+		"_postman_id": "5d2b24bb-75f8-4cef-80fe-70e466f6450f",
+		"name": "Flickswipe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"chrisdrifte@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/auth/create-user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"auth",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Magic Link",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"chrisdrifte@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/auth/send-magic-link",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"auth",
+								"send-magic-link"
+							]
+						},
+						"description": "Creates new `SignIn` email token and publishes `EmailTokenCreated` event."
+					},
+					"response": []
+				},
+				{
+					"name": "Send Add Email Link",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"chrisdrifte@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/auth/send-add-email-link",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"auth",
+								"send-add-email-link"
+							]
+						},
+						"description": "Creates new `AddEmail` email token and publishes `EmailTokenCreated` event."
+					},
+					"response": []
+				},
+				{
+					"name": "Consume Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":{{consume_token_user}},\r\n    \"token\":{{consume_token_value}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/auth/send-add-email-link",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"auth",
+								"send-add-email-link"
+							]
+						},
+						"description": "Consumes email token and takes one of the following actions:\r\n\r\n| Email Token Type | Action                             |\r\n| ---------------- | ---------------------------------- |\r\n| `SignIn`         | Creates JWT cookie                 |\r\n| `AddEmail`       | Publishes `UserUpdatedEmail` event |"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/auth/sign-out",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"auth",
+								"sign-out"
+							]
+						},
+						"description": "Deletes JWT cookie."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Survey",
+			"item": [
+				{
+					"name": "Media Item",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Interested Responses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Queue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ratings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond: consumed",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond: interested",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"interestType\": \"interested\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/survey/{{media_item_id}}/respond",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"survey",
+								"{{media_item_id}}",
+								"respond"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond: uninterested",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"interestType\": \"uninterested\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/survey/{{media_item_id}}/respond",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"survey",
+								"{{media_item_id}}",
+								"respond"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond: never",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"interestType\": \"never\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/survey/{{media_item_id}}/respond",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"survey",
+								"{{media_item_id}}",
+								"respond"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Settings",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"country\": \"us\",\r\n  \"genres\": {{{genre_id}}: true },\r\n  \"audioLanguages\": {\"en\": true, \"es\": false },\r\n  \"rating\": {\"min\": 0, \"max\": 100 },\r\n  \"releaseDate\": {\"min\": \"1970-01-01\", \"max\": \"2020-01-01\" },\r\n  \"runtime\": {\"min\": 0, \"max\": 180 },\r\n  \"streamLocations\": {{{location_id}}: true }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/en/user/settings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Relationships",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/accept",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/block",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"block"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/en/user/relationships/{{friend_id}}/unblock",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"en",
+								"user",
+								"relationships",
+								"{{friend_id}}",
+								"unblock"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
