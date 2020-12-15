@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-import { AudioLanguagesSetting, BadRequestError, SettingType } from '@flickswipe/common';
+import {
+    AudioLanguagesSetting, BadRequestError, settingsDiffer, SettingType
+} from '@flickswipe/common';
 
 import { natsWrapper } from '../../../nats-wrapper';
 import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
@@ -28,6 +30,11 @@ export async function updateAudioLanguages(
   });
 
   if (existingDoc) {
+    // don't update if no effect
+    if (!settingsDiffer(SettingType.AudioLanguages, existingDoc.value, value)) {
+      return;
+    }
+
     existingDoc.value = value;
     await existingDoc.save();
   } else {

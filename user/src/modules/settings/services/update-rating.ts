@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { BadRequestError, RatingSetting, SettingType } from '@flickswipe/common';
+import { BadRequestError, RatingSetting, settingsDiffer, SettingType } from '@flickswipe/common';
 
 import { natsWrapper } from '../../../nats-wrapper';
 import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
@@ -16,11 +16,11 @@ export async function updateRating(
   }
 
   if (value.min && typeof value.min !== "number") {
-    throw new BadRequestError(`Min must be a number"`);
+    throw new BadRequestError(`Rating: min must be a number`);
   }
 
   if (value.max && typeof value.max !== "number") {
-    throw new BadRequestError(`Max must be a number"`);
+    throw new BadRequestError(`Rating: max must be a number`);
   }
 
   if (
@@ -28,7 +28,7 @@ export async function updateRating(
     typeof value.max !== "undefined" &&
     value.min > value.max
   ) {
-    throw new BadRequestError(`Min must be lower or equal to max"`);
+    throw new BadRequestError(`Rating: min must be lower or equal to max`);
   }
 
   // update
@@ -38,6 +38,11 @@ export async function updateRating(
   });
 
   if (existingDoc) {
+    // don't update if no effect
+    if (!settingsDiffer(SettingType.Rating, existingDoc.value, value)) {
+      return;
+    }
+
     existingDoc.value = value;
     await existingDoc.save();
   } else {

@@ -24,10 +24,28 @@ export class MediaItemsSuggestedListener extends Listener<MediaItemsSuggestedEve
     data: MediaItemsSuggestedEvent["data"],
     msg: Message
   ): Promise<void> {
-    // create suggestion doc if none exists
-    (await Suggestion.findOne(data)) || (await createSuggestionDocs(data));
+    // clear existing suggestions
+    if (data.clearExistingSuggestions) {
+      await clearExistingSuggestions(data);
+    }
+
+    // create new suggestions
+    await createSuggestionDocs(data);
     msg.ack();
   }
+}
+
+/**
+ * @param data data to create with
+ */
+async function clearExistingSuggestions(
+  data: MediaItemsSuggestedEvent["data"]
+): Promise<void> {
+  const { user } = data;
+
+  await Suggestion.deleteMany({ user });
+
+  console.info(`User ${user} cleared existing suggestions`);
 }
 
 /**
@@ -36,8 +54,17 @@ export class MediaItemsSuggestedListener extends Listener<MediaItemsSuggestedEve
 async function createSuggestionDocs(
   data: MediaItemsSuggestedEvent["data"]
 ): Promise<void> {
-  const { user, mediaItems } = data;
+  const { user } = data;
+  let { mediaItems } = data;
 
+  // filter out suggestions that already exist
+  const existingDocs = await Promise.all(
+    mediaItems.map((mediaItem) => Suggestion.findOne({ user, mediaItem }))
+  );
+
+  mediaItems = mediaItems.filter((mediaItem, i) => !existingDocs[i]);
+
+  // create suggestions
   const promises = [];
 
   for (const mediaItem of mediaItems) {
@@ -47,5 +74,5 @@ async function createSuggestionDocs(
 
   await Promise.all(promises);
 
-  console.info(`User ${user} tracked ${mediaItems.length} suggestions`);
+  console.info(`User ${user} tracked ${mediaItems.length} new suggestions`);
 }

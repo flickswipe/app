@@ -6,7 +6,7 @@ import {
     AUDIO_LANGUAGES_SETTING, AUDIO_LANGUAGES_SETTING_EMPTY
 } from '../../../../test/sample-data/settings';
 import { Setting, SettingDoc } from '../../models/setting';
-import { updateAudioLanguages } from '../update-languages';
+import { updateAudioLanguages } from '../update-audio-languages';
 
 const INVALID_ID = "invalid-id";
 

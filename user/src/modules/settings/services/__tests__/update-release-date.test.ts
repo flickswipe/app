@@ -10,12 +10,12 @@ import { updateReleaseDate } from '../update-release-date';
 
 const INVALID_ID = "invalid-id";
 const INVALID_VALUE_A = {
-  min: "100",
+  min: [] as any,
   max: 0,
 };
 const INVALID_VALUE_B = {
   min: 100,
-  max: "0",
+  max: [] as any,
 };
 const INVALID_VALUE_C = {
   min: new Date("01-01-2020"),

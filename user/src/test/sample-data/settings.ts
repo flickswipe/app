@@ -24,8 +24,8 @@ export const GENRES_SETTING: Omit<GenresSetting, "updatedAt"> = {
   settingType: SettingType.Genres,
   user: USER_A.id,
   value: {
-    [GENRE_A.tmdbGenreId]: true,
-    [GENRE_B.tmdbGenreId]: false,
+    [GENRE_A.id]: true,
+    [GENRE_B.id]: false,
   },
 };
 

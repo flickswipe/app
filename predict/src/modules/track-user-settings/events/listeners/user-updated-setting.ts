@@ -2,7 +2,7 @@ import { Message } from 'node-nats-streaming';
 
 import { Listener, Subjects, UserUpdatedSettingEvent } from '@flickswipe/common';
 
-import { createSuggestions } from '../../../generate-suggestions/generate-suggestions';
+import { deleteSuggestions } from '../../../generate-suggestions/generate-suggestions';
 import { Setting } from '../../models/setting';
 
 const { QUEUE_GROUP_NAME } = process.env;
@@ -28,9 +28,9 @@ export class UserUpdatedSettingListener extends Listener<UserUpdatedSettingEvent
     // update database
     await updateUserSettings(data);
 
-    // create suggestions
+    // delete suggestions
     const userId = data.user;
-    await createSuggestions(userId, true);
+    await deleteSuggestions(userId);
 
     msg.ack();
   }

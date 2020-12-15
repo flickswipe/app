@@ -54,9 +54,9 @@ router.get(
 
     // list all genres in settings, set unknown genres to false by default
     const allGenres = await getGenres();
-    allGenres.forEach(({ tmdbGenreId }) => {
-      if (typeof settings.genres[tmdbGenreId] === "undefined") {
-        settings.genres[tmdbGenreId] = false;
+    allGenres.forEach(({ id }) => {
+      if (typeof settings.genres[id] === "undefined") {
+        settings.genres[id] = false;
       }
     });
 

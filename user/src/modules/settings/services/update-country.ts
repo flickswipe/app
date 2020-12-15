@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { BadRequestError, CountrySetting, SettingType } from '@flickswipe/common';
+import { BadRequestError, CountrySetting, settingsDiffer, SettingType } from '@flickswipe/common';
 
 import { natsWrapper } from '../../../nats-wrapper';
 import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
@@ -22,6 +22,11 @@ export async function updateCountry(
   });
 
   if (existingDoc) {
+    // don't update if no effect
+    if (!settingsDiffer(SettingType.Country, existingDoc.value, value)) {
+      return;
+    }
+
     existingDoc.value = value;
     await existingDoc.save();
   } else {

@@ -30,6 +30,9 @@ export async function createSuggestions(
     throw new BadRequestError(`User ${userId} does not exist`);
   }
 
+  // get previous queue length
+  const prevQueueLength = userDoc.queueLength;
+
   // clear queue if necessary
   if (clearExistingSuggestions) {
     // delete suggestions
@@ -54,10 +57,11 @@ export async function createSuggestions(
   await userDoc.save();
 
   // publish new suggestions
+  // delete old suggestions
   new MediaItemsSuggestedPublisher(natsWrapper.client).publish({
     user: userId,
     mediaItems: suggestions,
-    clearExistingSuggestions: clearExistingSuggestions,
+    clearExistingSuggestions: clearExistingSuggestions || prevQueueLength === 0,
   });
 
   console.info(`User ${userId} created ${suggestions.length} new suggestions`);

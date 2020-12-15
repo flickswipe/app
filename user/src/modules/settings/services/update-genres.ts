@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { BadRequestError, GenresSetting, SettingType } from '@flickswipe/common';
+import { BadRequestError, GenresSetting, settingsDiffer, SettingType } from '@flickswipe/common';
 
 import { natsWrapper } from '../../../nats-wrapper';
 import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
@@ -35,6 +35,11 @@ export async function updateGenres(
   });
 
   if (existingDoc) {
+    // don't update if no effect
+    if (!settingsDiffer(SettingType.Genres, existingDoc.value, value)) {
+      return;
+    }
+
     existingDoc.value = value;
     await existingDoc.save();
   } else {

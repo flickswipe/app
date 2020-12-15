@@ -75,9 +75,9 @@ describe("get settings", () => {
       expect(response.body).toEqual(
         expect.objectContaining({
           genres: {
-            [GENRE_A.tmdbGenreId]: true,
-            [GENRE_B.tmdbGenreId]: false,
-            [GENRE_C.tmdbGenreId]: false,
+            [GENRE_A.id]: true,
+            [GENRE_B.id]: false,
+            [GENRE_C.id]: false,
           },
         })
       );

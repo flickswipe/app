@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-import { BadRequestError, SettingType, StreamLocationsSetting } from '@flickswipe/common';
+import {
+    BadRequestError, settingsDiffer, SettingType, StreamLocationsSetting
+} from '@flickswipe/common';
 
 import { natsWrapper } from '../../../nats-wrapper';
 import { UserUpdatedSettingPublisher } from '../events/publishers/user-updated-setting';
@@ -30,6 +32,13 @@ export async function updateStreamLocations(
   });
 
   if (existingDoc) {
+    // don't update if no effect
+    if (
+      !settingsDiffer(SettingType.StreamLocations, existingDoc.value, value)
+    ) {
+      return;
+    }
+
     existingDoc.value = value;
     await existingDoc.save();
   } else {
